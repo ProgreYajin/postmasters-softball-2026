@@ -1,0 +1,2 @@
+# postmasters-softball-2026
+2026年千葉県郵便局長ソフトボール大会のWEBサイト、LINE公式アカウント用のGAS
