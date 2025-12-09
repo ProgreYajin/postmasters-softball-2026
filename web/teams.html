@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>チーム一覧</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Hiragino Kaku Gothic Pro', 'メイリオ', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        header {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        /* スムーズスクロール */
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .back-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: #5568d3;
+        }
+        
+        h1 {
+            font-size: 1.2em;
+            color: #667eea;
+        }
+        
+        .container {
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .jump-links {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .jump-links-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .jump-links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .jump-link {
+            display: block;
+            padding: 10px 15px;
+            background: #f8f9fa;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .jump-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2em;
+        }
+        
+        .team-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .team-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .team-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: white;
+        }
+        
+        .team-info {
+            flex: 1;
+        }
+        
+        .team-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .player {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .player-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e0e0e0;
+            flex-shrink: 0;
+        }
+        
+        .player-photo.no-photo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: #999;
+        }
+        
+        .player-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .player-number {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 0.9em;
+            margin-bottom: 3px;
+        }
+        
+        .player-name {
+            color: #333;
+            font-size: 1.05em;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+        
+        .player-position {
+            color: #999;
+            font-size: 0.85em;
+        }
+        
+        .player-note {
+            color: #ff6b6b;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-top: 3px;
+        }
+        
+        .no-teams {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2em;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .team-card {
+                padding: 15px;
+            }
+            
+            .players-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .team-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2em;
+            }
+            
+            .team-name {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <button class="back-btn" onclick="goBack()">← 戻る</button>
+            <h1>👥 チーム一覧</h1>
+        </div>
+    </header>
+    
+    <div class="container" id="container">
+        <div class="loading">データを読み込んでいます...</div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const API_URL = urlParams.get('api') || localStorage.getItem('STAFF_BOT_API_URL') || '';
+        
+        if (urlParams.get('api')) {
+            localStorage.setItem('STAFF_BOT_API_URL', urlParams.get('api'));
+        }
+        
+        const teamIcons = ['🔴', '🔵', '🟢', '🟡', '🟣', '🟠', '⚫', '⚪', '🟤'];
+        
+        async function fetchTeams() {
+            if (!API_URL) {
+                document.getElementById('container').innerHTML = `
+                    <div class="no-teams">
+                        <h2>⚠️ API URLが設定されていません</h2>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const timestamp = new Date().getTime();
+                const response = await fetch(`${API_URL}?type=teams&t=${timestamp}`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                displayTeams(data);
+                
+            } catch (error) {
+                console.error('データ取得エラー:', error);
+                document.getElementById('container').innerHTML = `
+                    <div class="no-teams">データの読み込みに失敗しました<br>
+                    <span style="font-size:0.8em;margin-top:10px;display:block;">${error.message}</span></div>
+                `;
+            }
+        }
+        
+        function displayTeams(data) {
+            const container = document.getElementById('container');
+            
+            if (!data.teams || data.teams.length === 0) {
+                container.innerHTML = '<div class="no-teams">チームデータがありません</div>';
+                return;
+            }
+            
+            let html = '';
+            
+            // ジャンプリンク作成
+            html += `
+                <div class="jump-links">
+                    <div class="jump-links-title">📋 チーム一覧</div>
+                    <div class="jump-links-grid">
+            `;
+            
+            data.teams.forEach((team, index) => {
+                const teamId = `team-${index}`;
+                html += `<a href="#${teamId}" class="jump-link">${team.name}</a>`;
+            });
+            
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            // チームカード作成
+            data.teams.forEach((team, index) => {
+                const icon = teamIcons[index % teamIcons.length];
+                const teamId = `team-${index}`;
+                
+                html += `
+                    <div class="team-card" id="${teamId}">
+                        <div class="team-header">
+                            <div class="team-icon">${icon}</div>
+                            <div class="team-info">
+                                <div class="team-name">${team.name}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="players-grid">
+                `;
+                
+                team.players.forEach(player => {
+                    const photoHtml = player.photo 
+                        ? `<img src="${player.photo}" alt="${player.name}" class="player-photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                           <div class="player-photo no-photo" style="display:none;">👤</div>`
+                        : `<div class="player-photo no-photo">👤</div>`;
+                    
+                    html += `
+                        <div class="player">
+                            ${photoHtml}
+                            <div class="player-info">
+                                <div class="player-number">#${player.number}</div>
+                                <div class="player-name">${player.name}</div>
+                                <div class="player-position">${player.position}</div>
+                                ${player.note ? `<div class="player-note">${player.note}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function goBack() {
+            const params = new URLSearchParams();
+            if (API_URL) params.set('api', API_URL);
+            window.location.href = `index.html?${params.toString()}`;
+        }
+        
+        fetchTeams();
+    </script>
+</body>
+</html>

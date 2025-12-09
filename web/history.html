@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>優勝記録</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Hiragino Kaku Gothic Pro', 'メイリオ', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        header {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .back-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: #5568d3;
+        }
+        
+        h1 {
+            font-size: 1.2em;
+            color: #667eea;
+        }
+        
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .current-year {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border-radius: 15px;
+            padding: 30px 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+            text-align: center;
+        }
+        
+        .current-year-label {
+            font-size: 1.1em;
+            color: #856404;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .current-trophy {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+        
+        .current-winner {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .current-tbd {
+            font-size: 1.5em;
+            color: #856404;
+            font-style: italic;
+        }
+        
+        .history-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s;
+        }
+        
+        .history-item:hover {
+            background: #f8f9fa;
+            transform: translateX(5px);
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .year {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+            min-width: 80px;
+        }
+        
+        .trophy-icon {
+            font-size: 2em;
+        }
+        
+        .winner-info {
+            flex: 1;
+        }
+        
+        .winner-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .winner-details {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .stats-summary {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .stats-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .champion-list {
+            background: #fff3cd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .champion-list-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .champion-list-content {
+            color: #856404;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <button class="back-btn" onclick="goBack()">← 戻る</button>
+            <h1>🥇 優勝記録</h1>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="current-year">
+            <div class="current-year-label">第25回大会（2025年）</div>
+            <div class="current-trophy">🏆</div>
+            <div class="current-tbd">優勝チーム決定まであと少し！</div>
+        </div>
+        
+        <div class="history-section">
+            <div class="section-title">歴代優勝チーム</div>
+            
+            <div class="history-item">
+                <div class="year">2024</div>
+                <div class="trophy-icon">🥇</div>
+                <div class="winner-info">
+                    <div class="winner-name">レッドファイターズ</div>
+                    <div class="winner-details">決勝: 5-3 ブルードラゴンズ</div>
+                </div>
+            </div>
+            
+            <div class="history-item">
+                <div class="year">2023</div>
+                <div class="trophy-icon">🥇</div>
+                <div class="winner-info">
+                    <div class="winner-name">ブルードラゴンズ</div>
+                    <div class="winner-details">決勝: 7-4 グリーンイーグルス</div>
+                </div>
+            </div>
+            
+            <div class="history-item">
+                <div class="year">2022</div>
+                <div class="trophy-icon">🥇</div>
+                <div class="winner-info">
+                    <div class="winner-name">グリーンイーグルス</div>
+                    <div class="winner-details">決勝: 6-2 イエローホークス</div>
+                </div>
+            </div>
+            
+            <div class="history-item">
+                <div class="year">2021</div>
+                <div class="trophy-icon">🥇</div>
+                <div class="winner-info">
+                    <div class="winner-name">レッドファイターズ</div>
+                    <div class="winner-details">決勝: 4-3 ホワイトタイガース</div>
+                </div>
+            </div>
+            
+            <div class="history-item">
+                <div class="year">2020</div>
+                <div class="trophy-icon">🥇</div>
+                <div class="winner-info">
+                    <div class="winner-name">ブラックパンサーズ</div>
+                    <div class="winner-details">決勝: 8-5 レッドファイターズ</div>
+                </div>
+            </div>
+            
+            <div class="history-item">
+                <div class="year">2019</div>
+                <div class="trophy-icon">🥇</div>
+                <div class="winner-info">
+                    <div class="winner-name">イエローホークス</div>
+                    <div class="winner-details">決勝: 5-4 グリーンイーグルス</div>
+                </div>
+            </div>
+            
+            <div class="history-item">
+                <div class="year">2018</div>
+                <div class="trophy-icon">🥇</div>
+                <div class="winner-info">
+                    <div class="winner-name">ブルードラゴンズ</div>
+                    <div class="winner-details">決勝: 9-3 ブラックパンサーズ</div>
+                </div>
+            </div>
+            
+            <div class="history-item">
+                <div class="year">2017</div>
+                <div class="trophy-icon">🥇</div>
+                <div class="winner-info">
+                    <div class="winner-name">レッドファイターズ</div>
+                    <div class="winner-details">決勝: 6-5 ブルードラゴンズ</div>
+                </div>
+            </div>
+            
+            <div class="stats-summary">
+                <div class="stats-title">📊 優勝回数ランキング</div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">3回</div>
+                        <div class="stat-label">レッドファイターズ</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3回</div>
+                        <div class="stat-label">ブルードラゴンズ</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1回</div>
+                        <div class="stat-label">グリーンイーグルス</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1回</div>
+                        <div class="stat-label">ブラックパンサーズ</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="champion-list">
+                <div class="champion-list-title">🎯 連覇記録</div>
+                <div class="champion-list-content">
+                    最多連覇: ブルードラゴンズ（2015-2016年 2連覇）<br>
+                    通算優勝回数: レッドファイターズ・ブルードラゴンズ（各3回）
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const API_URL = urlParams.get('api') || localStorage.getItem('STAFF_BOT_API_URL') || '';
+        
+        function goBack() {
+            const params = new URLSearchParams();
+            if (API_URL) params.set('api', API_URL);
+            window.location.href = `index.html?${params.toString()}`;
+        }
+    </script>
+</body>
+</html>

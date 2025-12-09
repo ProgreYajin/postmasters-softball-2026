@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>会場案内</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Hiragino Kaku Gothic Pro', 'メイリオ', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        header {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .back-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: #5568d3;
+        }
+        
+        h1 {
+            font-size: 1.2em;
+            color: #667eea;
+        }
+        
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .map-container {
+            width: 100%;
+            height: 300px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        
+        .address-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .address-label {
+            font-size: 0.9em;
+            color: #999;
+            margin-bottom: 5px;
+        }
+        
+        .address-text {
+            font-size: 1.1em;
+            color: #333;
+            line-height: 1.8;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            flex-shrink: 0;
+        }
+        
+        .info-content {
+            flex: 1;
+        }
+        
+        .info-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 1.05em;
+        }
+        
+        .info-text {
+            color: #666;
+            line-height: 1.8;
+        }
+        
+        .facility-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .facility-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .facility-icon {
+            font-size: 2em;
+            margin-bottom: 8px;
+        }
+        
+        .facility-name {
+            font-size: 0.95em;
+            color: #333;
+        }
+        
+        .btn-map {
+            width: 100%;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+        
+        .btn-map:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <button class="back-btn" onclick="goBack()">← 戻る</button>
+            <h1>📍 会場案内</h1>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="section">
+            <div class="section-title">会場情報</div>
+            
+            <div class="map-container">
+                🗺️ 地図表示エリア
+            </div>
+            
+            <div class="address-box">
+                <div class="address-label">〒 123-4567</div>
+                <div class="address-text">
+                    東京都〇〇区△△町1-2-3<br>
+                    〇〇市総合運動公園 ソフトボール場
+                </div>
+            </div>
+            
+            <button class="btn-map" onclick="openMap()">📍 Googleマップで開く</button>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">アクセス方法</div>
+            
+            <div class="info-item">
+                <div class="info-icon">🚃</div>
+                <div class="info-content">
+                    <div class="info-title">電車でお越しの場合</div>
+                    <div class="info-text">
+                        JR〇〇線「△△駅」下車<br>
+                        南口より徒歩15分
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-icon">🚌</div>
+                <div class="info-content">
+                    <div class="info-title">バスでお越しの場合</div>
+                    <div class="info-text">
+                        〇〇バス「運動公園前」下車すぐ<br>
+                        △△駅から約10分（1時間に3本運行）
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-icon">🚗</div>
+                <div class="info-content">
+                    <div class="info-title">お車でお越しの場合</div>
+                    <div class="info-text">
+                        〇〇高速道路「△△IC」より約5分<br>
+                        無料駐車場あり（200台収容）
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">施設について</div>
+            
+            <div class="facility-grid">
+                <div class="facility-item">
+                    <div class="facility-icon">⚾</div>
+                    <div class="facility-name">グラウンド<br>4面</div>
+                </div>
+                <div class="facility-item">
+                    <div class="facility-icon">🚻</div>
+                    <div class="facility-name">トイレ<br>3箇所</div>
+                </div>
+                <div class="facility-item">
+                    <div class="facility-icon">🚰</div>
+                    <div class="facility-name">水飲み場<br>各所</div>
+                </div>
+                <div class="facility-item">
+                    <div class="facility-icon">🏪</div>
+                    <div class="facility-name">自動販売機<br>あり</div>
+                </div>
+                <div class="facility-item">
+                    <div class="facility-icon">🏥</div>
+                    <div class="facility-name">救護室<br>管理棟内</div>
+                </div>
+                <div class="facility-item">
+                    <div class="facility-icon">🅿️</div>
+                    <div class="facility-name">駐車場<br>200台</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">注意事項</div>
+            
+            <div class="info-text" style="padding: 10px 0; line-height: 2;">
+                ⚠️ グラウンド内は禁煙です<br>
+                ⚠️ ゴミは各自でお持ち帰りください<br>
+                ⚠️ 貴重品の管理は各自で行ってください<br>
+                ⚠️ 熱中症対策として水分補給をこまめに<br>
+                ⚠️ 施設の利用は大会関係者のみとなります
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">緊急連絡先</div>
+            
+            <div class="info-item">
+                <div class="info-icon">📞</div>
+                <div class="info-content">
+                    <div class="info-title">大会本部</div>
+                    <div class="info-text">
+                        TEL: 080-XXXX-XXXX<br>
+                        （大会当日のみ）
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-icon">🏢</div>
+                <div class="info-content">
+                    <div class="info-title">施設管理事務所</div>
+                    <div class="info-text">
+                        TEL: 03-XXXX-XXXX<br>
+                        （平日 9:00〜17:00）
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const API_URL = urlParams.get('api') || localStorage.getItem('STAFF_BOT_API_URL') || '';
+        
+        function goBack() {
+            const params = new URLSearchParams();
+            if (API_URL) params.set('api', API_URL);
+            window.location.href = `index.html?${params.toString()}`;
+        }
+        
+        function openMap() {
+            // 実際の住所でGoogleマップを開く
+            const address = encodeURIComponent('東京都〇〇区△△町1-2-3 〇〇市総合運動公園');
+            window.open(`https://www.google.com/maps/search/?api=1&query=${address}`, '_blank');
+        }
+    </script>
+</body>
+</html>

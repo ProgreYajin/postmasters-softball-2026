@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大会ルール</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Hiragino Kaku Gothic Pro', 'メイリオ', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        header {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .back-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: #5568d3;
+        }
+        
+        h1 {
+            font-size: 1.2em;
+            color: #667eea;
+        }
+        
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .rule-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .rule-item:last-child {
+            border-bottom: none;
+        }
+        
+        .rule-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-right: 10px;
+        }
+        
+        .rule-text {
+            display: inline;
+            color: #333;
+            line-height: 1.8;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .warning-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        
+        .warning-text {
+            color: #856404;
+            line-height: 1.6;
+        }
+        
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .info-title {
+            font-weight: bold;
+            color: #0d47a1;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        
+        .info-text {
+            color: #0d47a1;
+            line-height: 1.6;
+        }
+        
+        ul {
+            margin: 10px 0 10px 30px;
+        }
+        
+        li {
+            color: #666;
+            line-height: 1.8;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <button class="back-btn" onclick="goBack()">← 戻る</button>
+            <h1>📋 大会ルール</h1>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="section">
+            <div class="section-title">基本ルール</div>
+            
+            <div class="rule-item">
+                <span class="rule-number">1</span>
+                <span class="rule-text">試合は<strong>7イニング制</strong>とします</span>
+            </div>
+            
+            <div class="rule-item">
+                <span class="rule-number">2</span>
+                <span class="rule-text">予選リーグは<strong>45分間</strong>の時間制限があります</span>
+            </div>
+            
+            <div class="rule-item">
+                <span class="rule-number">3</span>
+                <span class="rule-text">決勝トーナメントは時間無制限・延長戦ありとします</span>
+            </div>
+            
+            <div class="rule-item">
+                <span class="rule-number">4</span>
+                <span class="rule-text">5点差以上の場合、<strong>コールドゲーム</strong>が適用されます（5回終了時点）</span>
+            </div>
+            
+            <div class="rule-item">
+                <span class="rule-number">5</span>
+                <span class="rule-text">1イニング<strong>最大5得点</strong>まで（決勝戦を除く）</span>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">チーム編成</div>
+            
+            <div class="rule-item">
+                <span class="rule-number">1</span>
+                <span class="rule-text">1チーム10名〜15名で構成</span>
+            </div>
+            
+            <div class="rule-item">
+                <span class="rule-number">2</span>
+                <span class="rule-text">試合出場は9名（控え選手の交代可）</span>
+            </div>
+            
+            <div class="rule-item">
+                <span class="rule-number">3</span>
+                <span class="rule-text">守備位置は自由に変更可能</span>
+            </div>
+            
+            <div class="info-box">
+                <div class="info-title">💡 選手交代について</div>
+                <div class="info-text">
+                    選手交代は審判に申告してください。再出場は1試合につき1回まで認められます。
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">用具規定</div>
+            
+            <div class="rule-item">
+                <span class="rule-number">1</span>
+                <span class="rule-text">ボールは大会指定のゴムボール3号を使用</span>
+            </div>
+            
+            <div class="rule-item">
+                <span class="rule-number">2</span>
+                <span class="rule-text">バットは金属製・木製どちらでも可</span>
+            </div>
+            
+            <div class="rule-item">
+                <span class="rule-number">3</span>
+                <span class="rule-text">スパイクは金属製禁止（ゴム製のみ）</span>
+            </div>
+            
+            <div class="warning-box">
+                <div class="warning-title">⚠️ 安全装備について</div>
+                <div class="warning-text">
+                    捕手はヘルメット・プロテクター・レガースの着用を義務付けます。
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">順位決定方法</div>
+            
+            <div style="padding: 10px 0;">
+                予選リーグの順位は以下の順で決定します：
+                <ul>
+                    <li>勝ち点（勝利2点、引き分け1点、敗北0点）</li>
+                    <li>直接対決の結果</li>
+                    <li>総得失点差</li>
+                    <li>総得点</li>
+                    <li>抽選</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">特別ルール</div>
+            
+            <div class="rule-item">
+                <span class="rule-number">1</span>
+                <span class="rule-text"><strong>盗塁禁止</strong>（リードは可）</span>
+            </div>
+            
+            <div class="rule-item">
+                <span class="rule-number">2</span>
+                <span class="rule-text">バッターボックスでの<strong>タイムは1打席1回まで</strong></span>
+            </div>
+            
+            <div class="rule-item">
+                <span class="rule-number">3</span>
+                <span class="rule-text">故意四球は<strong>申告制</strong>を採用</span>
+            </div>
+            
+            <div class="info-box">
+                <div class="info-title">🎯 大会の精神</div>
+                <div class="info-text">
+                    この大会は親睦を深めることを目的としています。フェアプレーの精神で楽しくプレーしましょう！
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">悪天候時の対応</div>
+            
+            <div style="padding: 10px 0; color: #666; line-height: 1.8;">
+                ・小雨の場合は続行します<br>
+                ・雷発生時は即座に中断し、安全な場所へ避難<br>
+                ・大会本部の指示に従ってください<br>
+                ・中止の場合は前日18:00までに連絡します
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const API_URL = urlParams.get('api') || localStorage.getItem('STAFF_BOT_API_URL') || '';
+        
+        function goBack() {
+            const params = new URLSearchParams();
+            if (API_URL) params.set('api', API_URL);
+            window.location.href = `index.html?${params.toString()}`;
+        }
+    </script>
+</body>
+</html>
