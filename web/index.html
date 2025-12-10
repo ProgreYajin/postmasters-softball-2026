@@ -868,10 +868,12 @@
          * 観客用APIからギャラリー写真を取得
          */
         async function fetchGalleryPhotos() {
-            // audience_apiが未設定でもstaff_apiが設定されていれば使用を試みる
             const targetApi = AUDIENCE_API_URL || STAFF_API_URL;
-            if (!targetApi) return;
-
+            if (!targetApi) {
+                console.log('ギャラリーAPI未設定のため、写真取得をスキップ');
+                return;
+            }
+        
             try {
                 const timestamp = new Date().getTime();
                 const response = await fetch(`${targetApi}?t=${timestamp}`, {
@@ -879,19 +881,29 @@
                     mode: 'cors',
                     cache: 'no-cache'
                 });
-                if (!response.ok) return;
                 
-                // レスポンスボディが空でないか確認
+                if (!response.ok) {
+                    console.error('ギャラリー写真取得失敗:', response.status);
+                    return;
+                }
+                
                 const text = await response.text();
-                if (!text) return;
+                if (!text || text.trim() === '') {
+                    console.log('ギャラリーAPIからの応答が空です');
+                    return;
+                }
                 
                 const data = JSON.parse(text);
-
-                if (data.photos && data.photos.length > 0) {
+                console.log('ギャラリーデータ取得成功:', data); // デバッグ用
+        
+                if (data.photos && Array.isArray(data.photos) && data.photos.length > 0) {
                     updateGallerySlider(data.photos);
+                } else {
+                    console.log('ギャラリー写真が0件です');
                 }
             } catch (error) {
-                console.error('ギャラリー写真取得エラー:', error);
+                console.error('ギャラリー写真取得エラー:', error.message);
+                // エラーでもページ表示は続行
             }
         }
 
@@ -1013,14 +1025,10 @@
             return 'waiting';
         }
         
-        // 【修正点】 totalScores オブジェクトから得点を正しく取得
-        function getTeamInfo(teamName, data) {
-            // data (API応答全体) の totalScores から得点を取得。キーが teamName と一致する必要がある。
-            const totalScore = (data && data.totalScores) ? (data.totalScores[teamName] || 0) : 0;
-            
-            // チーム名がnullやundefinedの場合は、APIの応答が不正なので、とりあえず「不明」とする
+        // 【修正後】 - 試合オブジェクトから直接得点を取得
+        function getTeamInfo(teamName, score) {
             const teamDisplayName = teamName || '不明なチーム'; 
-            
+            const totalScore = (score !== undefined && score !== null) ? score : 0;
             return {
                 team: teamDisplayName,
                 total: totalScore
@@ -1110,8 +1118,8 @@
                     const statusClass = getStatusClass(status);
                     
                     // 【修正点】得点取得のために、API応答全体(data)を渡す
-                    const homeTeam = getTeamInfo(game.homeTeam, data); 
-                    const awayTeam = getTeamInfo(game.awayTeam, data);
+                    const homeTeam = getTeamInfo(game.homeTeam, game.homeScore); 
+                    const awayTeam = getTeamInfo(game.awayTeam, game.awayScore);
                     
                     const currentInning = getCurrentInning(game);
 
