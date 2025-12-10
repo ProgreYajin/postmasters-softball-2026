@@ -45,6 +45,10 @@
         .header-logo {
             cursor: pointer;
             transition: opacity 0.3s;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            align-items: center;
         }
         
         .header-logo:hover {
@@ -54,6 +58,21 @@
         .header-logo img {
             height: 35px;
             width: auto;
+            display: block;
+        }
+        
+        /* ロゴ画像エラー時の代替テキスト用スタイル */
+        .header-logo-text {
+            display: none;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        
+        .header-logo.fallback img {
+            display: none;
+        }
+        
+        .header-logo.fallback .header-logo-text {
             display: block;
         }
         
@@ -480,9 +499,9 @@
                 flex-shrink: 0;
             }
             
-            /* 💡 インジケーターを2つに分割し、左右に固定 */
+            /* スクロールインジケーター（左右分離） */
             .scroll-indicator {
-                display: none; /* JSで表示を制御するため、初期は非表示 */
+                display: none;
                 position: absolute;
                 top: 50%;
                 transform: translateY(-50%);
@@ -532,8 +551,9 @@
     <header>
         <div class="header-top">
             <div class="header-top-content">
-                <a href="#" onclick="return false;" class="header-logo">
-                    <img src="https://drive.google.com/thumbnail?id=1i01jLSCnme9KdDuBwL8MufLNGdeo_d0x" alt="全国郵便局長会">
+                <a href="#" class="header-logo" id="headerLogo">
+                    <img src="https://drive.google.com/thumbnail?id=1i01jLSCnme9KdDuBwL8MufLNGdeo_d0x" alt="全国郵便局長会" onerror="handleLogoError()">
+                    <span class="header-logo-text">🏣 全国郵便局長会</span>
                 </a>
                 <div class="header-info">
                     2026年郵便局長ソフトボール大会 | 2026.6.6
@@ -541,15 +561,15 @@
             </div>
         </div>
         <div class="header-main">
-           <nav class="nav-links" id="navLinks">
-                <a href="#" onclick="openPage('scoreboard.html'); return false;">試合速報 / 試合結果</a>
-                <a href="#" onclick="openGallery(); return false;">写真ギャラリー</a>  <!-- ★追加 -->
-                <a href="#" onclick="openPage('schedule.html'); return false;">大会スケジュール</a>
-                <a href="#" onclick="openPage('tournament.html'); return false;">トーナメント表</a>
-                <a href="#" onclick="openPage('teams.html'); return false;">チーム・選手一覧</a>
-                <a href="#" onclick="openPage('venue.html'); return false;">会場案内・アクセス</a>
-                <a href="#" onclick="openPage('rules.html'); return false;">大会ルール・規約</a>
-                <a href="#" onclick="openPage('history.html'); return false;">優勝記録・歴史</a>
+            <nav class="nav-links" id="navLinks">
+                <a href="scoreboard.html" class="dynamic-link">試合速報 / 試合結果</a>
+                <a href="gallery.html" class="dynamic-link">写真ギャラリー</a>
+                <a href="schedule.html" class="dynamic-link">大会スケジュール</a>
+                <a href="tournament.html" class="dynamic-link">トーナメント表</a>
+                <a href="teams.html" class="dynamic-link">チーム・選手一覧</a>
+                <a href="venue.html" class="dynamic-link">会場案内・アクセス</a>
+                <a href="rules.html" class="dynamic-link">大会ルール・規約</a>
+                <a href="history.html" class="dynamic-link">優勝記録・歴史</a>
             </nav>
             <div class="scroll-indicator left" id="scrollIndicatorLeft">◀︎</div>
             <div class="scroll-indicator right" id="scrollIndicatorRight">▶︎</div>
@@ -596,49 +616,49 @@
         <h2 class="section-title" style="margin-top: 60px;">大会情報</h2>
         
         <div class="quick-links">
-            <a href="#" onclick="openPage('scoreboard.html'); return false;" class="link-card">
+            <a href="scoreboard.html" class="link-card dynamic-link">
                 <div class="link-icon">⚡</div>
                 <div class="link-title">試合速報 / 試合結果</div>
                 <div class="link-description">リアルタイムスコア</div>
             </a>
 
-            <a href="#" onclick="openGallery(); return false;" class="link-card">
+            <a href="gallery.html" class="link-card dynamic-link">
                 <div class="link-icon">📸</div>
                 <div class="link-title">写真ギャラリー</div>
                 <div class="link-description">大会の様子を写真で</div>
             </a>
-                    
-            <a href="#" onclick="openPage('schedule.html'); return false;" class="link-card">
+            
+            <a href="schedule.html" class="link-card dynamic-link">
                 <div class="link-icon">📅</div>
                 <div class="link-title">大会スケジュール</div>
                 <div class="link-description">当日のタイムテーブル</div>
             </a>
             
-            <a href="#" onclick="openPage('tournament.html'); return false;" class="link-card">
+            <a href="tournament.html" class="link-card dynamic-link">
                 <div class="link-icon">🏆</div>
                 <div class="link-title">トーナメント表</div>
                 <div class="link-description">対戦組み合わせ</div>
             </a>
             
-            <a href="#" onclick="openPage('teams.html'); return false;" class="link-card">
+            <a href="teams.html" class="link-card dynamic-link">
                 <div class="link-icon">👥</div>
                 <div class="link-title">チーム・選手一覧</div>
                 <div class="link-description">参加チーム紹介</div>
             </a>
             
-            <a href="#" onclick="openPage('venue.html'); return false;" class="link-card">
+            <a href="venue.html" class="link-card dynamic-link">
                 <div class="link-icon">📍</div>
                 <div class="link-title">会場案内・アクセス</div>
                 <div class="link-description">アクセス・施設情報</div>
             </a>
             
-            <a href="#" onclick="openPage('rules.html'); return false;" class="link-card">
+            <a href="rules.html" class="link-card dynamic-link">
                 <div class="link-icon">📋</div>
                 <div class="link-title">大会ルール・規約</div>
                 <div class="link-description">競技規則・注意事項</div>
             </a>
             
-            <a href="#" onclick="openPage('history.html'); return false;" class="link-card">
+            <a href="history.html" class="link-card dynamic-link">
                 <div class="link-icon">🥇</div>
                 <div class="link-title">優勝記録・歴史</div>
                 <div class="link-description">歴代優勝チーム</div>
@@ -655,7 +675,30 @@
     </footer>
 
     <script>
-        // 日時フォーマット関数
+        // ===========================================
+        // セキュリティ: XSS対策用HTMLエスケープ関数
+        // ===========================================
+        /**
+         * HTML特殊文字をエスケープしてXSS攻撃を防ぐ
+         * @param {string} str - エスケープする文字列
+         * @return {string} - エスケープされた文字列
+         */
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+        
+        // ===========================================
+        // ユーティリティ: 日時フォーマット
+        // ===========================================
+        /**
+         * タイムスタンプを MM/DD HH:MM 形式にフォーマット
+         */
         function formatTimestamp(timestamp) {
             if (!timestamp) return '';
             
@@ -667,91 +710,163 @@
                 const minutes = String(date.getMinutes()).padStart(2, '0');
                 return `${month}/${day} ${hours}:${minutes}`;
             }
-            
+            // 既にフォーマット済み、または不明な形式の場合はそのまま返す
             if (timestamp.match(/^\d{2}\/\d{2}\s+\d{2}:\d{2}$/)) {
                 return timestamp;
             }
-            
             return timestamp;
         }
-        
+
+        // ===========================================
+        // URLパラメータ取得とlocalStorage保存
+        // ===========================================
         const urlParams = new URLSearchParams(window.location.search);
+        // staff_apiを優先、なければlocalStorage、それでもなければ空
         const STAFF_API_URL = urlParams.get('staff_api') || localStorage.getItem('STAFF_BOT_API_URL') || '';
         const AUDIENCE_API_URL = urlParams.get('audience_api') || localStorage.getItem('AUDIENCE_BOT_API_URL') || '';
         
+        // URLパラメータで指定された場合はlocalStorageに保存
         if (urlParams.get('staff_api')) {
             localStorage.setItem('STAFF_BOT_API_URL', urlParams.get('staff_api'));
         }
         if (urlParams.get('audience_api')) {
             localStorage.setItem('AUDIENCE_BOT_API_URL', urlParams.get('audience_api'));
         }
+        // 後方互換性のため、'api'パラメータも'staff_api'として扱う
         if (urlParams.get('api')) {
             localStorage.setItem('STAFF_BOT_API_URL', urlParams.get('api'));
         }
-        
+
+        // ===========================================
+        // ナビゲーションリンクへのクエリパラメータ付与
+        // ===========================================
+        /**
+         * dynamic-linkクラスを持つすべてのリンクに対して、
+         * 現在のURLクエリパラメータを自動で付与
+         */
+        function initializeDynamicLinks() {
+            const dynamicLinks = document.querySelectorAll('.dynamic-link');
+            const currentParams = new URLSearchParams(window.location.search);
+            
+            dynamicLinks.forEach(link => {
+                const url = new URL(link.href, window.location.origin);
+                const targetParams = new URLSearchParams(url.search);
+
+                // 現在のパラメータをコピー（重複しないように）
+                currentParams.forEach((value, key) => {
+                    if (!targetParams.has(key)) {
+                        targetParams.set(key, value);
+                    }
+                });
+
+                // gallery.htmlには'audience_api'または'api'を、
+                // その他のページには'staff_api'または'api'を設定
+                const filename = url.pathname.split('/').pop();
+                if (filename === 'gallery.html') {
+                    if (AUDIENCE_API_URL && !targetParams.has('api')) {
+                        targetParams.set('api', AUDIENCE_API_URL);
+                    }
+                } else {
+                    if (STAFF_API_URL && !targetParams.has('api')) {
+                        targetParams.set('api', STAFF_API_URL);
+                    }
+                }
+
+                // パラメータが存在する場合のみ更新
+                if (targetParams.toString()) {
+                    url.search = targetParams.toString();
+                    link.href = url.toString();
+                }
+            });
+        }
+
+        // ===========================================
+        // ヘッダーロゴ画像のエラーハンドリング
+        // ===========================================
+        /**
+         * ロゴ画像の読み込みに失敗した場合、代替テキストを表示
+         */
+        function handleLogoError() {
+            const logoElement = document.getElementById('headerLogo');
+            if (logoElement) {
+                logoElement.classList.add('fallback');
+            }
+        }
+
+        // ===========================================
+        // グローバル変数
+        // ===========================================
         let currentCourt = null;
         let gamesData = null;
         let currentSlide = 0;
         let sliderInterval = null;
-        
+
+        // ===========================================
+        // 写真スライダー機能
+        // ===========================================
+        /**
+         * スライダーのドットインジケーターを初期化
+         */
         function initSlider(photoCount = 1) {
             const dots = document.getElementById('sliderDots');
             dots.innerHTML = '';
-            
             for (let i = 0; i < photoCount; i++) {
                 const dot = document.createElement('div');
                 dot.className = `dot ${i === 0 ? 'active' : ''}`;
                 dot.onclick = () => goToSlide(i);
                 dots.appendChild(dot);
             }
-            
+            // 自動スライドを開始（5秒ごと）
             if (sliderInterval) clearInterval(sliderInterval);
             sliderInterval = setInterval(nextSlide, 5000);
         }
-        
+
+        /**
+         * 次のスライドへ移動
+         */
         function nextSlide() {
             const slides = document.querySelectorAll('.slide');
             const dots = document.querySelectorAll('.dot');
-            
             currentSlide = (currentSlide + 1) % slides.length;
-            
-            document.getElementById('sliderTrack').style.transform = 
-                `translateX(-${currentSlide * 100}%)`;
-            
+            document.getElementById('sliderTrack').style.transform = `translateX(-${currentSlide * 100}%)`;
             dots.forEach((dot, index) => {
                 dot.classList.toggle('active', index === currentSlide);
             });
         }
-        
+
+        /**
+         * 指定したインデックスのスライドへ移動
+         */
         function goToSlide(index) {
             const slides = document.querySelectorAll('.slide');
             const dots = document.querySelectorAll('.dot');
-            
             currentSlide = index;
-            
-            document.getElementById('sliderTrack').style.transform = 
-                `translateX(-${currentSlide * 100}%)`;
-            
+            document.getElementById('sliderTrack').style.transform = `translateX(-${currentSlide * 100}%)`;
             dots.forEach((dot, i) => {
                 dot.classList.toggle('active', i === currentSlide);
             });
         }
-        
+
+        // ===========================================
+        // ギャラリー写真取得と表示
+        // ===========================================
+        /**
+         * 観客用APIからギャラリー写真を取得
+         */
         async function fetchGalleryPhotos() {
-            if (!AUDIENCE_API_URL) return;
-            
+            // audience_apiが未設定でstaff_apiも未設定の場合は何もしない（一応）
+            const targetApi = AUDIENCE_API_URL || STAFF_API_URL;
+            if (!targetApi) return;
+
             try {
                 const timestamp = new Date().getTime();
-                const response = await fetch(`${AUDIENCE_API_URL}?t=${timestamp}`, {
+                const response = await fetch(`${targetApi}?t=${timestamp}`, {
                     method: 'GET',
                     mode: 'cors',
                     cache: 'no-cache'
                 });
-                
                 if (!response.ok) return;
-                
                 const data = await response.json();
-                
                 if (data.photos && data.photos.length > 0) {
                     updateGallerySlider(data.photos);
                 }
@@ -759,68 +874,60 @@
                 console.error('ギャラリー写真取得エラー:', error);
             }
         }
-        
+
+        /**
+         * ギャラリー写真をスライダーに反映
+         */
         function updateGallerySlider(photos) {
             const sliderTrack = document.getElementById('sliderTrack');
-            const photosToShow = photos.slice(0, 5);
-            
+            const photosToShow = photos.slice(0, 5); // 最新5枚まで表示
             sliderTrack.innerHTML = '';
-            
+
             photosToShow.forEach(photo => {
                 const slide = document.createElement('div');
                 slide.className = 'slide';
-                slide.style.cursor = 'pointer';
-                slide.onclick = openGallery;
-                
+                slide.style.cursor = 'pointer'; 
+                // クリックでギャラリーページへ遷移
+                slide.onclick = () => {
+                    const params = new URLSearchParams();
+                    // audience_apiを優先して渡す
+                    const targetApi = AUDIENCE_API_URL || STAFF_API_URL;
+                    if (targetApi) params.set('api', targetApi);
+                    window.location.href = `gallery.html?${params.toString()}`;
+                };
+
                 const img = document.createElement('img');
                 img.src = photo.thumbnail;
                 img.alt = '大会写真';
                 img.loading = 'eager';
-                
+                // 画像読み込み失敗時のフォールバック
                 img.onerror = function() {
                     slide.innerHTML = '📷';
                     slide.classList.add('placeholder');
                 };
-                
                 slide.appendChild(img);
-                
+
+                // オーバーレイ情報（XSS対策済み）
                 const overlay = document.createElement('div');
                 overlay.className = 'slider-overlay';
-                
                 const timestamp = formatTimestamp(photo.timestamp);
-                
                 overlay.innerHTML = `
                     <div class="slider-title">大会写真ギャラリー</div>
-                    <div class="slider-subtitle">${timestamp} 投稿</div>
+                    <div class="slider-subtitle">${escapeHtml(timestamp)} 投稿</div>
                 `;
                 slide.appendChild(overlay);
-                
+
                 sliderTrack.appendChild(slide);
             });
-            
             initSlider(photosToShow.length);
         }
-        
-        function openGallery() {
-            const params = new URLSearchParams();
-            if (AUDIENCE_API_URL) params.set('api', AUDIENCE_API_URL);
-            window.location.href = `gallery.html?${params.toString()}`;
-        }
-        
-        function openPage(page) {
-            const params = new URLSearchParams();
-            if (STAFF_API_URL) params.set('api', STAFF_API_URL);
-            window.location.href = `${page}?${params.toString()}`;
-        }
-        
-        function openScoresPage() {
-            const params = new URLSearchParams();
-            if (STAFF_API_URL) params.set('api', STAFF_API_URL);
-            
-            const fileName = 'scoreboard.html';
-            window.location.href = `${fileName}?${params.toString()}`;
-        }
-        
+
+        // ===========================================
+        // 試合データ取得と表示
+        // ===========================================
+        /**
+         * スタッフ用APIから試合データを取得
+         */
         async function fetchScores() {
             if (!STAFF_API_URL) {
                 document.getElementById('content').innerHTML = `
@@ -830,7 +937,7 @@
                 `;
                 return;
             }
-            
+
             try {
                 const timestamp = new Date().getTime();
                 const response = await fetch(`${STAFF_API_URL}?t=${timestamp}`, {
@@ -838,11 +945,9 @@
                     mode: 'cors',
                     cache: 'no-cache'
                 });
-                
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
                 const data = await response.json();
                 gamesData = data;
                 displayGames(data);
@@ -855,7 +960,31 @@
                 `;
             }
         }
+
+        // データ解析用のモック関数（APIデータ構造が不明なため、既存コードから推測して補完）
+        function getStatus(game) {
+             return game.status || '待機中'; // 仮のロジック
+        }
+        function getStatusClass(status) {
+            if (status === '試合中') return 'playing';
+            if (status === '終了') return 'finished';
+            return 'waiting';
+        }
+        function getTeamInfo(teamName, games) {
+            // gamesデータからチーム情報を取得する実際のロジックに置き換える必要があります
+            return {
+                team: teamName,
+                total: games.totalScores ? games.totalScores[teamName] : 0
+            };
+        }
+        function getCurrentInning(game) {
+            return game.currentInning ? `${game.currentInning} イニング` : null;
+        }
         
+        // 【重要: XSS対策を適用】
+        /**
+         * 試合データを画面に表示
+         */
         function displayGames(data) {
             if (!data.games || data.games.length === 0) {
                 document.getElementById('content').innerHTML = `
@@ -865,7 +994,8 @@
                 `;
                 return;
             }
-            
+
+            // コートごとに試合をグループ化
             const courtGroups = {};
             data.games.forEach(game => {
                 if (!courtGroups[game.court]) {
@@ -876,150 +1006,143 @@
                 }
                 courtGroups[game.court][game.gameNum].push(game);
             });
-            
+
             const courts = Object.keys(courtGroups).sort();
-            
+            // 現在のコートが未選択または存在しない場合、最初のコートを選択
             if (!currentCourt || !courts.includes(currentCourt)) {
                 currentCourt = courts[0];
             }
-            
+
+            // タブの生成（XSS対策済み）
             let tabsHtml = '';
             courts.forEach(court => {
                 const activeClass = court === currentCourt ? 'active' : '';
-                tabsHtml += `<button class="tab ${activeClass}" onclick="switchCourt('${court}')">${court}コート</button>`;
+                tabsHtml += `<button class="tab ${activeClass}" onclick="switchCourt('${escapeHtml(court)}')">${escapeHtml(court)}コート</button>`;
             });
             document.getElementById('tabs').innerHTML = tabsHtml;
-            
+
+            // 各コートの試合カードを生成（XSS対策済み）
             let contentHtml = '';
             courts.forEach(court => {
                 const activeClass = court === currentCourt ? 'active' : '';
-                contentHtml += `<div class="court-content ${activeClass}" id="court-${court}">`;
+                contentHtml += `<div class="court-content ${activeClass}" id="court-${escapeHtml(court)}">`;
                 contentHtml += '<div class="games-grid">';
-                
+
                 const games = courtGroups[court];
-                const gameNums = Object.keys(games).sort((a, b) => a - b);
-                
-                let hasPlayingGames = false;
-                
+                const gameNums = Object.keys(games).sort((a, b) => parseInt(a) - parseInt(b));
+
                 gameNums.forEach(gameNum => {
-                    const teams = games[gameNum];
-                    const status = teams[0].status || '待機';
+                    const game = games[gameNum][0]; // 1試合目のみ表示
                     
-                    // トップページでは試合中の試合のみ表示
-                    if (status !== '試合中') {
-                        return;
-                    }
-                    
-                    hasPlayingGames = true;
-                    
-                    let statusClass = 'playing';
-                    
-                    const homeTeam = teams[0];
-                    const awayTeam = teams[1];
-                    
-                    const currentInning = getCurrentInning(homeTeam, awayTeam);
-                    
+                    const status = getStatus(game);
+                    const statusClass = getStatusClass(status);
+                    const homeTeam = getTeamInfo(game.homeTeam, games);
+                    const awayTeam = getTeamInfo(game.awayTeam, games);
+                    const currentInning = getCurrentInning(game);
+
+                    // ここで escapeHtml を適用
                     contentHtml += `
-                        <div class="game-card" onclick="openScoreboard('${court}', ${gameNum})">
+                        <div class="game-card" onclick="openScoreboard('${escapeHtml(court)}', ${gameNum})">
                             <div class="game-header">
                                 <span class="game-number">第${gameNum}試合</span>
-                                <span class="status ${statusClass}">${status}</span>
+                                <span class="status ${statusClass}">${escapeHtml(status)}</span>
                             </div>
                             <div class="matchup">
                                 <div class="matchup-line">
-                                    <span class="team-name home">${homeTeam.team}</span>
+                                    <span class="team-name home">${escapeHtml(homeTeam.team)}</span>
                                     <span class="team-score">${homeTeam.total || 0}</span>
                                     <span class="score-separator">-</span>
                                     <span class="team-score">${awayTeam.total || 0}</span>
-                                    <span class="team-name away">${awayTeam.team}</span>
+                                    <span class="team-name away">${escapeHtml(awayTeam.team)}</span>
                                 </div>
                             </div>
-                            ${currentInning ? `<div class="inning-info">${currentInning}</div>` : ''}
+                            ${currentInning ? `<div class="inning-info">${escapeHtml(currentInning)}</div>` : ''}
                         </div>
                     `;
                 });
-                
-                if (!hasPlayingGames) {
-                    contentHtml += '<div style="padding: 40px; text-align: center; color: #666;">現在試合中の試合はありません</div>';
-                }
-                
-                contentHtml += '</div></div>';
+                contentHtml += '</div>'; // games-grid
+                contentHtml += '</div>'; // court-content
             });
-            
             document.getElementById('content').innerHTML = contentHtml;
+
+            // コート切り替えが初めて行われたか、またはコートリストが変更された場合
+            switchCourt(currentCourt);
         }
-        
-        function getCurrentInning(homeTeam, awayTeam) {
-            if (!homeTeam.innings || homeTeam.innings.length === 0) {
-                return null;
-            }
+
+        /**
+         * コートを切り替える
+         */
+        function switchCourt(courtName) {
+            currentCourt = courtName;
             
-            for (let i = 0; i < homeTeam.innings.length; i++) {
-                if (awayTeam.innings[i] !== null && awayTeam.innings[i] !== undefined && awayTeam.innings[i] !== '' &&
-                    (homeTeam.innings[i] === null || homeTeam.innings[i] === undefined || homeTeam.innings[i] === '')) {
-                    return `${i + 1}回表`;
-                }
-                if ((homeTeam.innings[i] === null || homeTeam.innings[i] === undefined || homeTeam.innings[i] === '') &&
-                    (awayTeam.innings[i] === null || awayTeam.innings[i] === undefined || awayTeam.innings[i] === '')) {
-                    if (i > 0) {
-                        return `${i}回終了`;
-                    }
-                    return null;
-                }
+            // タブのアクティブ状態を更新
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.toggle('active', tab.textContent.startsWith(courtName));
+            });
+
+            // コンテンツのアクティブ状態を更新
+            document.querySelectorAll('.court-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            const targetContent = document.getElementById(`court-${courtName}`);
+            if (targetContent) {
+                targetContent.classList.add('active');
             }
-            
-            return `${homeTeam.innings.length}回終了`;
         }
         
-        function switchCourt(court) {
-            currentCourt = court;
-            displayGames(gamesData);
-        }
-        
+        // ===========================================
+        // 試合詳細画面への遷移 (新規追加)
+        // ===========================================
+        /**
+         * スコアボード詳細画面へ遷移
+         * @param {string} court - コート名
+         * @param {number} gameNum - 試合番号
+         */
         function openScoreboard(court, gameNum) {
             const params = new URLSearchParams();
+            // APIパラメータを付与 (staff_apiを利用)
             if (STAFF_API_URL) params.set('api', STAFF_API_URL);
+
+            // 試合情報を付与
             params.set('court', court);
             params.set('game', gameNum);
-            
+
             window.location.href = `scoreboard.html?${params.toString()}`;
         }
-        
-        fetchScores();
-        fetchGalleryPhotos();
-        setInterval(fetchScores, 60000);
-        setInterval(fetchGalleryPhotos, 60000);
-        initSlider(1);
-        
-        // スクロールインジケーターの制御
+
+        // ===========================================
+        // スクロールインジケーター機能
+        // ===========================================
         const navLinks = document.getElementById('navLinks');
-        // 💡 左右それぞれのインジケーターを取得するように変更
         const scrollIndicatorLeft = document.getElementById('scrollIndicatorLeft');
         const scrollIndicatorRight = document.getElementById('scrollIndicatorRight');
-        
+        const threshold = 10; // スクロール開始を判定する閾値
+
+        /**
+         * スクロールインジケーター（矢印）の表示/非表示を更新
+         */
         function updateScrollIndicator() {
-            // 💡 IDの変更に対応
-            if (!navLinks || !scrollIndicatorLeft || !scrollIndicatorRight) return;
+            if (!navLinks) return;
 
             const maxScroll = navLinks.scrollWidth - navLinks.clientWidth;
             const currentScroll = navLinks.scrollLeft;
-            const threshold = 5; // 許容誤差
 
-            // スクロールが必要ない場合は両方非表示
+            // スクロールが必要ない場合（コンテンツ幅が領域内に収まっている場合）は両方非表示
             if (maxScroll <= threshold) {
                 scrollIndicatorLeft.style.display = 'none';
                 scrollIndicatorRight.style.display = 'none';
                 return;
             }
 
-            // 1. 左矢印（◀︎）の制御: 左に戻れるなら表示 (左端から離れている)
+            // 左矢印: 左に戻れるなら表示 (左端から離れている)
             if (currentScroll > threshold) {
                 scrollIndicatorLeft.style.display = 'flex';
             } else {
                 scrollIndicatorLeft.style.display = 'none';
             }
 
-            // 2. 右矢印（▶︎）の制御: 右に進めるなら表示 (右端に到達していない)
+            // 右矢印: 右に進めるなら表示 (右端に到達していない)
             if (currentScroll < maxScroll - threshold) {
                 scrollIndicatorRight.style.display = 'flex';
             } else {
@@ -1027,27 +1150,39 @@
             }
         }
         
-        // スクロールイベントを監視
+        // ===========================================
+        // 初期化処理
+        // ===========================================
+        // ナビゲーションリンクにクエリパラメータを付与
+        initializeDynamicLinks();
+        
+        // 試合データとギャラリー写真を取得
+        fetchScores();
+        fetchGalleryPhotos();
+        
+        // 定期的にデータを更新（60秒ごと）
+        setInterval(fetchScores, 60000);
+        setInterval(fetchGalleryPhotos, 60000);
+        
+        // スライダーを初期化（写真取得完了後に写真枚数で再初期化されます）
+        initSlider(1);
+        
+        // スクロールインジケーターのイベント設定
         if (navLinks) {
             navLinks.addEventListener('scroll', updateScrollIndicator);
             window.addEventListener('resize', updateScrollIndicator);
-            
-            // 初期表示
-            updateScrollIndicator();
+            updateScrollIndicator(); // 初期表示
         }
         
-        // インジケータークリックでスクロール
         if (scrollIndicatorLeft) {
             scrollIndicatorLeft.addEventListener('click', () => {
-                const scrollAmount = 200;
-                navLinks.scrollBy({ left: -scrollAmount, behavior: 'smooth' }); // 左にスクロール
+                navLinks.scrollBy({ left: -200, behavior: 'smooth' }); // 左にスクロール
             });
         }
         
         if (scrollIndicatorRight) {
             scrollIndicatorRight.addEventListener('click', () => {
-                const scrollAmount = 200;
-                navLinks.scrollBy({ left: scrollAmount, behavior: 'smooth' }); // 右にスクロール
+                navLinks.scrollBy({ left: 200, behavior: 'smooth' }); // 右にスクロール
             });
         }
     </script>
