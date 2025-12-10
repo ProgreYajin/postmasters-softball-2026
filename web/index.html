@@ -737,6 +737,13 @@
             localStorage.setItem('STAFF_BOT_API_URL', urlParams.get('api'));
         }
 
+        // ログ出力（デバッグ用）
+        console.log("--- API URL Status ---");
+        console.log("STAFF_API_URL:", STAFF_API_URL || "(未設定)");
+        console.log("AUDIENCE_API_URL:", AUDIENCE_API_URL || "(未設定)");
+        console.log("----------------------");
+
+
         // ===========================================
         // ナビゲーションリンクへのクエリパラメータ付与
         // ===========================================
@@ -763,10 +770,13 @@
                 // その他のページには'staff_api'または'api'を設定
                 const filename = url.pathname.split('/').pop();
                 if (filename === 'gallery.html') {
-                    if (AUDIENCE_API_URL && !targetParams.has('api')) {
-                        targetParams.set('api', AUDIENCE_API_URL);
+                    // AUDIENCE_API_URLが有効なら優先してセット
+                    const apiToUse = AUDIENCE_API_URL || STAFF_API_URL;
+                    if (apiToUse && !targetParams.has('api')) {
+                        targetParams.set('api', apiToUse);
                     }
                 } else {
+                    // その他のページはSTAFF_API_URLを優先してセット
                     if (STAFF_API_URL && !targetParams.has('api')) {
                         targetParams.set('api', STAFF_API_URL);
                     }
@@ -826,6 +836,8 @@
          */
         function nextSlide() {
             const slides = document.querySelectorAll('.slide');
+            if (slides.length === 0) return;
+            
             const dots = document.querySelectorAll('.dot');
             currentSlide = (currentSlide + 1) % slides.length;
             document.getElementById('sliderTrack').style.transform = `translateX(-${currentSlide * 100}%)`;
@@ -839,6 +851,8 @@
          */
         function goToSlide(index) {
             const slides = document.querySelectorAll('.slide');
+            if (slides.length === 0) return;
+
             const dots = document.querySelectorAll('.dot');
             currentSlide = index;
             document.getElementById('sliderTrack').style.transform = `translateX(-${currentSlide * 100}%)`;
@@ -854,7 +868,7 @@
          * 観客用APIからギャラリー写真を取得
          */
         async function fetchGalleryPhotos() {
-            // audience_apiが未設定でstaff_apiも未設定の場合は何もしない（一応）
+            // audience_apiが未設定でもstaff_apiが設定されていれば使用を試みる
             const targetApi = AUDIENCE_API_URL || STAFF_API_URL;
             if (!targetApi) return;
 
@@ -866,7 +880,13 @@
                     cache: 'no-cache'
                 });
                 if (!response.ok) return;
-                const data = await response.json();
+                
+                // レスポンスボディが空でないか確認
+                const text = await response.text();
+                if (!text) return;
+                
+                const data = JSON.parse(text);
+
                 if (data.photos && data.photos.length > 0) {
                     updateGallerySlider(data.photos);
                 }
@@ -883,6 +903,21 @@
             const photosToShow = photos.slice(0, 5); // 最新5枚まで表示
             sliderTrack.innerHTML = '';
 
+            if (photosToShow.length === 0) {
+                // 写真がない場合はプレースホルダーを残す
+                sliderTrack.innerHTML = `
+                    <div class="slide placeholder">
+                        📷
+                        <div class="slider-overlay">
+                            <div class="slider-title">フォトギャラリー</div>
+                            <div class="slider-subtitle">まだ写真が投稿されていません</div>
+                        </div>
+                    </div>
+                `;
+                initSlider(1); // プレースホルダーとして1枚として扱う
+                return;
+            }
+
             photosToShow.forEach(photo => {
                 const slide = document.createElement('div');
                 slide.className = 'slide';
@@ -890,7 +925,6 @@
                 // クリックでギャラリーページへ遷移
                 slide.onclick = () => {
                     const params = new URLSearchParams();
-                    // audience_apiを優先して渡す
                     const targetApi = AUDIENCE_API_URL || STAFF_API_URL;
                     if (targetApi) params.set('api', targetApi);
                     window.location.href = `gallery.html?${params.toString()}`;
@@ -902,8 +936,7 @@
                 img.loading = 'eager';
                 // 画像読み込み失敗時のフォールバック
                 img.onerror = function() {
-                    slide.innerHTML = '📷';
-                    slide.classList.add('placeholder');
+                    slide.innerHTML = '<div class="slide placeholder">📷</div>'; // プレースホルダーHTMLで置き換え
                 };
                 slide.appendChild(img);
 
@@ -929,10 +962,12 @@
          * スタッフ用APIから試合データを取得
          */
         async function fetchScores() {
+            const contentElement = document.getElementById('content');
+
             if (!STAFF_API_URL) {
-                document.getElementById('content').innerHTML = `
+                contentElement.innerHTML = `
                     <div class="loading">
-                        <div>⚠️ API URLが設定されていません</div>
+                        <div>❌ API URLが設定されていません。URLに ?staff_api=... または ?api=... を含めてアクセスしてください。</div>
                     </div>
                 `;
                 return;
@@ -945,17 +980,24 @@
                     mode: 'cors',
                     cache: 'no-cache'
                 });
+
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`ネットワークエラー: HTTP Status ${response.status}`);
                 }
+                
+                // レスポンスがJSONであることを確認し、解析
                 const data = await response.json();
+                
                 gamesData = data;
                 displayGames(data);
+
             } catch (error) {
                 console.error('データ取得エラー:', error);
-                document.getElementById('content').innerHTML = `
+                // エラー内容をユーザーに分かりやすく表示
+                contentElement.innerHTML = `
                     <div class="loading">
-                        <div>データの読み込みに失敗しました</div>
+                        <div>🔴 データ取得に失敗しました: ${error.message || '通信エラーまたはAPIの応答が不正です'}</div>
+                        <div>ネットワークタブで詳細を確認してください (CORSエラーの可能性あり)。</div>
                     </div>
                 `;
             }
@@ -970,26 +1012,37 @@
             if (status === '終了') return 'finished';
             return 'waiting';
         }
-        function getTeamInfo(teamName, games) {
-            // gamesデータからチーム情報を取得する実際のロジックに置き換える必要があります
+        
+        // 【修正点】 totalScores オブジェクトから得点を正しく取得
+        function getTeamInfo(teamName, data) {
+            // data (API応答全体) の totalScores から得点を取得。キーが teamName と一致する必要がある。
+            const totalScore = (data && data.totalScores) ? (data.totalScores[teamName] || 0) : 0;
+            
+            // チーム名がnullやundefinedの場合は、APIの応答が不正なので、とりあえず「不明」とする
+            const teamDisplayName = teamName || '不明なチーム'; 
+            
             return {
-                team: teamName,
-                total: games.totalScores ? games.totalScores[teamName] : 0
+                team: teamDisplayName,
+                total: totalScore
             };
         }
+        
         function getCurrentInning(game) {
             return game.currentInning ? `${game.currentInning} イニング` : null;
         }
         
-        // 【重要: XSS対策を適用】
         /**
          * 試合データを画面に表示
          */
         function displayGames(data) {
-            if (!data.games || data.games.length === 0) {
-                document.getElementById('content').innerHTML = `
+            const contentElement = document.getElementById('content');
+
+            // データ構造のチェックを強化
+            if (!data || typeof data !== 'object' || !Array.isArray(data.games) || data.games.length === 0) {
+                contentElement.innerHTML = `
                     <div class="loading">
-                        <div>まだ試合データがありません</div>
+                        <div>⚠️ APIから有効な試合データ (games配列) が取得できませんでした。</div>
+                        <div>Googleスプレッドシートのデータ形式を確認してください。</div>
                     </div>
                 `;
                 return;
@@ -998,16 +1051,29 @@
             // コートごとに試合をグループ化
             const courtGroups = {};
             data.games.forEach(game => {
+                if (!game.court || !game.gameNum) return; // courtまたはgameNumがないデータはスキップ
+
                 if (!courtGroups[game.court]) {
                     courtGroups[game.court] = {};
                 }
-                if (!courtGroups[game.court][game.gameNum]) {
-                    courtGroups[game.court][game.gameNum] = [];
+                // game.gameNum が数値または数値文字列であることを前提
+                const gameNum = String(game.gameNum); 
+                if (!courtGroups[game.court][gameNum]) {
+                    courtGroups[game.court][gameNum] = [];
                 }
-                courtGroups[game.court][game.gameNum].push(game);
+                courtGroups[game.court][gameNum].push(game);
             });
 
             const courts = Object.keys(courtGroups).sort();
+            if (courts.length === 0) {
+                contentElement.innerHTML = `
+                    <div class="loading">
+                        <div>⚠️ 取得したデータ内に、有効なコート名・試合番号を持つ試合がありませんでした。</div>
+                    </div>
+                `;
+                return;
+            }
+
             // 現在のコートが未選択または存在しない場合、最初のコートを選択
             if (!currentCourt || !courts.includes(currentCourt)) {
                 currentCourt = courts[0];
@@ -1034,10 +1100,19 @@
                 gameNums.forEach(gameNum => {
                     const game = games[gameNum][0]; // 1試合目のみ表示
                     
+                    // homeTeamとawayTeamが文字列であることを確認（API応答依存）
+                    if (typeof game.homeTeam !== 'string' || typeof game.awayTeam !== 'string') {
+                         console.warn(`ゲーム${gameNum} (${court}コート) のチーム名が不正です。`, game);
+                         return; 
+                    }
+
                     const status = getStatus(game);
                     const statusClass = getStatusClass(status);
-                    const homeTeam = getTeamInfo(game.homeTeam, games);
-                    const awayTeam = getTeamInfo(game.awayTeam, games);
+                    
+                    // 【修正点】得点取得のために、API応答全体(data)を渡す
+                    const homeTeam = getTeamInfo(game.homeTeam, data); 
+                    const awayTeam = getTeamInfo(game.awayTeam, data);
+                    
                     const currentInning = getCurrentInning(game);
 
                     // ここで escapeHtml を適用
@@ -1063,7 +1138,7 @@
                 contentHtml += '</div>'; // games-grid
                 contentHtml += '</div>'; // court-content
             });
-            document.getElementById('content').innerHTML = contentHtml;
+            contentElement.innerHTML = contentHtml;
 
             // コート切り替えが初めて行われたか、またはコートリストが変更された場合
             switchCourt(currentCourt);
@@ -1092,7 +1167,7 @@
         }
         
         // ===========================================
-        // 試合詳細画面への遷移 (新規追加)
+        // 試合詳細画面への遷移
         // ===========================================
         /**
          * スコアボード詳細画面へ遷移
@@ -1123,7 +1198,7 @@
          * スクロールインジケーター（矢印）の表示/非表示を更新
          */
         function updateScrollIndicator() {
-            if (!navLinks) return;
+            if (!navLinks || !scrollIndicatorLeft || !scrollIndicatorRight) return;
 
             const maxScroll = navLinks.scrollWidth - navLinks.clientWidth;
             const currentScroll = navLinks.scrollLeft;
