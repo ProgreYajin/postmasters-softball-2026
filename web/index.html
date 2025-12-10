@@ -541,8 +541,9 @@
             </div>
         </div>
         <div class="header-main">
-            <nav class="nav-links" id="navLinks">
+           <nav class="nav-links" id="navLinks">
                 <a href="#" onclick="openPage('scoreboard.html'); return false;">試合速報 / 試合結果</a>
+                <a href="#" onclick="openGallery(); return false;">写真ギャラリー</a>  <!-- ★追加 -->
                 <a href="#" onclick="openPage('schedule.html'); return false;">大会スケジュール</a>
                 <a href="#" onclick="openPage('tournament.html'); return false;">トーナメント表</a>
                 <a href="#" onclick="openPage('teams.html'); return false;">チーム・選手一覧</a>
@@ -600,7 +601,13 @@
                 <div class="link-title">試合速報 / 試合結果</div>
                 <div class="link-description">リアルタイムスコア</div>
             </a>
-            
+
+            <a href="#" onclick="openGallery(); return false;" class="link-card">
+                <div class="link-icon">📸</div>
+                <div class="link-title">写真ギャラリー</div>
+                <div class="link-description">大会の様子を写真で</div>
+            </a>
+                    
             <a href="#" onclick="openPage('schedule.html'); return false;" class="link-card">
                 <div class="link-icon">📅</div>
                 <div class="link-title">大会スケジュール</div>
