@@ -1026,13 +1026,27 @@
             return 'waiting';
         }
         
-       function getTeamInfo(teamName, data) {
-            const totalScore = (data && data.totalScores) ? (data.totalScores[teamName] || 0) : 0;
-            const teamDisplayName = teamName || '未定'; 
+       // 【修正】試合ごとの得点を取得
+        function getTeamInfo(teamName, game) {
+            // game.homeTeam と teamName が一致するか確認
+            if (teamName === game.homeTeam) {
+                return {
+                    team: teamName || '未定',
+                    total: game.homeTotal || 0
+                };
+            }
+            // game.awayTeam と teamName が一致するか確認
+            if (teamName === game.awayTeam) {
+                return {
+                    team: teamName || '未定',
+                    total: game.awayTotal || 0
+                };
+            }
             
+            // どちらでもない場合（エラー防止）
             return {
-                team: teamDisplayName,
-                total: totalScore
+                team: teamName || '未定',
+                total: 0
             };
         }
         
@@ -1112,9 +1126,9 @@
                     const status = getStatus(game);
                     const statusClass = getStatusClass(status);
                     
-                    // homeTeamとawayTeamを直接使用
-                    const homeTeam = getTeamInfo(game.homeTeam, data); 
-                    const awayTeam = getTeamInfo(game.awayTeam, data);
+                    // 【修正】gameオブジェクトを渡す
+                    const homeTeam = getTeamInfo(game.homeTeam, game); 
+                    const awayTeam = getTeamInfo(game.awayTeam, game);
                     
                     const currentInning = getCurrentInning(game);
                 
