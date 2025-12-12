@@ -1015,20 +1015,21 @@
             }
         }
 
-        // データ解析用のモック関数（APIデータ構造が不明なため、既存コードから推測して補完）
+        // データ解析用の関数を修正
         function getStatus(game) {
-             return game.status || '待機中'; // 仮のロジック
+            return game.status || '待機中';
         }
+        
         function getStatusClass(status) {
             if (status === '試合中') return 'playing';
             if (status === '終了') return 'finished';
             return 'waiting';
         }
         
-        // 【修正後】 - 試合オブジェクトから直接得点を取得
-        function getTeamInfo(teamName, score) {
-            const teamDisplayName = teamName || '不明なチーム'; 
-            const totalScore = (score !== undefined && score !== null) ? score : 0;
+       function getTeamInfo(teamName, data) {
+            const totalScore = (data && data.totalScores) ? (data.totalScores[teamName] || 0) : 0;
+            const teamDisplayName = teamName || '未定'; 
+            
             return {
                 team: teamDisplayName,
                 total: totalScore
@@ -1036,7 +1037,7 @@
         }
         
         function getCurrentInning(game) {
-            return game.currentInning ? `${game.currentInning} イニング` : null;
+            return game.currentInning || null;
         }
         
         /**
@@ -1106,24 +1107,17 @@
                 const gameNums = Object.keys(games).sort((a, b) => parseInt(a) - parseInt(b));
 
                 gameNums.forEach(gameNum => {
-                    const game = games[gameNum][0]; // 1試合目のみ表示
+                    const game = games[gameNum][0];
                     
-                    // homeTeamとawayTeamが文字列であることを確認（API応答依存）
-                    if (typeof game.homeTeam !== 'string' || typeof game.awayTeam !== 'string') {
-                         console.warn(`ゲーム${gameNum} (${court}コート) のチーム名が不正です。`, game);
-                         return; 
-                    }
-
                     const status = getStatus(game);
                     const statusClass = getStatusClass(status);
                     
-                    // 【修正点】得点取得のために、API応答全体(data)を渡す
-                    const homeTeam = getTeamInfo(game.homeTeam, game.homeScore); 
-                    const awayTeam = getTeamInfo(game.awayTeam, game.awayScore);
+                    // homeTeamとawayTeamを直接使用
+                    const homeTeam = getTeamInfo(game.homeTeam, data); 
+                    const awayTeam = getTeamInfo(game.awayTeam, data);
                     
                     const currentInning = getCurrentInning(game);
-
-                    // ここで escapeHtml を適用
+                
                     contentHtml += `
                         <div class="game-card" onclick="openScoreboard('${escapeHtml(court)}', ${gameNum})">
                             <div class="game-header">
