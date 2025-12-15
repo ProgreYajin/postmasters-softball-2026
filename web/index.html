@@ -556,7 +556,7 @@
                     <span class="header-logo-text">🏣 全国郵便局長会</span>
                 </a>
                 <div class="header-info">
-                    2026年郵便局長ソフトボール大会 | 2026.6.6
+                    2026年千葉県郵便局長ソフトボール大会 | 2026.6.6
                 </div>
             </div>
         </div>
@@ -717,15 +717,11 @@
             return timestamp;
         }
 
-        // ===========================================
         // URLパラメータ取得とlocalStorage保存
         // ===========================================
         const urlParams = new URLSearchParams(window.location.search);
-        // staff_apiを優先、なければlocalStorage、それでもなければ空
-        const STAFF_API_URL = urlParams.get('staff_api') || localStorage.getItem('STAFF_BOT_API_URL') || '';
-        const AUDIENCE_API_URL = urlParams.get('audience_api') || localStorage.getItem('AUDIENCE_BOT_API_URL') || '';
         
-        // URLパラメータで指定された場合はlocalStorageに保存
+        // URLパラメータで指定された場合はlocalStorageに保存（優先）
         if (urlParams.get('staff_api')) {
             localStorage.setItem('STAFF_BOT_API_URL', urlParams.get('staff_api'));
         }
@@ -736,11 +732,19 @@
         if (urlParams.get('api')) {
             localStorage.setItem('STAFF_BOT_API_URL', urlParams.get('api'));
         }
+        
+        // localStorageから取得（URLパラメータで更新済み）
+        const STAFF_API_URL = localStorage.getItem('STAFF_BOT_API_URL') || '';
+        const AUDIENCE_API_URL = localStorage.getItem('AUDIENCE_BOT_API_URL') || '';
 
         // ログ出力（デバッグ用）
         console.log("--- API URL Status ---");
-        console.log("STAFF_API_URL:", STAFF_API_URL || "(未設定)");
-        console.log("AUDIENCE_API_URL:", AUDIENCE_API_URL || "(未設定)");
+        console.log("URL Params - staff_api:", urlParams.get('staff_api') || "(なし)");
+        console.log("URL Params - audience_api:", urlParams.get('audience_api') || "(なし)");
+        console.log("localStorage - STAFF_BOT_API_URL:", localStorage.getItem('STAFF_BOT_API_URL') || "(なし)");
+        console.log("localStorage - AUDIENCE_BOT_API_URL:", localStorage.getItem('AUDIENCE_BOT_API_URL') || "(なし)");
+        console.log("使用する STAFF_API_URL:", STAFF_API_URL || "(未設定)");
+        console.log("使用する AUDIENCE_API_URL:", AUDIENCE_API_URL || "(未設定)");
         console.log("----------------------");
 
 
