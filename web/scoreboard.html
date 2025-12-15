@@ -181,26 +181,18 @@
             50% { opacity: 0.7; }
         }
         
-        /* ========================================
-           スコアボード修正箇所
-           ========================================
-        */
-
-        /* 1. 外枠のWrapperを作成し、ここにpaddingを設定 */
+        /* スコアボード */
         .scoreboard-wrapper {
             padding: 20px;
-            overflow: hidden; /* コンテナ外への影響を防ぐ */
+            overflow: hidden;
         }
 
-        /* 2. scrollable要素からはpaddingを削除 */
         .scoreboard {
             overflow-x: auto;
             padding: 0;
             position: relative;
             width: 100%;
         }
-        
-        /* 赤いマスク(.scoreboard::before)は削除済み */
         
         table {
             width: 100%;
@@ -213,11 +205,11 @@
             padding: 12px 8px;
             text-align: center;
             border: 1px solid #ddd;
-            border-left: none; /* 基本的に左ボーダーなし */
+            border-left: none;
         }
         
         th:first-child, td:first-child {
-            border-left: 1px solid #ddd; /* 左端のみボーダーあり */
+            border-left: 1px solid #ddd;
         }
         
         th {
@@ -233,9 +225,6 @@
             font-size: 1.1em;
         }
         
-        /* 3. 固定列のスタイル修正
-           z-indexを適切に設定し、背景色を明示して裏写りを防ぐ
-        */
         .team-name {
             text-align: left;
             font-weight: bold;
@@ -243,33 +232,21 @@
             width: 120px;
             min-width: 120px;
             padding: 12px 15px;
-            
-            /* Sticky設定 */
             position: sticky;
             left: 0;
-            z-index: 10; /* 通常セルより上 */
-            
-            /* 背景色を明示（裏のデータが透けないように） */
+            z-index: 10;
             background-color: white !important;
-            
-            /* 右側のボーダーをここで確保 */
             border-right: 2px solid #ddd !important;
         }
         
-        /* 固定列ヘッダー */
         th.team-header {
             position: sticky;
             left: 0;
-            z-index: 11; /* team-nameよりさらに上（ヘッダーかつ固定） */
-            
-            /* ヘッダー色を明示 */
+            z-index: 11;
             background-color: #f8f8f8 !important;
-            
             border-right: 2px solid #ddd !important;
         }
         
-        /* ::before ハックは全て削除済み */
-
         .score-zero {
             color: #999;
         }
@@ -290,7 +267,7 @@
             color: #856404;
         }
         
-        /* 待機中・試合中メッセージ */
+        /* メッセージ・ローディング */
         .status-message {
             padding: 60px 20px;
             text-align: center;
@@ -312,7 +289,6 @@
             color: #999;
         }
         
-        /* ローディング */
         .loading {
             text-align: center;
             padding: 60px 20px;
@@ -434,7 +410,7 @@
             
             .team-name {
                 min-width: 80px;
-                width: 80px; /* SPでも固定幅を指定 */
+                width: 80px;
                 font-size: 0.9em;
             }
             
@@ -499,23 +475,48 @@
     </footer>
 
     <script>
+        // ===========================================
+        // URLパラメータ取得とlocalStorage保存
+        // ===========================================
         const urlParams = new URLSearchParams(window.location.search);
-        const API_URL = urlParams.get('api') || '';
-        
+
+        // URLパラメータで指定された場合はlocalStorageに保存（優先）
+        if (urlParams.get('staff_api')) {
+            localStorage.setItem('STAFF_BOT_API_URL', urlParams.get('staff_api'));
+        }
+        if (urlParams.get('audience_api')) {
+            localStorage.setItem('AUDIENCE_BOT_API_URL', urlParams.get('audience_api'));
+        }
+        // 後方互換性のため、'api'パラメータも'staff_api'として扱う
+        if (urlParams.get('api')) {
+            localStorage.setItem('STAFF_BOT_API_URL', urlParams.get('api'));
+        }
+
+        // localStorageから取得（URLパラメータで更新済み）
+        const STAFF_API_URL = localStorage.getItem('STAFF_BOT_API_URL') || '';
+        const API_URL = STAFF_API_URL;
+
+        // ログ出力（デバッグ用）
+        console.log("--- API URL Status (Scoreboard) ---");
+        console.log("URL Params - api:", urlParams.get('api') || "(なし)");
+        console.log("localStorage - STAFF_BOT_API_URL:", localStorage.getItem('STAFF_BOT_API_URL') || "(なし)");
+        console.log("使用する API_URL:", API_URL || "(未設定)");
+        console.log("-----------------------------------");
+
         let isRefreshing = false;
         let scheduleData = {};
-        
+
         // 時刻フォーマット関数
         function formatTime(timeValue) {
             if (!timeValue) return '';
-            
+
             if (typeof timeValue === 'number') {
                 const totalMinutes = Math.round(timeValue * 24 * 60);
                 const hours = Math.floor(totalMinutes / 60);
                 const minutes = totalMinutes % 60;
                 return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
             }
-            
+
             if (typeof timeValue === 'string') {
                 if (timeValue.includes('T')) {
                     try {
@@ -536,11 +537,17 @@
                 
                 return timeValue;
             }
-            
+
             return '';
         }
-        
+
+        // データ取得関数
         async function fetchScores() {
+            if (!API_URL) {
+                document.getElementById('content').innerHTML = `<div class="loading"> ❌ API URLが設定されていません。<br> トップページから再度アクセスするか、URLに ?api=... を含めてください。 </div>`;
+                return;
+            }
+
             try {
                 const timestamp = new Date().getTime();
                 const response = await fetch(`${API_URL}?t=${timestamp}`, {
@@ -580,25 +587,42 @@
             } catch (error) {
                 console.error('データ取得エラー:', error);
                 document.getElementById('content').innerHTML = 
-                    `<div class="loading">データの読み込みに失敗しました</div>`;
+                    `<div class="loading">
+                        データの読み込みに失敗しました<br>
+                        エラー: ${error.message}<br>
+                        <small>ブラウザのコンソールで詳細を確認してください</small>
+                    </div>`;
             }
         }
-        
+
         async function manualRefresh() {
             if (isRefreshing) return;
-            
+
             isRefreshing = true;
             const btn = document.getElementById('refreshBtn');
             btn.disabled = true;
-            
+
             await fetchScores();
-            
+
             setTimeout(() => {
                 isRefreshing = false;
                 btn.disabled = false;
             }, 2000);
         }
+
+        function goBack() {
+            const params = new URLSearchParams();
+            if (API_URL) params.set('api', API_URL);
+            window.location.href = `index.html?${params.toString()}`;
+        }
+
+        function openPage(page) {
+            const params = new URLSearchParams();
+            if (API_URL) params.set('api', API_URL);
+            window.location.href = `${page}?${params.toString()}`;
+        }
         
+        // 既存の表示ロジック（そのまま維持）
         function displayAllGames(data) {
             if (!data.games || data.games.length === 0) {
                 document.getElementById('content').innerHTML = 
@@ -659,9 +683,6 @@
                     const team2 = gameData.teams[1];
                     const inningsCount = team1.innings ? team1.innings.length : 0;
                     
-                    /* HTML修正箇所:
-                       .scoreboardの外側を.scoreboard-wrapperで囲む構造に変更
-                    */
                     html += `
                         <div class="scoreboard-wrapper">
                             <div class="scoreboard">
@@ -705,7 +726,6 @@
                                 </table>
                             </div>
                         </div>`;
-                    /* 修正箇所終了 */
                     
                     if (gameData.status === '試合中') {
                         html += `
@@ -722,16 +742,7 @@
             document.getElementById('content').innerHTML = html;
         }
         
-        function goBack() {
-            window.location.href = 'index.html';
-        }
-        
-        function openPage(page) {
-            const params = new URLSearchParams();
-            if (STAFF_API_URL) params.set('api', STAFF_API_URL);
-            window.location.href = `${page}?${params.toString()}`;
-        }
-        
+        // 初期化とイベントリスナー設定
         fetchScores();
         setInterval(fetchScores, 60000);
         
