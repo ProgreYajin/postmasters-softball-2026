@@ -1063,7 +1063,7 @@
          */
         function displayGames(data) {
             const contentElement = document.getElementById('content');
-
+        
             // データ構造のチェックを強化
             if (!data || typeof data !== 'object' || !Array.isArray(data.games) || data.games.length === 0) {
                 contentElement.innerHTML = `
@@ -1074,23 +1074,22 @@
                 `;
                 return;
             }
-
+        
             // コートごとに試合をグループ化
             const courtGroups = {};
             data.games.forEach(game => {
-                if (!game.court || !game.gameNum) return; // courtまたはgameNumがないデータはスキップ
-
+                if (!game.court || !game.gameNum) return;
+        
                 if (!courtGroups[game.court]) {
                     courtGroups[game.court] = {};
                 }
-                // game.gameNum が数値または数値文字列であることを前提
                 const gameNum = String(game.gameNum); 
                 if (!courtGroups[game.court][gameNum]) {
                     courtGroups[game.court][gameNum] = [];
                 }
                 courtGroups[game.court][gameNum].push(game);
             });
-
+        
             const courts = Object.keys(courtGroups).sort();
             if (courts.length === 0) {
                 contentElement.innerHTML = `
@@ -1100,41 +1099,43 @@
                 `;
                 return;
             }
-
-            // 現在のコートが未選択または存在しない場合、最初のコートを選択
+        
             if (!currentCourt || !courts.includes(currentCourt)) {
                 currentCourt = courts[0];
             }
-
-            // タブの生成（XSS対策済み）
+        
+            // タブの生成
             let tabsHtml = '';
             courts.forEach(court => {
                 const activeClass = court === currentCourt ? 'active' : '';
                 tabsHtml += `<button class="tab ${activeClass}" onclick="switchCourt('${escapeHtml(court)}')">${escapeHtml(court)}コート</button>`;
             });
             document.getElementById('tabs').innerHTML = tabsHtml;
-
-            // 各コートの試合カードを生成（XSS対策済み）
+        
+            // 各コートの試合カードを生成
             let contentHtml = '';
             courts.forEach(court => {
                 const activeClass = court === currentCourt ? 'active' : '';
                 contentHtml += `<div class="court-content ${activeClass}" id="court-${escapeHtml(court)}">`;
                 contentHtml += '<div class="games-grid">';
-
+        
                 const games = courtGroups[court];
                 const gameNums = Object.keys(games).sort((a, b) => parseInt(a) - parseInt(b));
-
+        
                 gameNums.forEach(gameNum => {
-                    const game = games[gameNum][0];
+                    const gameTeams = games[gameNum];
                     
-                    const status = getStatus(game);
-                    const statusClass = getStatusClass(status);
+                    // 試合に2チーム揃っているかチェック
+                    if (gameTeams.length < 2) {
+                        console.warn(`試合 ${court}コート第${gameNum}試合: チームが2つ揃っていません (${gameTeams.length}チーム)`);
+                        return; // スキップ
+                    }
                     
-                    // 【修正】gameオブジェクトを渡す
-                    const homeTeam = getTeamInfo(game.homeTeam, game); 
-                    const awayTeam = getTeamInfo(game.awayTeam, game);
-                    
-                    const currentInning = getCurrentInning(game);
+                    const team1 = gameTeams[0];
+                    const team2 = gameTeams[1];
+                    const status = team1.status || '待機';
+                    const statusClass = status === '試合中' ? 'playing' :
+                                       status === '終了' ? 'finished' : 'waiting';
                 
                     contentHtml += `
                         <div class="game-card" onclick="openScoreboard('${escapeHtml(court)}', ${gameNum})">
@@ -1144,14 +1145,13 @@
                             </div>
                             <div class="matchup">
                                 <div class="matchup-line">
-                                    <span class="team-name home">${escapeHtml(homeTeam.team)}</span>
-                                    <span class="team-score">${homeTeam.total || 0}</span>
+                                    <span class="team-name home">${escapeHtml(team1.team || '未定')}</span>
+                                    <span class="team-score">${team1.total || 0}</span>
                                     <span class="score-separator">-</span>
-                                    <span class="team-score">${awayTeam.total || 0}</span>
-                                    <span class="team-name away">${escapeHtml(awayTeam.team)}</span>
+                                    <span class="team-score">${team2.total || 0}</span>
+                                    <span class="team-name away">${escapeHtml(team2.team || '未定')}</span>
                                 </div>
                             </div>
-                            ${currentInning ? `<div class="inning-info">${escapeHtml(currentInning)}</div>` : ''}
                         </div>
                     `;
                 });
@@ -1159,10 +1159,9 @@
                 contentHtml += '</div>'; // court-content
             });
             contentElement.innerHTML = contentHtml;
-
-            // コート切り替えが初めて行われたか、またはコートリストが変更された場合
+        
             switchCourt(currentCourt);
-        }
+        }    
 
         /**
          * コートを切り替える
