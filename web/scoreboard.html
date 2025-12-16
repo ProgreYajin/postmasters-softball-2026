@@ -667,6 +667,9 @@
             let html = '';
             
             sortedGames.forEach(gameData => {
+                // ここに追加 ↓
+                console.log('Game:', gameData.gameNum, 'Teams:', gameData.teams.map(t => t.team));
+    
                 if (!gameData.teams || gameData.teams.length < 2) {
                     console.warn(`試合 ${gameData.court}コート第${gameData.gameNum}試合: チームデータが不足しています`);
                     return;
