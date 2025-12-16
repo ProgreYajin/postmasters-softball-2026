@@ -549,18 +549,18 @@
             return placeholderPatterns.some(pattern => pattern.test(teamName));
         }
         
-        // 実際のチーム名を取得
-        function resolveTeamName(teamName, scheduleInfo) {
+        // 実際のチーム名を取得（修正版：ポジションを指定して正しく解決）
+        function resolveTeamName(teamName, scheduleInfo, position) {
             if (!scheduleInfo) return teamName;
             
-            // プレースホルダーの場合、試合予定の情報を使う
+            // プレースホルダーの場合、試合予定の「対応するポジション」の情報を使う
             if (isPlaceholder(teamName)) {
-                // team1とteam2のどちらかがプレースホルダーでない場合はそれを使う
-                if (scheduleInfo.team1 && !isPlaceholder(scheduleInfo.team1)) {
-                    return scheduleInfo.team1;
-                }
-                if (scheduleInfo.team2 && !isPlaceholder(scheduleInfo.team2)) {
-                    return scheduleInfo.team2;
+                // position引数で指定された方のチーム名を確認する
+                // positionは 'team1' または 'team2'
+                const scheduleTeamName = scheduleInfo[position];
+                
+                if (scheduleTeamName && !isPlaceholder(scheduleTeamName)) {
+                    return scheduleTeamName;
                 }
             }
             
@@ -697,9 +697,9 @@
                 const team2 = gameData.teams[1];
                 const schedule = scheduleData[gameData.gameNum];
                 
-                // チーム名を解決
-                const displayTeam1 = resolveTeamName(team1.team, schedule);
-                const displayTeam2 = resolveTeamName(team2.team, schedule);
+                // チーム名を解決（修正：ポジションを指定）
+                const displayTeam1 = resolveTeamName(team1.team, schedule, 'team1');
+                const displayTeam2 = resolveTeamName(team2.team, schedule, 'team2');
                 
                 const isTeam1Placeholder = isPlaceholder(displayTeam1);
                 const isTeam2Placeholder = isPlaceholder(displayTeam2);
