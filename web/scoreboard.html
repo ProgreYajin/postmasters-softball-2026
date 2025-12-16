@@ -71,12 +71,14 @@
         .nav-links {
             display: flex;
             gap: 25px;
-            overflow-x: auto;
-            scrollbar-width: none;
+            /* scrollbar-widthはSafari非対応だが、Firefox向けに残す */
+            scrollbar-width: none; 
             -ms-overflow-style: none;
             padding-bottom: 5px;
+            overflow-x: auto;
         }
         
+        /* Safari/Chrome/Edge向けスクロールバー非表示 */
         .nav-links::-webkit-scrollbar {
             display: none;
         }
@@ -151,6 +153,15 @@
         .game-title {
             font-size: 1.3em;
             font-weight: bold;
+        }
+
+        /* 順位決定戦ラベルのインラインスタイルを移動 */
+        .game-title .bronze {
+            color: #ffc107;
+        }
+
+        .game-title .final {
+            color: #ffd700;
         }
         
         .status-badge {
@@ -238,6 +249,7 @@
             border-right: 2px solid #ddd !important;
         }
         
+        /* インラインスタイルを移動 */
         .team-name.placeholder {
             color: #999;
             font-style: italic;
@@ -293,9 +305,20 @@
             color: #999;
         }
         
+        /* インラインスタイルを移動 */
         .status-message-subtext.placeholder {
             font-style: italic;
         }
+
+        /* 試合中メッセージのインラインスタイルを移動 */
+        .status-message.playing-status {
+            padding: 20px;
+        }
+        
+        .status-message.playing-status .status-message-text {
+            font-size: 1.1em;
+        }
+
         
         /* ローディング */
         .loading {
@@ -438,6 +461,7 @@
         <div class="header-top">
             <div class="header-top-content">
                 <a href="#" onclick="goBack(); return false;" class="header-logo">
+                    <!-- 画像URLはテスト用です。本番環境ではご自身のDrive URLに置き換えてください。 -->
                     <img src="https://drive.google.com/thumbnail?id=1i01jLSCnme9KdDuBwL8MufLNGdeo_d0x" alt="全国郵便局長会">
                 </a>
                 <div class="header-info">
@@ -667,9 +691,6 @@
             let html = '';
             
             sortedGames.forEach(gameData => {
-                // ここに追加 ↓
-                console.log('Game:', gameData.gameNum, 'Teams:', gameData.teams.map(t => t.team));
-    
                 if (!gameData.teams || gameData.teams.length < 2) {
                     console.warn(`試合 ${gameData.court}コート第${gameData.gameNum}試合: チームデータが不足しています`);
                     return;
@@ -680,9 +701,11 @@
                 
                 let specialLabel = '';
                 if (gameData.court === 'B' && gameData.gameNum === 6) {
-                    specialLabel = ' <span style="color: #ffc107;">🥉 3位決定戦</span>';
+                    // CSSクラスを適用
+                    specialLabel = ' <span class="bronze">🥉 3位決定戦</span>';
                 } else if (gameData.court === 'A' && gameData.gameNum === 7) {
-                    specialLabel = ' <span style="color: #ffd700;">🏆 決勝戦</span>';
+                    // CSSクラスを適用
+                    specialLabel = ' <span class="final">🏆 決勝戦</span>';
                 }
                 
                 html += `
@@ -707,12 +730,16 @@
                 if (gameData.status === '待機' && (!team1.innings || team1.innings.every(s => s === null || s === undefined || s === ''))) {
                     const startTime = schedule ? formatTime(schedule.time) : '';
                     
+                    // placeholderクラスを直接追加
+                    const team1Class = isTeam1Placeholder ? 'placeholder' : '';
+                    const team2Class = isTeam2Placeholder ? 'placeholder' : '';
+                    
                     html += `
                         <div class="status-message">
                             <div class="status-message-icon">⏰</div>
                             <div class="status-message-text">${startTime ? startTime + ' 開始予定' : 'まだ試合が始まっていません'}</div>
-                            <div class="status-message-subtext ${isTeam1Placeholder || isTeam2Placeholder ? 'placeholder' : ''}">
-                                ${displayTeam1 || '未定'} vs ${displayTeam2 || '未定'}
+                            <div class="status-message-subtext">
+                                <span class="${team1Class}">${displayTeam1 || '未定'}</span> vs <span class="${team2Class}">${displayTeam2 || '未定'}</span>
                             </div>
                         </div>
                     `;
@@ -785,9 +812,10 @@
                         </div>`;
                     
                     if (gameData.status === '試合中') {
+                        // CSSクラスを適用
                         html += `
-                            <div class="status-message" style="padding: 20px;">
-                                <div class="status-message-text" style="font-size: 1.1em;">⚾ 試合中</div>
+                            <div class="status-message playing-status">
+                                <div class="status-message-text">⚾ 試合中</div>
                             </div>
                         `;
                     }
@@ -812,7 +840,7 @@
         }
         
         fetchScores();
-        // setInterval(fetchScores, 60000); // 自動更新は負荷対策のため無効化
+        // 自動更新はサーバー負荷軽減のため無効化しています。手動更新ボタンをご利用ください。
         
         const navLinks = document.getElementById('navLinks');
         const scrollIndicator = document.getElementById('scrollIndicator');
