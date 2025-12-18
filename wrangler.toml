@@ -1,0 +1,12 @@
+name = "r2-upload-worker"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+# R2バケットのバインディング
+[[r2_buckets]]
+binding = "R2_BUCKET"
+bucket_name = "chiba-softball-2026"  # ← あなたのバケット名
+
+# 環境変数（公開しても良い値のみ）
+[vars]
+R2_PUBLIC_URL = "https://pub-d1b8738273da4b779dbc93fc861dc066.r2.dev"  # ← あなたの公開URL
