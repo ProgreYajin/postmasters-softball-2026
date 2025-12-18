@@ -1,0 +1,37 @@
+name: Deploy Google Apps Script
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'gas-staff/**'
+      - 'gas-audience/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install clasp
+        run: npm install -g @google/clasp
+
+      - name: Create clasprc.json
+        run: echo "${{ secrets.CLASSPRC_JSON }}" > ~/.clasprc.json
+
+      - name: Deploy Staff GAS
+        if: contains(github.event.head_commit.modified, 'gas-staff') || contains(github.event.head_commit.added, 'gas-staff')
+        working-directory: ./gas-staff
+        run: clasp push -f
+
+      - name: Deploy Audience GAS
+        if: contains(github.event.head_commit.modified, 'gas-audience') || contains(github.event.head_commit.added, 'gas-audience')
+        working-directory: ./gas-audience
+        run: clasp push -f
