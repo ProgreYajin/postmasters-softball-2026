@@ -1,0 +1,241 @@
+// ★★★ 設定項目 ★★★
+const PROPS = PropertiesService.getScriptProperties();
+const LINE_ACCESS_TOKEN = PROPS.getProperty('LINE_ACCESS_TOKEN');
+const DRIVE_FOLDER_ID = PROPS.getProperty('DRIVE_FOLDER_ID');
+
+// シート名定義
+const SHEET_AUDIENCE = '観客リスト';
+const SHEET_PHOTOS = '写真リスト';
+
+// LINE Webhook & 連携API
+function doPost(e) {
+  try {
+    if (!e || !e.postData) {
+      return ContentService.createTextOutput(JSON.stringify({status: 'ok'}));
+    }
+
+    const json = JSON.parse(e.postData.contents);
+
+    // 1. スタッフBotからの実況配信リクエスト受信
+    if (json.type === 'broadcast' && json.message) {
+      pushToAllAudience(json.message);
+      return ContentService.createTextOutput(JSON.stringify({status: 'broadcast_sent'}))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 2. LINEユーザーからのイベント受信
+    const events = json.events;
+    if (events) {
+      events.forEach(event => {
+        if (event.type === 'follow') {
+          handleFollow(event);
+        } else if (event.type === 'message') {
+          if (event.message.type === 'image') {
+            handleImage(event);
+          } else if (event.message.type === 'text') {
+            handleText(event);
+          }
+        }
+      });
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({status: 'ok'}))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    console.error('エラー発生:', error);
+    return ContentService.createTextOutput(JSON.stringify({status: 'error'}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// 友だち追加処理（重複チェック付き）
+function handleFollow(event) {
+  const userId = event.source.userId;
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(SHEET_AUDIENCE);
+  
+  // 既に登録済みかチェック
+  const data = sheet.getDataRange().getValues();
+  const isExist = data.some(row => row[0] === userId);
+
+  if (!isExist) {
+    const timestamp = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm:ss');
+    sheet.appendRow([userId, timestamp, 'active']);
+  }
+  
+  const welcomeMessage = `ようこそ!ソフトボール大会へ🎉
+
+このBotでできること:
+📊 試合の得点速報が自動で届きます
+📸 写真を送ると公式サイトに掲載されます
+
+応援よろしくお願いします!⚾`;
+  
+  replyMessage(event.replyToken, welcomeMessage);
+}
+
+// ユーザー名を取得する関数
+function getUserName(userId) {
+  try {
+    const url = `https://api.line.me/v2/bot/profile/${userId}`;
+    const options = {
+      headers: {
+        'Authorization': 'Bearer ' + LINE_ACCESS_TOKEN
+      },
+      method: 'get',
+      muteHttpExceptions: true
+    };
+    
+    const response = UrlFetchApp.fetch(url, options);
+    if (response.getResponseCode() === 200) {
+      const profile = JSON.parse(response.getContentText());
+      return profile.displayName || '名前取得失敗';
+    }
+  } catch (error) {
+    console.error('ユーザー名取得エラー:', error);
+  }
+  return '名前取得失敗';
+}
+
+// 画像受信処理（修正版）
+function handleImage(event) {
+  const messageId = event.message.id;
+  const userId = event.source.userId;
+  const replyToken = event.replyToken;
+  
+  try {
+    // ユーザー名を取得
+    const userName = getUserName(userId);
+    
+    const imageBlob = getImageFromLine(messageId);
+    const folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
+    const timestamp = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyyMMdd_HHmmss');
+    const fileName = `photo_${timestamp}.jpg`;
+    
+    const file = folder.createFile(imageBlob.setName(fileName));
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    
+    const fileId = file.getId();
+    
+    // ★サムネイル用URL（一覧表示用・軽量）
+    const thumbnailUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w400`;
+    
+    // ★フル画像用URL（クリック時表示用・高画質）
+    const fullImageUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
+    
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const photoSheet = ss.getSheetByName(SHEET_PHOTOS);
+    const displayDate = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'MM/dd HH:mm');
+    
+    // A列:日時, B列:ユーザーID, C列:ユーザー名, D列:サムネイルURL, E列:フル画像URL
+    photoSheet.appendRow([displayDate, userId, userName, thumbnailUrl, fullImageUrl]);
+    
+    replyMessage(replyToken, '📸 写真を受け取りました!\n公式サイトに掲載されます。ありがとうございます!');
+    
+  } catch (error) {
+    console.error('画像保存エラー:', error);
+    replyMessage(replyToken, '⚠️ 保存に失敗しました。');
+  }
+}
+
+// テキスト受信処理
+function handleText(event) {
+  const message = event.message.text;
+  const replyToken = event.replyToken;
+  
+  if (message.includes('試合') || message.includes('スコア')) {
+    // ★GitHub PagesのURLに変更してください
+    const SITE_URL = 'https://あなたのユーザー名.github.io/softball-scoreboard/';
+    replyMessage(replyToken, `📊 最新のスコアはこちらでご覧いただけます:\n${SITE_URL}`);
+  } else {
+    replyMessage(replyToken, 'ご連絡ありがとうございます!\n写真を送っていただくと公式サイトに掲載されます📸');
+  }
+}
+
+// LINEから画像バイナリを取得
+function getImageFromLine(messageId) {
+  const url = `https://api-data.line.me/v2/bot/message/${messageId}/content`;
+  const options = {
+    headers: {
+      'Authorization': 'Bearer ' + LINE_ACCESS_TOKEN
+    },
+    method: 'get'
+  };
+  return UrlFetchApp.fetch(url, options).getBlob();
+}
+
+// 汎用: 返信処理
+function replyMessage(replyToken, message) {
+  const url = 'https://api.line.me/v2/bot/message/reply';
+  postToLine(url, {
+    replyToken: replyToken,
+    messages: [{ type: 'text', text: message }]
+  });
+}
+
+// 全員へのPush送信（Broadcast API使用）
+function pushToAllAudience(message) {
+  const url = 'https://api.line.me/v2/bot/message/broadcast';
+  
+  try {
+    postToLine(url, {
+      messages: [{ type: 'text', text: message }]
+    });
+    console.log('ブロードキャスト送信完了:', message);
+  } catch (e) {
+    console.error('ブロードキャスト送信エラー:', e);
+  }
+}
+
+// 汎用: LINE APIへのPOST実行
+function postToLine(url, payload) {
+  const options = {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + LINE_ACCESS_TOKEN
+    },
+    payload: JSON.stringify(payload)
+  };
+  UrlFetchApp.fetch(url, options);
+}
+
+// Web公開用: 写真リストJSON API
+function doGet(e) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const photoSheet = ss.getSheetByName(SHEET_PHOTOS);
+  
+  // データがない場合の処理
+  if (photoSheet.getLastRow() <= 1) {
+    return ContentService.createTextOutput(JSON.stringify({
+      lastUpdate: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'HH:mm:ss'),
+      photos: []
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const data = photoSheet.getDataRange().getValues();
+  const photos = [];
+  
+  // ヘッダーを除いて取得
+  // A列:日時, B列:ユーザーID, C列:ユーザー名, D列:サムネイルURL, E列:フル画像URL
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] && data[i][3] && data[i][4]) {
+      photos.push({
+        timestamp: data[i][0],
+        userId: data[i][1],
+        userName: data[i][2] || '投稿者',
+        thumbnail: data[i][3],
+        fullImage: data[i][4]
+      });
+    }
+  }
+  
+  const result = {
+    lastUpdate: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'HH:mm:ss'),
+    photos: photos.reverse() // 新しい順
+  };
+  
+  return ContentService.createTextOutput(JSON.stringify(result))
+    .setMimeType(ContentService.MimeType.JSON);
+}

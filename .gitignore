@@ -1,0 +1,12 @@
+# claspのログイン情報（絶対に公開してはいけない）
+.clasprc.json
+
+# Node.js関連
+node_modules/
+npm-debug.log
+
+# Mac OS固有のシステムファイル
+.DS_Store
+
+# claspのプッシュ設定（もし各フォルダではなくルートにできてしまった場合用）
+# ただし、フォルダ内の .clasp.json はGitHubで共有しても基本は安全です
