@@ -7,6 +7,10 @@
 	"name": "chiba-softball-r2-gallery",
 	"main": "src/index.js",
 	"compatibility_date": "2025-12-17",
+	"vars": {
+		"WORKER_AUTH_TOKEN": "6GxPrsWeDnnFYuc03C3u8md3PE5J0yAtW7r58c5xk3c5XA8QqVFex1gEfQ5QBpsYD19EW62b18Z93bbuA0RMecn271X483Z4rzqf",
+		"R2_PUBLIC_URL": "https://pub-d1b8738273da4b779dbc93fc861dc066.r2.dev"
+	},
 	"r2_buckets": [
    		{
     	  		"binding": "GALLERY_BUCKET",
