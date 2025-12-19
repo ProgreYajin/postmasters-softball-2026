@@ -1,5 +1,5 @@
 name = "r2-upload-worker"
-main = "src/index.js"
+main = "chiba-softball-r2-gallery/src/index.js"
 compatibility_date = "2024-01-01"
 
 # R2バケットのバインディング
