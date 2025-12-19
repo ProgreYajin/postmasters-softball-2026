@@ -3,12 +3,10 @@ name: Deploy to Cloudflare Workers
 on:
   push:
     branches:
-      - main  # mainブランチにpushされたら実行
+      - main
     paths:
-      - 'src/**'
-      - 'wrangler.toml'
-      - '.github/workflows/deploy_workers.yml'
-  workflow_dispatch:  # 手動実行も可能
+      - '**' # フォルダ階層が変わっているため、一旦広めに検知するようにします
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -25,10 +23,14 @@ jobs:
           node-version: '20'
       
       - name: Install dependencies
+        # ここに working-directory を追加
         run: npm ci
+        working-directory: chiba-softball-r2-gallery # ← あなたの実際のフォルダ名に書き換えてください
       
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # ここに workingDirectory を追加
+          workingDirectory: chiba-softball-r2-gallery # ← あなたの実際のフォルダ名に書き換えてください
