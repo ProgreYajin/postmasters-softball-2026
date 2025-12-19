@@ -17,7 +17,6 @@
             color: #333;
         }
         
-        /* ヘッダー */
         header {
             background: #003366;
             color: white;
@@ -47,8 +46,6 @@
             transition: opacity 0.3s;
             text-decoration: none;
             color: white;
-            display: flex;
-            align-items: center;
         }
         
         .header-logo:hover {
@@ -58,7 +55,6 @@
         .header-logo img {
             height: 35px;
             width: auto;
-            display: block;
         }
         
         .header-info {
@@ -77,8 +73,6 @@
             gap: 25px;
             overflow-x: auto;
             scrollbar-width: none;
-            -ms-overflow-style: none;
-            padding-bottom: 5px;
         }
         
         .nav-links::-webkit-scrollbar {
@@ -89,19 +83,9 @@
             color: white;
             text-decoration: none;
             font-size: 0.95em;
-            transition: opacity 0.3s;
             white-space: nowrap;
         }
         
-        .nav-links a:hover {
-            opacity: 0.7;
-        }
-        
-        .scroll-indicator {
-            display: none;
-        }
-        
-        /* ページヘッダー */
         .page-header {
             background: white;
             border-bottom: 3px solid #003366;
@@ -117,16 +101,15 @@
             font-size: 2.2em;
             font-weight: 300;
             color: #003366;
-            margin-bottom: 10px;
             letter-spacing: 2px;
         }
         
         .page-subtitle {
             color: #666;
             font-size: 1.1em;
+            margin-top: 10px;
         }
         
-        /* メインコンテナ */
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -144,20 +127,14 @@
         
         .tournament-container {
             display: flex;
-            flex-direction: row;
-            align-items: flex-start;
             gap: 60px;
-            padding-bottom: 20px;
             min-width: 900px;
         }
         
         .round {
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
             gap: 20px;
-            flex-shrink: 0;
-            position: relative;
         }
         
         .round-title {
@@ -165,7 +142,6 @@
             font-weight: bold;
             color: #003366;
             font-size: 1.1em;
-            margin-bottom: 10px;
             height: 20px;
         }
         
@@ -182,7 +158,6 @@
             width: 200px;
             position: relative;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            z-index: 2;
             cursor: pointer;
             transition: all 0.3s;
         }
@@ -190,29 +165,10 @@
         .match-card:hover {
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             transform: translateY(-2px);
-            border-color: #003366;
         }
         
         .match-card.playing {
-            border-color: #d32f2f;
-        }
-        
-        .match-card.playing::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #d32f2f, #ff6b6b);
-            border-radius: 8px;
-            z-index: -1;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            border: 2px solid #d32f2f;
         }
         
         .match-info {
@@ -222,7 +178,6 @@
             text-align: center;
             border-bottom: 1px solid #e0e0e0;
             color: #666;
-            font-weight: 500;
             border-radius: 8px 8px 0 0;
         }
         
@@ -239,9 +194,7 @@
         .team {
             padding: 12px;
             font-size: 14px;
-            min-height: 40px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
         }
         
@@ -270,11 +223,6 @@
             background-color: #fff3cd;
         }
         
-        .winner-team .team-name {
-            color: #333;
-            font-weight: bold;
-        }
-        
         .seed-card {
             background: #e3f2fd;
             border: 2px dashed #1976d2;
@@ -282,15 +230,9 @@
         
         .seed-info {
             padding: 12px;
-            font-size: 14px;
             text-align: center;
             color: #1565c0;
             font-weight: bold;
-        }
-        
-        .seed-icon {
-            font-size: 1.2em;
-            margin-right: 5px;
         }
         
         .line-bracket-top {
@@ -301,7 +243,6 @@
             height: 50%;
             border-right: 2px solid #ddd;
             border-top: 2px solid #ddd;
-            z-index: 1;
         }
         
         .line-bracket-bottom {
@@ -312,23 +253,12 @@
             height: 50%;
             border-right: 2px solid #ddd;
             border-bottom: 2px solid #ddd;
-            z-index: 1;
         }
         
         .line-bracket-top.active,
         .line-bracket-bottom.active {
             border-color: #003366;
             border-width: 3px;
-            z-index: 3;
-        }
-        
-        .third-place-title {
-            font-size: 14px;
-            text-align: center;
-            margin-top: 30px;
-            margin-bottom: 10px;
-            color: #003366;
-            font-weight: bold;
         }
         
         .champion-section {
@@ -337,35 +267,19 @@
             padding: 40px 20px;
             background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .champion-trophy {
             font-size: 3em;
-            margin-bottom: 10px;
-        }
-        
-        .champion-title {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #856404;
-            margin-bottom: 8px;
         }
         
         .champion-name {
             font-size: 2em;
             font-weight: 300;
             color: #333;
-            letter-spacing: 1px;
+            margin-top: 10px;
         }
         
-        .champion-name.tbd {
-            font-size: 1.5em;
-            color: #856404;
-            font-style: italic;
-        }
-        
-        /* ローディング */
         .loading {
             text-align: center;
             padding: 60px 20px;
@@ -387,7 +301,6 @@
             100% { transform: rotate(360deg); }
         }
         
-        /* 更新ボタン */
         .refresh-btn {
             position: fixed;
             bottom: 20px;
@@ -401,97 +314,18 @@
             font-size: 1.5em;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: all 0.3s;
-            z-index: 100;
         }
         
-        .refresh-btn:hover:not(:disabled) {
-            transform: scale(1.1);
-            background: #004080;
-        }
-        
-        .refresh-btn:disabled {
-            opacity: 0.5;
-        }
-        
-        /* フッター */
         footer {
             background: #002244;
             color: white;
             padding: 20px;
-            margin-top: 60px;
             text-align: center;
-        }
-        
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
         }
         
         .copyright {
             font-size: 0.85em;
             opacity: 0.6;
-        }
-        
-        /* レスポンシブ */
-        @media (max-width: 768px) {
-            .header-main {
-                position: relative;
-                overflow: hidden;
-            }
-            
-            .nav-links {
-                width: 100%;
-                justify-content: flex-start;
-                padding-bottom: 5px;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                flex-wrap: nowrap;
-            }
-            
-            .nav-links a {
-                flex-shrink: 0;
-            }
-            
-            .scroll-indicator {
-                display: flex;
-                position: absolute;
-                right: 0;
-                top: 50%;
-                transform: translateY(-50%);
-                height: 47px;
-                width: 30px;
-                align-items: center;
-                justify-content: center;
-                font-size: 1.2em;
-                color: white;
-                background-color: #003366;
-                cursor: pointer;
-                z-index: 10;
-            }
-            
-            .page-title {
-                font-size: 1.6em;
-            }
-            
-            .tournament-wrapper {
-                padding: 15px;
-            }
-            
-            .tournament-container {
-                gap: 40px;
-                min-width: 750px;
-            }
-            
-            .match-card {
-                width: 180px;
-            }
-            
-            .line-bracket-top,
-            .line-bracket-bottom {
-                width: 20px;
-                right: -20px;
-            }
         }
     </style>
 </head>
@@ -502,23 +336,20 @@
                 <a href="#" onclick="goBack(); return false;" class="header-logo">
                     <img src="https://drive.google.com/thumbnail?id=1i01jLSCnme9KdDuBwL8MufLNGdeo_d0x" alt="全国郵便局長会">
                 </a>
-                <div class="header-info">
-                    2026年千葉県郵便局長ソフトボール大会 | 2026.6.6
-                </div>
+                <div class="header-info">2026年千葉県郵便局長ソフトボール大会 | 2026.6.6</div>
             </div>
         </div>
         <div class="header-main">
-            <nav class="nav-links" id="navLinks">
-                <a href="scoreboard.html" class="dynamic-link">試合速報 / 試合結果</a>
-                <a href="gallery.html" class="dynamic-link">写真ギャラリー</a>
-                <a href="schedule.html" class="dynamic-link">大会スケジュール</a>
-                <a href="tournament.html" class="dynamic-link">トーナメント表</a>
-                <a href="teams.html" class="dynamic-link">チーム・選手一覧</a>
-                <a href="venue.html" class="dynamic-link">会場案内・アクセス</a>
-                <a href="rules.html" class="dynamic-link">大会ルール・規約</a>
-                <a href="history.html" class="dynamic-link">優勝記録・歴史</a>
+            <nav class="nav-links">
+                <a href="scoreboard.html">試合速報 / 試合結果</a>
+                <a href="gallery.html">写真ギャラリー</a>
+                <a href="schedule.html">大会スケジュール</a>
+                <a href="tournament.html">トーナメント表</a>
+                <a href="teams.html">チーム・選手一覧</a>
+                <a href="venue.html">会場案内・アクセス</a>
+                <a href="rules.html">大会ルール・規約</a>
+                <a href="history.html">優勝記録・歴史</a>
             </nav>
-            <div class="scroll-indicator" id="scrollIndicator">▶︎</div>
         </div>
     </header>
     
@@ -536,419 +367,144 @@
         </div>
     </div>
     
-    <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()">🔄</button>
+    <button class="refresh-btn" onclick="manualRefresh()">🔄</button>
     
     <footer>
         <div class="footer-content">
-            <div class="copyright">
-                © 2026 千葉県印旛地区郵便局長会
-            </div>
+            <div class="copyright">© 2026 千葉県印旛地区郵便局長会</div>
         </div>
     </footer>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        
-        if (urlParams.get('staff_api')) {
-            localStorage.setItem('STAFF_BOT_API_URL', urlParams.get('staff_api'));
-        }
-        if (urlParams.get('audience_api')) {
-            localStorage.setItem('AUDIENCE_BOT_API_URL', urlParams.get('audience_api'));
-        }
-        if (urlParams.get('api')) {
-            localStorage.setItem('STAFF_BOT_API_URL', urlParams.get('api'));
-        }
-        
-        const STAFF_API_URL = localStorage.getItem('STAFF_BOT_API_URL') || '';
-        const API_URL = STAFF_API_URL;
+        if (urlParams.get('api')) localStorage.setItem('STAFF_BOT_API_URL', urlParams.get('api'));
+        const API_URL = localStorage.getItem('STAFF_BOT_API_URL') || '';
         
         let isRefreshing = false;
-        
-        const TOURNAMENT_STRUCTURE = {
-            round1: [1, 2, 3],
-            semiFinals: [4, 5],
-            final: [7],
-            thirdPlace: [6]
-        };
+        const TOURNAMENT = { round1: [1,2,3], semiFinals: [4,5], final: [7], thirdPlace: [6] };
         
         async function fetchScores() {
-            console.log('fetchScores開始');
             console.log('API_URL:', API_URL);
-            
             if (!API_URL) {
-                document.getElementById('content').innerHTML = `
-                    <div class="loading">
-                        ❌ API URLが設定されていません。<br>
-                        トップページから再度アクセスするか、URLに ?api=... を含めてください。
-                    </div>
-                `;
+                document.getElementById('content').innerHTML = '<div class="loading">❌ API URLが設定されていません</div>';
                 return;
             }
             
             try {
-                const timestamp = new Date().getTime();
-                const fetchUrl = `${API_URL}?t=${timestamp}`;
-                console.log('Fetching from:', fetchUrl);
+                const t = new Date().getTime();
+                const res = await fetch(`${API_URL}?t=${t}`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
                 
-                const response = await fetch(fetchUrl, {
-                    method: 'GET',
-                    mode: 'cors',
-                    cache: 'no-cache'
-                });
-                
-                console.log('Response status:', response.status);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                const schedRes = await fetch(`${API_URL}?type=schedule&t=${t}`);
+                let sched = {};
+                if (schedRes.ok) {
+                    const sj = await schedRes.json();
+                    if (sj.schedule) sched = sj.schedule.reduce((a,s) => ({...a, [s.gameNum]: s}), {});
                 }
                 
-                const text = await response.text();
-                console.log('Response text length:', text.length);
-                
-                if (!text || text.trim() === '') {
-                    throw new Error('APIからの応答が空です');
-                }
-                
-                const data = JSON.parse(text);
-                console.log('Data parsed:', data);
-                
-                if (!data.games || !Array.isArray(data.games)) {
-                    throw new Error('games配列が存在しません');
-                }
-                
-                console.log('Games count:', data.games.length);
-                
-                // スケジュールデータ取得
-                const scheduleUrl = `${API_URL}?type=schedule&t=${timestamp}`;
-                console.log('Fetching schedule from:', scheduleUrl);
-                
-                const scheduleResponse = await fetch(scheduleUrl, {
-                    method: 'GET',
-                    mode: 'cors',
-                    cache: 'no-cache'
-                });
-                
-                console.log('Schedule response status:', scheduleResponse.status);
-                
-                let scheduleData = {};
-                if (scheduleResponse.ok) {
-                    const scheduleText = await scheduleResponse.text();
-                    console.log('Schedule response text length:', scheduleText.length);
-                    
-                    if (scheduleText && scheduleText.trim() !== '') {
-                        const scheduleJson = JSON.parse(scheduleText);
-                        console.log('Schedule parsed:', scheduleJson);
-                        
-                        if (scheduleJson.schedule) {
-                            scheduleData = scheduleJson.schedule.reduce((acc, s) => {
-                                acc[s.gameNum] = {
-                                    court: s.court,
-                                    time: s.time,
-                                    team1: s.team1,
-                                    team2: s.team2
-                                };
-                                return acc;
-                            }, {});
-                            console.log('Schedule data processed:', scheduleData);
-                        }
-                    }
-                }
-                
-                console.log('Calling displayTournament...');
-                displayTournament(data, scheduleData);
-                console.log('displayTournament完了');
-                
-            } catch (error) {
-                console.error('データ取得エラー:', error);
-                console.error('Error stack:', error.stack);
-                document.getElementById('content').innerHTML = 
-                    `<div class="loading">
-                        ❌ データの読み込みに失敗しました<br>
-                        <br>
-                        <strong>エラー詳細:</strong><br>
-                        ${error.message}<br>
-                        <br>
-                        <small>API URL: ${API_URL}</small><br>
-                        <small>ブラウザのコンソール（F12）で詳細を確認してください</small>
-                    </div>`;
+                displayTournament(data, sched);
+            } catch (e) {
+                console.error(e);
+                document.getElementById('content').innerHTML = `<div class="loading">❌ エラー: ${e.message}</div>`;
             }
+        }
+        
+        function getMatch(games, n, sched) {
+            const mg = games.filter(g => g.gameNum === n);
+            if (mg.length < 2 && sched[n]) {
+                return { gameNum: n, team1: {name: sched[n].team1, score: 0}, 
+                        team2: {name: sched[n].team2, score: 0}, status: '待機', court: sched[n].court };
+            }
+            if (mg.length < 2) return null;
+            return { gameNum: n, team1: {name: mg[0].team, score: mg[0].total||0}, 
+                    team2: {name: mg[1].team, score: mg[1].total||0}, status: mg[0].status||'待機', court: mg[0].court };
+        }
+        
+        function getWinner(m) {
+            if (!m || m.status !== '終了') return null;
+            return m.team1.score > m.team2.score ? 1 : m.team2.score > m.team1.score ? 2 : null;
+        }
+        
+        function getSeed(games, sched) {
+            const g5 = games.filter(g => g.gameNum === 5);
+            if (g5.length >= 2) return g5[1].team;
+            return sched[5]?.team2 || null;
+        }
+        
+        function displayTournament(data, sched) {
+            if (!data.games) {
+                document.getElementById('content').innerHTML = '<div class="loading">試合データなし</div>';
+                return;
+            }
+            
+            const m = {};
+            [...TOURNAMENT.round1, ...TOURNAMENT.semiFinals, ...TOURNAMENT.final, ...TOURNAMENT.thirdPlace]
+                .forEach(n => m[n] = getMatch(data.games, n, sched));
+            
+            const seed = getSeed(data.games, sched);
+            
+            let h = '<div class="tournament-wrapper"><div class="tournament-container">';
+            h += '<div class="round"><div class="round-title">1回戦</div><div class="round-matches">';
+            h += card(m[1], 1, 'line-bracket-top', getWinner(m[1])!==null);
+            h += card(m[3], 3, 'line-bracket-bottom', getWinner(m[3])!==null);
+            h += '<div style="height:20px"></div>';
+            h += card(m[2], 2, 'line-bracket-top', getWinner(m[2])!==null);
+            if (seed) h += `<div class="match-card seed-card"><div class="match-info">シード</div><div class="seed-info">⭐${seed}</div><div class="line-bracket-bottom active"></div></div>`;
+            h += '</div></div>';
+            
+            h += '<div class="round"><div class="round-title">準決勝</div><div class="round-matches">';
+            h += '<div style="height:60px"></div>';
+            h += card(m[4], 4, 'line-bracket-top', getWinner(m[4])!==null);
+            h += '<div style="height:140px"></div>';
+            h += card(m[5], 5, 'line-bracket-bottom', getWinner(m[5])!==null);
+            h += '</div></div>';
+            
+            h += '<div class="round"><div class="round-title">決勝</div><div class="round-matches">';
+            h += '<div style="height:180px"></div>';
+            h += card(m[7], 7, null, false);
+            h += '<div style="margin-top:50px;text-align:center;font-weight:bold;color:#003366">🥉 3位決定戦</div>';
+            h += card(m[6], 6, null, false);
+            h += '</div></div></div>';
+            
+            const fw = getWinner(m[7]) === 1 ? m[7]?.team1.name : getWinner(m[7]) === 2 ? m[7]?.team2.name : null;
+            if (fw) h += `<div class="champion-section"><div class="champion-trophy">🏆</div><div class="champion-name">${fw}</div></div>`;
+            
+            h += '</div>';
+            document.getElementById('content').innerHTML = h;
+        }
+        
+        function card(m, n, line, act) {
+            if (!m) return `<div class="match-card"><div class="match-info">第${n}試合</div><div class="team"><span class="team-name tbd">未定</span></div><div class="team"><span class="team-name tbd">未定</span></div>${line?`<div class="${line}"></div>`:''}</div>`;
+            const w = getWinner(m);
+            const sc = m.status==='試合中'?'playing':m.status==='終了'?'finished':'';
+            return `<div class="match-card ${sc}" onclick="openScore('${m.court}',${n})"><div class="match-info ${sc}">${m.court}コート 第${n}試合</div><div class="team ${w===1?'winner-team':''}"><span class="team-name">${m.team1.name}</span><span class="team-score">${m.team1.score}</span></div><div class="team ${w===2?'winner-team':''}"><span class="team-name">${m.team2.name}</span><span class="team-score">${m.team2.score}</span></div>${line?`<div class="${line} ${act?'active':''}"></div>`:''}</div>`;
+        }
+        
+        function openScore(c, n) {
+            if (!c) return;
+            const p = new URLSearchParams();
+            if (API_URL) p.set('api', API_URL);
+            p.set('court', c);
+            p.set('game', n);
+            window.location.href = `scoreboard.html?${p}`;
+        }
+        
+        function goBack() {
+            const p = new URLSearchParams();
+            if (API_URL) p.set('api', API_URL);
+            window.location.href = `index.html?${p}`;
         }
         
         async function manualRefresh() {
             if (isRefreshing) return;
-            
             isRefreshing = true;
-            const btn = document.getElementById('refreshBtn');
-            btn.disabled = true;
-            
             await fetchScores();
-            
-            setTimeout(() => {
-                isRefreshing = false;
-                btn.disabled = false;
-            }, 2000);
+            setTimeout(() => isRefreshing = false, 2000);
         }
         
-        function getMatchData(games, gameNum, scheduleData = {}) {
-            const matchGames = games.filter(g => g.gameNum === gameNum);
-            
-            if (matchGames.length < 2) {
-                const schedule = scheduleData[gameNum];
-                if (schedule && schedule.team1 && schedule.team2) {
-                    return {
-                        gameNum: gameNum,
-                        team1: {
-                            name: schedule.team1,
-                            score: 0
-                        },
-                        team2: {
-                            name: schedule.team2,
-                            score: 0
-                        },
-                        status: '待機',
-                        court: schedule.court
-                    };
-                }
-                return null;
-            }
-            
-            const team1 = matchGames[0];
-            const team2 = matchGames[1];
-            
-            return {
-                gameNum: gameNum,
-                team1: {
-                    name: team1.team,
-                    score: team1.total || 0
-                },
-                team2: {
-                    name: team2.team,
-                    score: team2.total || 0
-                },
-                status: team1.status || '待機',
-                court: team1.court
-            };
-        }
-        
-        function determineWinner(match) {
-            if (!match || match.status !== '終了') return null;
-            if (match.team1.score > match.team2.score) return 1;
-            if (match.team2.score > match.team1.score) return 2;
-            return null;
-        }
-        
-        function getWinnerName(match) {
-            if (!match || match.status !== '終了') return null;
-            const winner = determineWinner(match);
-            if (winner === 1) return match.team1.name;
-            if (winner === 2) return match.team2.name;
-            return null;
-        }
-        
-        function formatTime(timeValue) {
-            if (!timeValue) return '';
-            
-            if (typeof timeValue === 'number') {
-                const totalMinutes = Math.round(timeValue * 24 * 60);
-                const hours = Math.floor(totalMinutes / 60);
-                const minutes = totalMinutes % 60;
-                return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-            }
-            
-            if (typeof timeValue === 'string') {
-                if (timeValue.includes('T')) {
-                    try {
-                        const date = new Date(timeValue);
-                        const jstDate = new Date(date.getTime() + (9 * 60 * 60 * 1000));
-                        const hours = jstDate.getUTCHours();
-                        const minutes = jstDate.getUTCMinutes();
-                        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-                    } catch (e) {
-                        console.error('時刻パースエラー:', e);
-                    }
-                }
-                
-                if (/^\d{1,2}:\d{2}$/.test(timeValue)) {
-                    const [h, m] = timeValue.split(':');
-                    return `${String(h).padStart(2, '0')}:${m}`;
-                }
-                
-                return timeValue;
-            }
-            
-            return '';
-        }
-        
-        function getSeedTeam(games, scheduleData = {}) {
-            const game5 = games.filter(g => g.gameNum === 5);
-            
-            if (game5.length >= 2) {
-                return game5[1].team;
-            }
-            
-            const schedule = scheduleData[5];
-            if (schedule && schedule.team2) {
-                return schedule.team2;
-            }
-            
-            return null;
-        }
-        
-        function displayTournament(data, scheduleData = {}) {
-            if (!data.games || data.games.length === 0) {
-                document.getElementById('content').innerHTML = 
-                    '<div class="loading">試合データがありません</div>';
-                return;
-            }
-            
-            const matches = {};
-            const allGames = [
-                ...TOURNAMENT_STRUCTURE.round1,
-                ...TOURNAMENT_STRUCTURE.semiFinals,
-                ...TOURNAMENT_STRUCTURE.final,
-                ...TOURNAMENT_STRUCTURE.thirdPlace
-            ];
-            
-            for (let gameNum of allGames) {
-                matches[gameNum] = getMatchData(data.games, gameNum, scheduleData);
-            }
-            
-            const seedTeam = getSeedTeam(data.games, scheduleData);
-            
-            let html = `
-                <div class="tournament-wrapper">
-                    <div class="tournament-container">
-                        <div class="round round-1">
-                            <div class="round-title">1回戦</div>
-                            <div class="round-matches">
-            `;
-            
-            const match1 = matches[1];
-            const winner1 = determineWinner(match1);
-            const schedule1 = scheduleData[1];
-            html += renderMatchCard(match1, 1, 'line-bracket-top', winner1 !== null, schedule1);
-            
-            const match3 = matches[3];
-            const winner3 = determineWinner(match3);
-            const schedule3 = scheduleData[3];
-            html += renderMatchCard(match3, 3, 'line-bracket-bottom', winner3 !== null, schedule3);
-            
-            html += '<div style="height: 20px;"></div>';
-            
-            const match2 = matches[2];
-            const winner2 = determineWinner(match2);
-            const schedule2 = scheduleData[2];
-            html += renderMatchCard(match2, 2, 'line-bracket-top', winner2 !== null, schedule2);
-            
-            if (seedTeam) {
-                const schedule = scheduleData[5];
-                const scheduleInfo = schedule ? `${formatTime(schedule.time)} ${schedule.court}コート` : 'シード';
-                html += `
-                    <div class="match-card seed-card">
-                        <div class="match-info">${scheduleInfo}</div>
-                        <div class="seed-info">
-                            <span class="seed-icon">⭐</span>${seedTeam}
-                        </div>
-                        <div class="line-bracket-bottom active"></div>
-                    </div>
-                `;
-            }
-            
-            html += `
-                            </div>
-                        </div>
-                        
-                        <div class="round round-2">
-                            <div class="round-title">準決勝</div>
-                            <div class="round-matches">
-            `;
-            
-            html += '<div style="height: 60px;"></div>';
-            
-            const match4 = matches[4];
-            const winner4 = determineWinner(match4);
-            const schedule4 = scheduleData[4];
-            html += renderMatchCard(match4, 4, 'line-bracket-top', winner4 !== null, schedule4);
-            
-            html += '<div style="height: 140px;"></div>';
-            
-            const match5 = matches[5];
-            const winner5 = determineWinner(match5);
-            const schedule5 = scheduleData[5];
-            html += renderMatchCard(match5, 5, 'line-bracket-bottom', winner5 !== null, schedule5);
-            
-            html += `
-                            </div>
-                        </div>
-                        
-                        <div class="round round-3">
-                            <div class="round-title">決勝</div>
-                            <div class="round-matches">
-            `;
-            
-            html += '<div style="height: 180px;"></div>';
-            
-            const finalMatch = matches[TOURNAMENT_STRUCTURE.final[0]];
-            const finalSchedule = scheduleData[TOURNAMENT_STRUCTURE.final[0]];
-            html += renderMatchCard(finalMatch, TOURNAMENT_STRUCTURE.final[0], null, false, finalSchedule);
-            
-            html += `<div class="third-place-title">🥉 3位決定戦</div>`;
-            
-            const thirdPlaceMatch = matches[TOURNAMENT_STRUCTURE.thirdPlace[0]];
-            const thirdSchedule = scheduleData[TOURNAMENT_STRUCTURE.thirdPlace[0]];
-            html += renderMatchCard(thirdPlaceMatch, TOURNAMENT_STRUCTURE.thirdPlace[0], null, false, thirdSchedule);
-            
-            html += `
-                            </div>
-                        </div>
-                    </div>
-            `;
-            
-            const finalWinner = getWinnerName(finalMatch);
-            const thirdPlaceWinner = getWinnerName(thirdPlaceMatch);
-            
-            if (finalWinner) {
-                html += `
-                    <div class="champion-section">
-                        <div class="champion-trophy">🏆</div>
-                        <div class="champion-title">優勝</div>
-                        <div class="champion-name">${finalWinner}</div>
-                `;
-                
-                if (thirdPlaceWinner) {
-                    html += `
-                        <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid rgba(133, 100, 4, 0.3);">
-                            <div style="font-size: 0.9em; color: #856404; margin-bottom: 5px;">🥉 第3位</div>
-                            <div style="font-size: 1.5em; font-weight: 300; color: #333;">${thirdPlaceWinner}</div>
-                        </div>
-                    `;
-                }
-                
-                html += `</div>`;
-            }
-            
-            html += `</div>`;
-            
-            document.getElementById('content').innerHTML = html;
-        }
-        
-        function renderMatchCard(match, gameNum, lineClass, isLineActive, schedule = null) {
-            let matchInfoText = `第${gameNum}試合`;
-            
-            if (match && (match.status === '試合中' || match.status === '終了')) {
-                if (match.court) {
-                    matchInfoText = `${match.court}コート 第${gameNum}試合`;
-                }
-            } else {
-                if (schedule) {
-                    const time = formatTime(schedule.time);
-                    matchInfoText = `${schedule.court}コート 第${gameNum}試合 ${time}開始予定`;
-                } else if (match && match.court) {
-                    matchInfoText = `${match.court}コート 第${gameNum}試合`;
-                }
-            }
-            
-            if (!match) {
-                return `
-                    <div class="match-card">
-                        <div class="match-info">${matchInfoText}</div>
+        fetchScores();
+        setInterval(fetchScores, 60000);
+    </script>
+</body>
+</html>
