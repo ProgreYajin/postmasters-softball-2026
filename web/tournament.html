@@ -572,6 +572,9 @@
         };
         
         async function fetchScores() {
+            console.log('fetchScores開始');
+            console.log('API_URL:', API_URL);
+            
             if (!API_URL) {
                 document.getElementById('content').innerHTML = `
                     <div class="loading">
@@ -584,47 +587,89 @@
             
             try {
                 const timestamp = new Date().getTime();
-                const response = await fetch(`${API_URL}?t=${timestamp}`, {
+                const fetchUrl = `${API_URL}?t=${timestamp}`;
+                console.log('Fetching from:', fetchUrl);
+                
+                const response = await fetch(fetchUrl, {
                     method: 'GET',
                     mode: 'cors',
                     cache: 'no-cache'
                 });
+                
+                console.log('Response status:', response.status);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                const data = await response.json();
+                const text = await response.text();
+                console.log('Response text length:', text.length);
                 
-                const scheduleResponse = await fetch(`${API_URL}?type=schedule&t=${timestamp}`, {
+                if (!text || text.trim() === '') {
+                    throw new Error('APIからの応答が空です');
+                }
+                
+                const data = JSON.parse(text);
+                console.log('Data parsed:', data);
+                
+                if (!data.games || !Array.isArray(data.games)) {
+                    throw new Error('games配列が存在しません');
+                }
+                
+                console.log('Games count:', data.games.length);
+                
+                // スケジュールデータ取得
+                const scheduleUrl = `${API_URL}?type=schedule&t=${timestamp}`;
+                console.log('Fetching schedule from:', scheduleUrl);
+                
+                const scheduleResponse = await fetch(scheduleUrl, {
                     method: 'GET',
                     mode: 'cors',
                     cache: 'no-cache'
                 });
                 
+                console.log('Schedule response status:', scheduleResponse.status);
+                
                 let scheduleData = {};
                 if (scheduleResponse.ok) {
-                    const scheduleJson = await scheduleResponse.json();
-                    if (scheduleJson.schedule) {
-                        scheduleData = scheduleJson.schedule.reduce((acc, s) => {
-                            acc[s.gameNum] = {
-                                court: s.court,
-                                time: s.time,
-                                team1: s.team1,
-                                team2: s.team2
-                            };
-                            return acc;
-                        }, {});
+                    const scheduleText = await scheduleResponse.text();
+                    console.log('Schedule response text length:', scheduleText.length);
+                    
+                    if (scheduleText && scheduleText.trim() !== '') {
+                        const scheduleJson = JSON.parse(scheduleText);
+                        console.log('Schedule parsed:', scheduleJson);
+                        
+                        if (scheduleJson.schedule) {
+                            scheduleData = scheduleJson.schedule.reduce((acc, s) => {
+                                acc[s.gameNum] = {
+                                    court: s.court,
+                                    time: s.time,
+                                    team1: s.team1,
+                                    team2: s.team2
+                                };
+                                return acc;
+                            }, {});
+                            console.log('Schedule data processed:', scheduleData);
+                        }
                     }
                 }
                 
+                console.log('Calling displayTournament...');
                 displayTournament(data, scheduleData);
+                console.log('displayTournament完了');
+                
             } catch (error) {
                 console.error('データ取得エラー:', error);
+                console.error('Error stack:', error.stack);
                 document.getElementById('content').innerHTML = 
                     `<div class="loading">
-                        データの読み込みに失敗しました<br>
-                        エラー: ${error.message}
+                        ❌ データの読み込みに失敗しました<br>
+                        <br>
+                        <strong>エラー詳細:</strong><br>
+                        ${error.message}<br>
+                        <br>
+                        <small>API URL: ${API_URL}</small><br>
+                        <small>ブラウザのコンソール（F12）で詳細を確認してください</small>
                     </div>`;
             }
         }
