@@ -1,973 +1,451 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>写真ギャラリー | 2026年千葉県郵便局長ソフトボール大会</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-        }
-        
-        /* ヘッダー */
-        header {
-            background: #003366;
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .header-top {
-            background: #002244;
-            padding: 12px 0;
-            font-size: 0.85em;
-        }
-        
-        .header-top-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .header-logo {
-            cursor: pointer;
-            transition: opacity 0.3s;
-            text-decoration: none;
-            color: white;
-            display: flex;
-            align-items: center;
-        }
-        
-        .header-logo:hover {
-            opacity: 0.8;
-        }
-        
-        .header-logo img {
-            height: 35px;
-            width: auto;
-            display: block;
-        }
-        
-        .header-logo-text {
-            display: none;
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-        
-        .header-logo.fallback img {
-            display: none;
-        }
-        
-        .header-logo.fallback .header-logo-text {
-            display: block;
-        }
-        
-        .header-info {
-            color: #aaa;
-            font-size: 0.9em;
-        }
-        
-        .header-main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 15px 20px;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 25px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            padding-bottom: 5px;
-        }
-        
-        .nav-links::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 0.95em;
-            transition: opacity 0.3s;
-            white-space: nowrap;
-        }
-        
-        .nav-links a:hover {
-            opacity: 0.7;
-        }
-        
-        .scroll-indicator {
-            display: none;
-        }
-        
-        /* クイックリンク（ギャラリー用の追加スタイル） */
-        .gallery-stats {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            flex-wrap: wrap;
-        }
-        
-        .stat-item {
-            text-align: center;
-        }
-        
-        .stat-number {
-            font-size: 2em;
-            font-weight: bold;
-            color: #003366;
-        }
-        
-        .stat-label {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 5px;
-        }
-        
-        /* ページヘッダー（試合速報と同じ） */
-        .page-header {
-            background: white;
-            border-bottom: 3px solid #003366;
-            padding: 40px 20px;
-        }
-        
-        .page-header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .page-title {
-            font-size: 2.2em;
-            font-weight: 300;
-            color: #003366;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
-        
-        .page-subtitle {
-            color: #666;
-            font-size: 1.1em;
-        }
-        
-        .update-info {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #e0e0e0;
-            color: #999;
-            font-size: 0.9em;
-        }
-        
-        /* コンテンツエリア */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-        
-        /* 写真グリッド */
-        .photo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-        
-        .photo-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            position: relative;
-        }
-        
-        .photo-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(0,51,102,0.1) 0%, rgba(0,81,153,0.05) 100%);
-            opacity: 0;
-            transition: opacity 0.4s;
-            z-index: 1;
-            pointer-events: none;
-        }
-        
-        .photo-card:hover::before {
-            opacity: 1;
-        }
-        
-        .photo-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 16px 32px rgba(0,51,102,0.2);
-        }
-        
-        .photo-image-wrapper {
-            position: relative;
-            overflow: hidden;
-            background: #f8f8f8;
-        }
-        
-        .photo-card img {
-            width: 100%;
-            height: 280px;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .photo-card:hover img {
-            transform: scale(1.08);
-        }
-        
-        .photo-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
-            opacity: 0;
-            transition: opacity 0.4s;
-            display: flex;
-            align-items: flex-end;
-            padding: 20px;
-            z-index: 2;
-        }
-        
-        .photo-card:hover .photo-overlay {
-            opacity: 1;
-        }
-        
-        .photo-overlay-text {
-            color: white;
-            font-size: 0.9em;
-            font-weight: 500;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .photo-info {
-            padding: 18px 20px;
-            text-align: left;
-            background: white;
-            position: relative;
-            z-index: 3;
-        }
-        
-        .photo-author {
-            font-size: 0.95em;
-            color: #003366;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .photo-author::before {
-            content: '📷';
-            font-size: 1.1em;
-        }
-        
-        .photo-timestamp {
-            font-size: 0.8em;
-            color: #999;
-            margin-top: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .photo-timestamp::before {
-            content: '🕐';
-            font-size: 1em;
-        }
-        
-        /* ローディング・エラー表示 */
-        .loading {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-        }
-        
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #f0f0f0;
-            border-top: 4px solid #003366;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .no-photos {
-            text-align: center;
-            padding: 60px 20px;
-            background: white;
-            border-radius: 8px;
-            color: #666;
-            font-size: 1.2em;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .no-photos-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-        }
-        
-        .error-box {
-            background: white;
-            border-radius: 8px;
-            padding: 40px;
-            text-align: center;
-            color: #666;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .error-box h2 {
-            color: #ff6b6b;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-        }
-        
-        .error-box code {
-            background: #f5f5f5;
-            padding: 10px;
-            display: block;
-            margin: 10px 0;
-            border-radius: 5px;
-            word-break: break-all;
-            font-size: 0.9em;
-        }
-        
-        /* モーダル */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.97);
-            justify-content: center;
-            align-items: center;
-            overflow: auto;
-            padding: 20px;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .modal.active {
-            display: flex;
-        }
-        
-        .modal-content {
-            max-width: 90vw;
-            max-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            animation: zoomIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        @keyframes zoomIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-        
-        .modal-content img {
-            max-width: 100%;
-            max-height: 80vh;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-        }
-        
-        .modal-info {
-            margin-top: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            align-items: center;
-        }
-        
-        .modal-author {
-            text-align: center;
-            color: white;
-            font-size: 1.1em;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            padding: 12px 28px;
-            border-radius: 30px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .modal-author::before {
-            content: '📷';
-            font-size: 1.3em;
-        }
-        
-        .modal-timestamp {
-            color: rgba(255,255,255,0.7);
-            font-size: 0.9em;
-            background: rgba(255,255,255,0.05);
-            padding: 8px 20px;
-            border-radius: 20px;
-        }
-        
-        .close-modal {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            color: white;
-            font-size: 36px;
-            font-weight: 300;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-        
-        .close-modal:hover {
-            background: rgba(255,255,255,0.25);
-            transform: rotate(90deg);
-            border-color: rgba(255,255,255,0.4);
-        }
-        
-        /* フッター */
-        footer {
-            background: #002244;
-            color: white;
-            padding: 20px;
-            margin-top: 60px;
-            text-align: center;
-        }
-        
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .copyright {
-            font-size: 0.85em;
-            opacity: 0.6;
-        }
-        
-        /* レスポンシブ */
-        @media (max-width: 768px) {
-            .header-main {
-                position: relative;
-                overflow: hidden;
-            }
-            
-            .nav-links {
-                width: 100%;
-                justify-content: flex-start;
-                padding-bottom: 5px;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                flex-wrap: nowrap;
-            }
-            
-            .nav-links a {
-                flex-shrink: 0;
-            }
-            
-            .scroll-indicator {
-                display: none;
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-                height: 47px;
-                width: 30px;
-                align-items: center;
-                justify-content: center;
-                font-size: 1.2em;
-                color: white;
-                background-color: #003366;
-                cursor: pointer;
-                z-index: 10;
-            }
-            .scroll-indicator.left {
-                left: 0;
-                right: auto;
-            }
-            .scroll-indicator.right {
-                right: 0;
-                left: auto;
-            }
-            
-            .page-title {
-                font-size: 1.6em;
-            }
-            
-            .gallery-stats {
-                gap: 20px;
-                padding: 15px;
-            }
-            
-            .stat-number {
-                font-size: 1.5em;
-            }
-            
-            .stat-label {
-                font-size: 0.8em;
-            }
-            
-            .page-title {
-                font-size: 1.6em;
-            }
-            
-            .photo-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 15px;
-            }
-            
-            .photo-card img {
-                height: 200px;
-            }
-            
-            .photo-info {
-                padding: 12px 15px;
-            }
-            
-            .photo-author {
-                font-size: 0.85em;
-            }
-            
-            .photo-timestamp {
-                font-size: 0.75em;
-            }
-            
-            .close-modal {
-                top: 15px;
-                right: 15px;
-                width: 50px;
-                height: 50px;
-                font-size: 30px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="header-top">
-            <div class="header-top-content">
-                <a href="#" onclick="goBack(); return false;" class="header-logo" id="headerLogo">
-                    <img src="https://drive.google.com/thumbnail?id=1i01jLSCnme9KdDuBwL8MufLNGdeo_d0x" alt="全国郵便局長会" onerror="handleLogoError()">
-                    <span class="header-logo-text">🏣 全国郵便局長会</span>
-                </a>
-                <div class="header-info">
-                    2026年千葉県郵便局長ソフトボール大会 | 2026.6.6
-                </div>
-            </div>
-        </div>
-        <div class="header-main">
-            <nav class="nav-links" id="navLinks">
-                <a href="scoreboard.html" class="dynamic-link">試合速報 / 試合結果</a>
-                <a href="gallery.html" class="dynamic-link">写真ギャラリー</a>
-                <a href="schedule.html" class="dynamic-link">大会スケジュール</a>
-                <a href="tournament.html" class="dynamic-link">トーナメント表</a>
-                <a href="teams.html" class="dynamic-link">チーム・選手一覧</a>
-                <a href="venue.html" class="dynamic-link">会場案内・アクセス</a>
-                <a href="rules.html" class="dynamic-link">大会ルール・規約</a>
-                <a href="history.html" class="dynamic-link">優勝記録・歴史</a>
-            </nav>
-            <div class="scroll-indicator left" id="scrollIndicatorLeft">◀︎</div>
-            <div class="scroll-indicator right" id="scrollIndicatorRight">▶︎</div>
-        </div>
-    </header>
+// ============================================
+// 観客用BOT - Cloudflare R2対応版（改善版）
+// ============================================
+
+// プロパティを一度だけ読み込み（パフォーマンス改善）
+const PROPS = PropertiesService.getScriptProperties();
+const CONFIG = {
+  LINE_ACCESS_TOKEN: PROPS.getProperty('LINE_ACCESS_TOKEN'),
+  R2_UPLOAD_WORKER_URL: PROPS.getProperty('R2_UPLOAD_WORKER_URL'),
+  WORKER_AUTH_TOKEN: PROPS.getProperty('WORKER_AUTH_TOKEN'),
+  R2_PUBLIC_URL: PROPS.getProperty('R2_PUBLIC_URL'),
+  MAX_IMAGE_SIZE_MB: 10 // 画像サイズ上限（MB）
+};
+
+// 定数
+const SHEET_NAME = '写真投稿';
+const MAX_IMAGE_SIZE_BYTES = CONFIG.MAX_IMAGE_SIZE_MB * 1024 * 1024;
+
+// ============================================
+// LINE Webhook受信
+// ============================================
+function doPost(e) {
+  try {
+    if (!e || !e.postData) {
+      return ContentService.createTextOutput(JSON.stringify({status: 'ok'}));
+    }
+
+    const json = JSON.parse(e.postData.contents);
+    const events = json.events;
     
-    <div class="page-header">
-        <div class="page-header-content">
-            <h1 class="page-title">📸 写真ギャラリー</h1>
-            <p class="page-subtitle">Photo Gallery</p>
-            <div class="update-info" id="updateInfo">読み込み中...</div>
-        </div>
-    </div>
+    if (!events) return ContentService.createTextOutput('ok');
+
+    events.forEach(event => {
+      if (event.type === 'message') {
+        const userId = event.source.userId;
+        const replyToken = event.replyToken;
+        
+        // 画像メッセージの場合
+        if (event.message.type === 'image') {
+          handleImageMessage(event.message.id, userId, replyToken);
+        }
+      }
+      // スタッフBotからのブロードキャスト指示
+      else if (event.type === 'message' && event.message.type === 'text') {
+        if (event.message.text.startsWith('[BROADCAST]')) {
+          const message = event.message.text.replace('[BROADCAST]', '').trim();
+          broadcastToAllUsers(message);
+        }
+      }
+    });
     
-    <div class="container">
-        <div class="gallery-stats" id="galleryStats" style="display: none;">
-            <div class="stat-item">
-                <div class="stat-number" id="photoCount">0</div>
-                <div class="stat-label">投稿枚数</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="contributorCount">0</div>
-                <div class="stat-label">投稿者数</div>
-            </div>
-        </div>
-        
-        <div class="photo-grid" id="photoGrid">
-            <div class="loading">
-                <div class="loading-spinner"></div>
-                <div>写真を読み込んでいます...</div>
-            </div>
-        </div>
-    </div>
+    return ContentService.createTextOutput(JSON.stringify({status: 'ok'}))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    Logger.log('doPost エラー: ' + error);
+    return ContentService.createTextOutput(JSON.stringify({
+      status: 'error',
+      message: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ============================================
+// 画像メッセージ処理
+// ============================================
+function handleImageMessage(messageId, userId, replyToken) {
+  try {
+    // 設定チェック
+    if (!CONFIG.R2_UPLOAD_WORKER_URL || !CONFIG.WORKER_AUTH_TOKEN) {
+      Logger.log('エラー: R2設定が不完全です');
+      replyMessage(replyToken, '⚠️ システム設定エラー\n管理者に連絡してください');
+      return;
+    }
+
+    // LINEから画像を取得
+    const imageResult = getImageFromLine(messageId);
     
-    <div class="modal" id="modal">
-        <span class="close-modal" onclick="closeModal()">&times;</span>
-        <div class="modal-content">
-            <img id="modalImage" src="" alt="写真">
-            <div class="modal-info">
-                <div class="modal-author" id="modalAuthor"></div>
-                <div class="modal-timestamp" id="modalTimestamp"></div>
-            </div>
-        </div>
-    </div>
+    if (!imageResult.success) {
+      Logger.log('画像取得失敗: ' + imageResult.error);
+      replyMessage(replyToken, '⚠️ 画像の取得に失敗しました\n' + imageResult.error);
+      return;
+    }
+    
+    const { blob, contentType, size } = imageResult;
+    
+    // サイズチェック
+    if (size > MAX_IMAGE_SIZE_BYTES) {
+      const sizeMB = (size / (1024 * 1024)).toFixed(2);
+      Logger.log(`画像サイズ超過: ${sizeMB}MB`);
+      replyMessage(replyToken, `⚠️ 画像サイズが大きすぎます\n最大: ${CONFIG.MAX_IMAGE_SIZE_MB}MB / 送信: ${sizeMB}MB`);
+      return;
+    }
+    
+    // R2にアップロード
+    const timestamp = new Date().getTime();
+    const extension = getExtensionFromMimeType(contentType);
+    const filename = `photo_${timestamp}_${messageId}${extension}`;
+    
+    const uploadResult = uploadToR2(blob, filename, contentType);
+    
+    if (!uploadResult.success) {
+      Logger.log('R2アップロード失敗: ' + uploadResult.error);
+      replyMessage(replyToken, '⚠️ 画像のアップロードに失敗しました\nもう一度お試しください');
+      return;
+    }
+    
+    // ユーザー名取得
+    const userName = getUserName(userId);
+    
+    // スプレッドシートに記録
+    savePhotoRecord(uploadResult.url, uploadResult.url, userName, userId, messageId, contentType);
+    
+    // 成功メッセージ
+    const sizeMB = (size / (1024 * 1024)).toFixed(2);
+    replyMessage(replyToken, `📸 写真を受け付けました！\n\nサイズ: ${sizeMB}MB\nギャラリーに表示されます`);
+    
+    Logger.log(`✓ 写真受信成功: ${userName} (${sizeMB}MB) → ${uploadResult.url}`);
+    
+  } catch (error) {
+    Logger.log('画像処理エラー: ' + error.stack || error);
+    replyMessage(replyToken, '⚠️ 画像の処理中にエラーが発生しました');
+  }
+}
 
-    <footer>
-        <div class="footer-content">
-            <div class="copyright">
-                © 2026 千葉県印旛地区郵便局長会
-            </div>
-        </div>
-    </footer>
+// ============================================
+// LINEから画像取得（改善版）
+// ============================================
+function getImageFromLine(messageId) {
+  const url = `https://api-data.line.me/v2/bot/message/${messageId}/content`;
+  
+  try {
+    const response = UrlFetchApp.fetch(url, {
+      headers: {
+        'Authorization': 'Bearer ' + CONFIG.LINE_ACCESS_TOKEN
+      },
+      muteHttpExceptions: true
+    });
+    
+    const statusCode = response.getResponseCode();
+    
+    if (statusCode !== 200) {
+      return {
+        success: false,
+        error: `HTTP ${statusCode}: ${response.getContentText()}`
+      };
+    }
+    
+    const blob = response.getBlob();
+    const contentType = response.getHeaders()['Content-Type'] || 'image/jpeg';
+    const size = blob.getBytes().length;
+    
+    Logger.log(`画像取得成功: ${contentType}, ${(size / 1024).toFixed(2)}KB`);
+    
+    return {
+      success: true,
+      blob: blob,
+      contentType: contentType,
+      size: size
+    };
+    
+  } catch (error) {
+    return {
+      success: false,
+      error: error.toString()
+    };
+  }
+}
 
-    <script>
-        // XSS対策用HTMLエスケープ関数
-        function escapeHtml(str) {
-            if (str == null) return '';
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-        }
-        
-        // ロゴ画像エラーハンドリング
-        function handleLogoError() {
-            const logoElement = document.getElementById('headerLogo');
-            if (logoElement) {
-                logoElement.classList.add('fallback');
-            }
-        }
-        
-        // URLパラメータ処理
-        const urlParams = new URLSearchParams(window.location.search);
-        
-        if (urlParams.get('audience_api')) {
-            localStorage.setItem('AUDIENCE_BOT_API_URL', urlParams.get('audience_api'));
-        }
-        if (urlParams.get('staff_api')) {
-            localStorage.setItem('STAFF_BOT_API_URL', urlParams.get('staff_api'));
-        }
-        if (urlParams.get('api')) {
-            localStorage.setItem('AUDIENCE_BOT_API_URL', urlParams.get('api'));
-        }
-        
-        const AUDIENCE_API_URL = localStorage.getItem('AUDIENCE_BOT_API_URL') || '';
-        const STAFF_API_URL = localStorage.getItem('STAFF_BOT_API_URL') || '';
-        const API_URL = AUDIENCE_API_URL || STAFF_API_URL;
-        
-        console.log('API URL:', API_URL);
-        
-        // ナビゲーションリンクにパラメータ付与
-        function initializeDynamicLinks() {
-            const dynamicLinks = document.querySelectorAll('.dynamic-link');
-            const currentParams = new URLSearchParams(window.location.search);
-            
-            dynamicLinks.forEach(link => {
-                const url = new URL(link.href, window.location.origin);
-                const targetParams = new URLSearchParams(url.search);
+// ============================================
+// R2にアップロード（改善版）
+// ============================================
+function uploadToR2(blob, filename, contentType) {
+  try {
+    Logger.log(`R2アップロード開始: ${filename} (${contentType})`);
+    
+    const response = UrlFetchApp.fetch(CONFIG.R2_UPLOAD_WORKER_URL, {
+      method: 'post',
+      contentType: 'application/octet-stream',
+      payload: blob.getBytes(),
+      headers: {
+        'X-Filename': filename,
+        'X-Content-Type': contentType,
+        'X-Auth-Token': CONFIG.WORKER_AUTH_TOKEN
+      },
+      muteHttpExceptions: true
+    });
+    
+    const statusCode = response.getResponseCode();
+    const responseText = response.getContentText();
+    
+    Logger.log(`Worker応答: HTTP ${statusCode}`);
+    Logger.log(`Worker応答内容: ${responseText}`);
+    
+    if (statusCode !== 200) {
+      return {
+        success: false,
+        error: `Worker error (${statusCode}): ${responseText}`
+      };
+    }
+    
+    try {
+      const result = JSON.parse(responseText);
+      
+      if (result.success) {
+        return {
+          success: true,
+          url: result.url
+        };
+      } else {
+        return {
+          success: false,
+          error: result.error || 'Unknown error'
+        };
+      }
+    } catch (parseError) {
+      return {
+        success: false,
+        error: `JSONパースエラー: ${parseError.toString()}`
+      };
+    }
+    
+  } catch (error) {
+    Logger.log('R2アップロード例外: ' + error.stack || error);
+    return {
+      success: false,
+      error: error.toString()
+    };
+  }
+}
 
-                currentParams.forEach((value, key) => {
-                    if (!targetParams.has(key)) {
-                        targetParams.set(key, value);
-                    }
-                });
+// ============================================
+// MIMEタイプから拡張子を取得
+// ============================================
+function getExtensionFromMimeType(mimeType) {
+  const mimeMap = {
+    'image/jpeg': '.jpg',
+    'image/jpg': '.jpg',
+    'image/png': '.png',
+    'image/gif': '.gif',
+    'image/webp': '.webp',
+    'image/bmp': '.bmp'
+  };
+  
+  return mimeMap[mimeType.toLowerCase()] || '.jpg';
+}
 
-                const filename = url.pathname.split('/').pop();
-                if (filename === 'gallery.html') {
-                    const apiToUse = AUDIENCE_API_URL || STAFF_API_URL;
-                    if (apiToUse && !targetParams.has('api')) {
-                        targetParams.set('api', apiToUse);
-                    }
-                } else {
-                    if (STAFF_API_URL && !targetParams.has('api')) {
-                        targetParams.set('api', STAFF_API_URL);
-                    }
-                }
+// ============================================
+// ユーザー名取得
+// ============================================
+function getUserName(userId) {
+  const url = `https://api.line.me/v2/bot/profile/${userId}`;
+  
+  try {
+    const response = UrlFetchApp.fetch(url, {
+      headers: {
+        'Authorization': 'Bearer ' + CONFIG.LINE_ACCESS_TOKEN
+      },
+      muteHttpExceptions: true
+    });
+    
+    if (response.getResponseCode() === 200) {
+      const profile = JSON.parse(response.getContentText());
+      return profile.displayName || '投稿者';
+    }
+  } catch (error) {
+    Logger.log('ユーザー名取得エラー: ' + error);
+  }
+  
+  return '投稿者';
+}
 
-                if (targetParams.toString()) {
-                    url.search = targetParams.toString();
-                    link.href = url.toString();
-                }
-            });
+// ============================================
+// 写真記録を保存
+// ============================================
+function savePhotoRecord(fullImageUrl, thumbnailUrl, userName, userId, messageId, contentType) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName(SHEET_NAME);
+    
+    // シートが存在しない場合は作成
+    if (!sheet) {
+      sheet = ss.insertSheet(SHEET_NAME);
+      sheet.appendRow([
+        'タイムスタンプ',
+        'ユーザー名',
+        'ユーザーID',
+        '画像URL（フル）',
+        '画像URL（サムネイル）',
+        'メッセージID',
+        'MIMEタイプ'
+      ]);
+      sheet.getRange(1, 1, 1, 7).setFontWeight('bold');
+    }
+    
+    const now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd HH:mm:ss');
+    sheet.appendRow([now, userName, userId, fullImageUrl, thumbnailUrl, messageId, contentType]);
+    
+    Logger.log(`✓ シート記録完了: ${userName}`);
+    
+  } catch (error) {
+    Logger.log('シート記録エラー: ' + error);
+    throw error;
+  }
+}
+
+// ============================================
+// LINE返信
+// ============================================
+function replyMessage(replyToken, message) {
+  const url = 'https://api.line.me/v2/bot/message/reply';
+  
+  try {
+    UrlFetchApp.fetch(url, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + CONFIG.LINE_ACCESS_TOKEN
+      },
+      payload: JSON.stringify({
+        replyToken: replyToken,
+        messages: [{ type: 'text', text: message }]
+      }),
+      muteHttpExceptions: true
+    });
+  } catch (error) {
+    Logger.log('LINE返信エラー: ' + error);
+  }
+}
+
+// ============================================
+// ブロードキャスト機能
+// ============================================
+function broadcastToAllUsers(message) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const userSheet = ss.getSheetByName('ユーザー一覧');
+    
+    if (!userSheet || userSheet.getLastRow() <= 1) {
+      Logger.log('ブロードキャスト: 対象ユーザーなし');
+      return;
+    }
+    
+    const userData = userSheet.getDataRange().getValues();
+    const userIds = [];
+    
+    for (let i = 1; i < userData.length; i++) {
+      if (userData[i][1]) {
+        userIds.push(userData[i][1]);
+      }
+    }
+    
+    if (userIds.length === 0) {
+      Logger.log('ブロードキャスト: 有効なユーザーIDなし');
+      return;
+    }
+    
+    // LINE Messaging APIのマルチキャスト
+    const url = 'https://api.line.me/v2/bot/message/multicast';
+    const payload = {
+      to: userIds.slice(0, 500), // 最大500ユーザー
+      messages: [{ type: 'text', text: message }]
+    };
+    
+    const response = UrlFetchApp.fetch(url, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + CONFIG.LINE_ACCESS_TOKEN
+      },
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    });
+    
+    Logger.log(`ブロードキャスト送信: ${userIds.length}人, HTTP ${response.getResponseCode()}`);
+    
+  } catch (error) {
+    Logger.log('ブロードキャストエラー: ' + error);
+  }
+}
+
+// ============================================
+// Web API: ギャラリーデータ取得
+// ============================================
+function doGet(e) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName(SHEET_NAME);
+    
+    if (!sheet || sheet.getLastRow() <= 1) {
+      return ContentService.createTextOutput(JSON.stringify({
+        lastUpdate: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd HH:mm:ss'),
+        photos: []
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    const photos = [];
+    
+    // ヘッダー行をスキップ（i=1から）
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][3]) { // 画像URLが存在する場合のみ
+        // タイムスタンプをフォーマット
+        let formattedTimestamp = '';
+        if (data[i][0]) {
+          if (data[i][0] instanceof Date) {
+            formattedTimestamp = Utilities.formatDate(data[i][0], 'Asia/Tokyo', 'yyyy-MM-dd HH:mm:ss');
+          } else if (typeof data[i][0] === 'string') {
+            // すでに文字列の場合はそのまま使用
+            formattedTimestamp = data[i][0];
+          }
         }
         
-        // 写真データ取得
-        async function fetchPhotos() {
-            if (!API_URL) {
-                document.getElementById('photoGrid').innerHTML = `
-                    <div class="error-box">
-                        <h2>⚠️ API URLが設定されていません</h2>
-                        <p>以下の形式でアクセスしてください:</p>
-                        <code>${window.location.origin}${window.location.pathname}?api=YOUR_API_URL</code>
-                        <p style="font-size:0.9em;color:#999;margin-top:10px;">
-                            例: ?api=https://script.google.com/macros/s/AKfycby.../exec
-                        </p>
-                    </div>
-                `;
-                return;
-            }
-            
-            try {
-                const timestamp = new Date().getTime();
-                const fetchUrl = `${API_URL}?t=${timestamp}`;
-                console.log('Fetching from:', fetchUrl);
-                
-                const response = await fetch(fetchUrl, {
-                    method: 'GET',
-                    mode: 'cors',
-                    cache: 'no-cache'
-                });
-                
-                console.log('Response status:', response.status);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                console.log('Data received:', data);
-                
-                displayPhotos(data);
-                
-                const photoCount = data.photos ? data.photos.length : 0;
-                document.getElementById('updateInfo').textContent = 
-                    `最終更新: ${data.lastUpdate || '不明'} | 投稿枚数: ${photoCount}枚`;
-            } catch (error) {
-                console.error('データ取得エラー:', error);
-                document.getElementById('photoGrid').innerHTML = `
-                    <div class="error-box">
-                        <h2>⚠️ 写真の読み込みに失敗しました</h2>
-                        <p>エラー詳細: ${escapeHtml(error.message)}</p>
-                        <p style="margin-top:10px;">API URL: <code>${escapeHtml(API_URL)}</code></p>
-                        <p style="font-size:0.9em;color:#999;margin-top:10px;">
-                            ・API URLが正しいか確認してください<br>
-                            ・ネットワーク接続を確認してください<br>
-                            ・開発者ツールのコンソールでエラーを確認してください
-                        </p>
-                    </div>
-                `;
-            }
-        }
-        
-        // 写真表示
-        function displayPhotos(data) {
-            const grid = document.getElementById('photoGrid');
-            
-            if (!data.photos || data.photos.length === 0) {
-                grid.innerHTML = `
-                    <div class="no-photos">
-                        <div class="no-photos-icon">📷</div>
-                        <div>まだ写真が投稿されていません</div>
-                        <div style="font-size:0.8em;margin-top:10px;color:#999;">
-                            LINE Botに写真を送信すると、ここに表示されます
-                        </div>
-                    </div>
-                `;
-                document.getElementById('galleryStats').style.display = 'none';
-                return;
-            }
-            
-            // 統計情報を表示
-            const uniqueContributors = new Set(data.photos.map(p => p.userName)).size;
-            document.getElementById('photoCount').textContent = data.photos.length;
-            document.getElementById('contributorCount').textContent = uniqueContributors;
-            document.getElementById('galleryStats').style.display = 'flex';
-            
-            let html = '';
-            data.photos.forEach(photo => {
-                const userName = escapeHtml(photo.userName || '投稿者');
-                const timestamp = escapeHtml(photo.timestamp || '');
-                const photoData = JSON.stringify(photo.fullImage).replace(/"/g, '&quot;');
-                const userNameData = JSON.stringify(userName).replace(/"/g, '&quot;');
-                const timestampData = JSON.stringify(timestamp).replace(/"/g, '&quot;');
-                
-                html += `
-                    <div class="photo-card" onclick='openModal(${photoData}, ${userNameData}, ${timestampData})'>
-                        <div class="photo-image-wrapper">
-                            <img src="${escapeHtml(photo.thumbnail)}" alt="大会写真" loading="lazy" onerror="this.src='${escapeHtml(photo.fullImage)}'">
-                            <div class="photo-overlay">
-                                <div class="photo-overlay-text">クリックして拡大</div>
-                            </div>
-                        </div>
-                        <div class="photo-info">
-                            <div class="photo-author">${userName}</div>
-                            ${timestamp ? `<div class="photo-timestamp">${formatTimestamp(timestamp)}</div>` : ''}
-                        </div>
-                    </div>
-                `;
-            });
-            
-            grid.innerHTML = html;
-        }
-        
-        // タイムスタンプフォーマット
-        function formatTimestamp(timestamp) {
-            if (!timestamp) return '';
-            
-            // "2026/06/06 14:30:45" 形式を "6/6 14:30" に変換
-            const match = timestamp.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})\s+(\d{1,2}):(\d{2})/);
-            if (match) {
-                const month = parseInt(match[2]);
-                const day = parseInt(match[3]);
-                const hour = match[4];
-                const minute = match[5];
-                return `${month}/${day} ${hour}:${minute}`;
-            }
-            
-            return timestamp;
-        }
-        
-        // モーダル表示
-        function openModal(imageUrl, userName, timestamp) {
-            document.getElementById('modalImage').src = imageUrl;
-            document.getElementById('modalAuthor').textContent = userName;
-            
-            const timestampEl = document.getElementById('modalTimestamp');
-            if (timestamp) {
-                timestampEl.textContent = formatTimestamp(timestamp);
-                timestampEl.style.display = 'block';
-            } else {
-                timestampEl.style.display = 'none';
-            }
-            
-            document.getElementById('modal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-        
-        // モーダル閉じる
-        function closeModal() {
-            document.getElementById('modal').classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        
-        // 戻るボタン
-        function goBack() {
-            const params = new URLSearchParams();
-            if (API_URL) params.set('api', API_URL);
-            window.location.href = `index.html?${params.toString()}`;
-        }
-        
-        // Escキーでモーダルを閉じる
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
+        photos.push({
+          timestamp: formattedTimestamp,
+          userName: data[i][1],
+          fullImage: data[i][3],
+          thumbnail: data[i][4] || data[i][3], // サムネイルがない場合はフル画像
+          contentType: data[i][6] || 'image/jpeg'
         });
-        
-        // モーダル背景クリックで閉じる
-        document.getElementById('modal').addEventListener('click', (e) => {
-            if (e.target.id === 'modal') closeModal();
-        });
-        
-        // スクロールインジケーター
-        const navLinks = document.getElementById('navLinks');
-        const scrollIndicatorLeft = document.getElementById('scrollIndicatorLeft');
-        const scrollIndicatorRight = document.getElementById('scrollIndicatorRight');
-        const threshold = 10;
-        
-        function updateScrollIndicator() {
-            if (!navLinks || !scrollIndicatorLeft || !scrollIndicatorRight) return;
+      }
+    }
+    
+    // 新しい順に並び替え
+    photos.reverse();
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      lastUpdate: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd HH:mm:ss'),
+      photos: photos
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    Logger.log('doGet エラー: ' + error);
+    return ContentService.createTextOutput(JSON.stringify({
+      error: error.toString(),
+      photos: []
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
 
-            const maxScroll = navLinks.scrollWidth - navLinks.clientWidth;
-            const currentScroll = navLinks.scrollLeft;
-
-            if (maxScroll <= threshold) {
-                scrollIndicatorLeft.style.display = 'none';
-                scrollIndicatorRight.style.display = 'none';
-                return;
-            }
-
-            if (currentScroll > threshold) {
-                scrollIndicatorLeft.style.display = 'flex';
-            } else {
-                scrollIndicatorLeft.style.display = 'none';
-            }
-
-            if (currentScroll < maxScroll - threshold) {
-                scrollIndicatorRight.style.display = 'flex';
-            } else {
-                scrollIndicatorRight.style.display = 'none';
-            }
-        }
-        
-        if (navLinks) {
-            navLinks.addEventListener('scroll', updateScrollIndicator);
-            window.addEventListener('resize', updateScrollIndicator);
-            updateScrollIndicator();
-        }
-        
-        if (scrollIndicatorLeft) {
-            scrollIndicatorLeft.addEventListener('click', () => {
-                navLinks.scrollBy({ left: -200, behavior: 'smooth' });
-            });
-        }
-        
-        if (scrollIndicatorRight) {
-            scrollIndicatorRight.addEventListener('click', () => {
-                navLinks.scrollBy({ left: 200, behavior: 'smooth' });
-            });
-        }
-        
-        // 初期化
-        initializeDynamicLinks();
-        fetchPhotos();
-        setInterval(fetchPhotos, 30000);
-    </script>
-</body>
-</html>
+// ============================================
+// 設定確認用関数（デバッグ用）
+// ============================================
+function checkConfig() {
+  Logger.log('=== 設定確認 ===');
+  Logger.log('LINE_ACCESS_TOKEN: ' + (CONFIG.LINE_ACCESS_TOKEN ? '✓ 設定済み' : '✗ 未設定'));
+  Logger.log('R2_UPLOAD_WORKER_URL: ' + (CONFIG.R2_UPLOAD_WORKER_URL || '✗ 未設定'));
+  Logger.log('WORKER_AUTH_TOKEN: ' + (CONFIG.WORKER_AUTH_TOKEN ? '✓ 設定済み' : '✗ 未設定'));
+  Logger.log('R2_PUBLIC_URL: ' + (CONFIG.R2_PUBLIC_URL || '✗ 未設定'));
+  Logger.log('MAX_IMAGE_SIZE_MB: ' + CONFIG.MAX_IMAGE_SIZE_MB);
+}
