@@ -115,7 +115,36 @@
             display: none;
         }
         
-        /* ページヘッダー */
+        /* クイックリンク（ギャラリー用の追加スタイル） */
+        .gallery-stats {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #003366;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        /* ページヘッダー（試合速報と同じ） */
         .page-header {
             background: white;
             border-bottom: 3px solid #003366;
@@ -158,43 +187,122 @@
         /* 写真グリッド */
         .photo-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
         }
         
         .photo-card {
             background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            position: relative;
+        }
+        
+        .photo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,51,102,0.1) 0%, rgba(0,81,153,0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .photo-card:hover::before {
+            opacity: 1;
         }
         
         .photo-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 16px 32px rgba(0,51,102,0.2);
+        }
+        
+        .photo-image-wrapper {
+            position: relative;
+            overflow: hidden;
+            background: #f8f8f8;
         }
         
         .photo-card img {
             width: 100%;
-            height: 250px;
+            height: 280px;
             object-fit: cover;
             display: block;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .photo-card:hover img {
+            transform: scale(1.08);
+        }
+        
+        .photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+            z-index: 2;
+        }
+        
+        .photo-card:hover .photo-overlay {
+            opacity: 1;
+        }
+        
+        .photo-overlay-text {
+            color: white;
+            font-size: 0.9em;
+            font-weight: 500;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         
         .photo-info {
-            padding: 15px;
-            text-align: center;
-            border-top: 1px solid #f0f0f0;
+            padding: 18px 20px;
+            text-align: left;
+            background: white;
+            position: relative;
+            z-index: 3;
         }
         
         .photo-author {
-            font-size: 0.9em;
-            color: #666;
-            font-weight: 500;
+            font-size: 0.95em;
+            color: #003366;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .photo-author::before {
+            content: '📷';
+            font-size: 1.1em;
+        }
+        
+        .photo-timestamp {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .photo-timestamp::before {
+            content: '🕐';
+            font-size: 1em;
         }
         
         /* ローディング・エラー表示 */
@@ -268,11 +376,17 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.95);
+            background: rgba(0,0,0,0.97);
             justify-content: center;
             align-items: center;
             overflow: auto;
             padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         .modal.active {
@@ -285,49 +399,90 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            animation: zoomIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
         
         .modal-content img {
             max-width: 100%;
-            max-height: 85vh;
+            max-height: 80vh;
             width: auto;
             height: auto;
             object-fit: contain;
-            border-radius: 8px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        
+        .modal-info {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
         }
         
         .modal-author {
             text-align: center;
             color: white;
-            margin-top: 20px;
-            font-size: 1em;
-            background: rgba(0,0,0,0.5);
-            padding: 10px 20px;
+            font-size: 1.1em;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .modal-author::before {
+            content: '📷';
+            font-size: 1.3em;
+        }
+        
+        .modal-timestamp {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9em;
+            background: rgba(255,255,255,0.05);
+            padding: 8px 20px;
             border-radius: 20px;
         }
         
         .close-modal {
-            position: absolute;
-            top: 20px;
-            right: 40px;
+            position: fixed;
+            top: 30px;
+            right: 30px;
             color: white;
-            font-size: 40px;
-            font-weight: bold;
+            font-size: 36px;
+            font-weight: 300;
             cursor: pointer;
-            transition: opacity 0.3s;
-            background: rgba(0,0,0,0.5);
-            width: 50px;
-            height: 50px;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             line-height: 1;
+            border: 2px solid rgba(255,255,255,0.2);
         }
         
         .close-modal:hover {
-            opacity: 0.7;
+            background: rgba(255,255,255,0.25);
+            transform: rotate(90deg);
+            border-color: rgba(255,255,255,0.4);
         }
         
         /* フッター */
@@ -397,20 +552,49 @@
                 font-size: 1.6em;
             }
             
+            .gallery-stats {
+                gap: 20px;
+                padding: 15px;
+            }
+            
+            .stat-number {
+                font-size: 1.5em;
+            }
+            
+            .stat-label {
+                font-size: 0.8em;
+            }
+            
+            .page-title {
+                font-size: 1.6em;
+            }
+            
             .photo-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 10px;
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 15px;
             }
             
             .photo-card img {
-                height: 150px;
+                height: 200px;
+            }
+            
+            .photo-info {
+                padding: 12px 15px;
+            }
+            
+            .photo-author {
+                font-size: 0.85em;
+            }
+            
+            .photo-timestamp {
+                font-size: 0.75em;
             }
             
             .close-modal {
-                top: 10px;
-                right: 10px;
-                width: 40px;
-                height: 40px;
+                top: 15px;
+                right: 15px;
+                width: 50px;
+                height: 50px;
                 font-size: 30px;
             }
         }
@@ -447,13 +631,24 @@
     
     <div class="page-header">
         <div class="page-header-content">
-            <h1 class="page-title">📸 大会写真ギャラリー</h1>
+            <h1 class="page-title">📸 写真ギャラリー</h1>
             <p class="page-subtitle">Photo Gallery</p>
             <div class="update-info" id="updateInfo">読み込み中...</div>
         </div>
     </div>
     
     <div class="container">
+        <div class="gallery-stats" id="galleryStats" style="display: none;">
+            <div class="stat-item">
+                <div class="stat-number" id="photoCount">0</div>
+                <div class="stat-label">投稿枚数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="contributorCount">0</div>
+                <div class="stat-label">投稿者数</div>
+            </div>
+        </div>
+        
         <div class="photo-grid" id="photoGrid">
             <div class="loading">
                 <div class="loading-spinner"></div>
@@ -466,7 +661,10 @@
         <span class="close-modal" onclick="closeModal()">&times;</span>
         <div class="modal-content">
             <img id="modalImage" src="" alt="写真">
-            <div class="modal-author" id="modalAuthor"></div>
+            <div class="modal-info">
+                <div class="modal-author" id="modalAuthor"></div>
+                <div class="modal-timestamp" id="modalTimestamp"></div>
+            </div>
         </div>
     </div>
 
@@ -623,20 +821,35 @@
                         </div>
                     </div>
                 `;
+                document.getElementById('galleryStats').style.display = 'none';
                 return;
             }
+            
+            // 統計情報を表示
+            const uniqueContributors = new Set(data.photos.map(p => p.userName)).size;
+            document.getElementById('photoCount').textContent = data.photos.length;
+            document.getElementById('contributorCount').textContent = uniqueContributors;
+            document.getElementById('galleryStats').style.display = 'flex';
             
             let html = '';
             data.photos.forEach(photo => {
                 const userName = escapeHtml(photo.userName || '投稿者');
+                const timestamp = escapeHtml(photo.timestamp || '');
                 const photoData = JSON.stringify(photo.fullImage).replace(/"/g, '&quot;');
                 const userNameData = JSON.stringify(userName).replace(/"/g, '&quot;');
+                const timestampData = JSON.stringify(timestamp).replace(/"/g, '&quot;');
                 
                 html += `
-                    <div class="photo-card" onclick='openModal(${photoData}, ${userNameData})'>
-                        <img src="${escapeHtml(photo.thumbnail)}" alt="大会写真" loading="lazy" onerror="this.src='${escapeHtml(photo.fullImage)}'">
+                    <div class="photo-card" onclick='openModal(${photoData}, ${userNameData}, ${timestampData})'>
+                        <div class="photo-image-wrapper">
+                            <img src="${escapeHtml(photo.thumbnail)}" alt="大会写真" loading="lazy" onerror="this.src='${escapeHtml(photo.fullImage)}'">
+                            <div class="photo-overlay">
+                                <div class="photo-overlay-text">クリックして拡大</div>
+                            </div>
+                        </div>
                         <div class="photo-info">
-                            <div class="photo-author">撮影者: ${userName}</div>
+                            <div class="photo-author">${userName}</div>
+                            ${timestamp ? `<div class="photo-timestamp">${formatTimestamp(timestamp)}</div>` : ''}
                         </div>
                     </div>
                 `;
@@ -645,16 +858,44 @@
             grid.innerHTML = html;
         }
         
+        // タイムスタンプフォーマット
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return '';
+            
+            // "2026/06/06 14:30:45" 形式を "6/6 14:30" に変換
+            const match = timestamp.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})\s+(\d{1,2}):(\d{2})/);
+            if (match) {
+                const month = parseInt(match[2]);
+                const day = parseInt(match[3]);
+                const hour = match[4];
+                const minute = match[5];
+                return `${month}/${day} ${hour}:${minute}`;
+            }
+            
+            return timestamp;
+        }
+        
         // モーダル表示
-        function openModal(imageUrl, userName) {
+        function openModal(imageUrl, userName, timestamp) {
             document.getElementById('modalImage').src = imageUrl;
-            document.getElementById('modalAuthor').textContent = `撮影者: ${userName}`;
+            document.getElementById('modalAuthor').textContent = userName;
+            
+            const timestampEl = document.getElementById('modalTimestamp');
+            if (timestamp) {
+                timestampEl.textContent = formatTimestamp(timestamp);
+                timestampEl.style.display = 'block';
+            } else {
+                timestampEl.style.display = 'none';
+            }
+            
             document.getElementById('modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
         
         // モーダル閉じる
         function closeModal() {
             document.getElementById('modal').classList.remove('active');
+            document.body.style.overflow = '';
         }
         
         // 戻るボタン
