@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>会場案内</title>
+    <title>会場案内・アクセス | 2026年千葉県郵便局長ソフトボール大会</title>
     <style>
         * {
             margin: 0;
@@ -12,93 +12,180 @@
         }
         
         body {
-            font-family: 'Hiragino Kaku Gothic Pro', 'メイリオ', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            background: #f5f5f5;
+            color: #333;
         }
         
+        /* ヘッダー */
         header {
-            background: white;
-            padding: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: #003366;
+            color: white;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
-        .header-content {
+        .header-top {
+            background: #002244;
+            padding: 12px 0;
+            font-size: 0.85em;
+        }
+        
+        .header-top-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-logo {
+            cursor: pointer;
+            transition: opacity 0.3s;
+            text-decoration: none;
+            color: white;
             display: flex;
             align-items: center;
-            gap: 15px;
         }
         
-        .back-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: all 0.3s;
+        .header-logo:hover {
+            opacity: 0.8;
         }
         
-        .back-btn:hover {
-            background: #5568d3;
+        .header-logo img {
+            height: 35px;
+            width: auto;
+            display: block;
         }
         
-        h1 {
-            font-size: 1.2em;
-            color: #667eea;
+        .header-info {
+            color: #aaa;
+            font-size: 0.9em;
         }
         
-        .container {
-            padding: 20px;
-            max-width: 800px;
+        .header-main {
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 15px 20px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 5px;
+        }
+        
+        .nav-links::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.95em;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-links a:hover {
+            opacity: 0.7;
+        }
+        
+        .scroll-indicator {
+            display: none;
+        }
+        
+        /* ページヘッダー */
+        .page-header {
+            background: white;
+            border-bottom: 3px solid #003366;
+            padding: 40px 20px;
+        }
+        
+        .page-header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-title {
+            font-size: 2.2em;
+            font-weight: 300;
+            color: #003366;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        
+        .page-subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        /* コンテンツエリア */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
         }
         
         .section {
             background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .section-header {
+            background: #003366;
+            color: white;
+            padding: 15px 20px;
         }
         
         .section-title {
             font-size: 1.3em;
             font-weight: bold;
-            color: #667eea;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
         }
         
+        .section-content {
+            padding: 30px;
+        }
+        
+        /* 地図エリア */
         .map-container {
             width: 100%;
-            height: 300px;
+            height: 400px;
             background: #f0f0f0;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #999;
-            font-size: 1.1em;
-            margin-bottom: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
         }
         
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* 住所ボックス */
         .address-box {
             background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #003366;
+            margin-bottom: 20px;
         }
         
         .address-label {
             font-size: 0.9em;
-            color: #999;
-            margin-bottom: 5px;
+            color: #666;
+            margin-bottom: 8px;
         }
         
         .address-text {
@@ -107,11 +194,12 @@
             line-height: 1.8;
         }
         
+        /* 情報アイテム */
         .info-item {
             display: flex;
             align-items: flex-start;
-            gap: 15px;
-            padding: 15px 0;
+            gap: 20px;
+            padding: 20px 0;
             border-bottom: 1px solid #f0f0f0;
         }
         
@@ -120,14 +208,14 @@
         }
         
         .info-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 50px;
+            height: 50px;
+            background: #003366;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3em;
+            font-size: 1.5em;
             flex-shrink: 0;
         }
         
@@ -137,9 +225,9 @@
         
         .info-title {
             font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-            font-size: 1.05em;
+            color: #003366;
+            margin-bottom: 8px;
+            font-size: 1.1em;
         }
         
         .info-text {
@@ -147,188 +235,438 @@
             line-height: 1.8;
         }
         
+        /* 施設グリッド */
         .facility-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 10px;
-            margin-top: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
         }
         
         .facility-item {
             background: #f8f9fa;
-            padding: 15px;
+            padding: 20px;
             border-radius: 8px;
             text-align: center;
             border: 1px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        
+        .facility-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
         .facility-icon {
-            font-size: 2em;
-            margin-bottom: 8px;
+            font-size: 2.5em;
+            margin-bottom: 10px;
         }
         
         .facility-name {
             font-size: 0.95em;
             color: #333;
+            font-weight: 500;
         }
         
+        /* ボタン */
         .btn-map {
             width: 100%;
-            background: #667eea;
+            background: #003366;
             color: white;
             border: none;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 1.1em;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
-            margin-top: 15px;
         }
         
         .btn-map:hover {
-            background: #5568d3;
+            background: #004080;
             transform: translateY(-2px);
+        }
+        
+        /* 注意事項リスト */
+        .notice-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .notice-list li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            line-height: 1.8;
+        }
+        
+        .notice-list li:before {
+            content: "⚠️";
+            position: absolute;
+            left: 0;
+        }
+        
+        /* フッター */
+        footer {
+            background: #002244;
+            color: white;
+            padding: 20px;
+            margin-top: 60px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .copyright {
+            font-size: 0.85em;
+            opacity: 0.6;
+        }
+        
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .header-main {
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: flex-start;
+                padding-bottom: 5px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                flex-wrap: nowrap;
+            }
+            
+            .nav-links a {
+                flex-shrink: 0;
+            }
+            
+            .scroll-indicator {
+                display: flex;
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                height: 47px;
+                width: 30px;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.2em;
+                color: white;
+                background-color: #003366;
+                cursor: pointer;
+                z-index: 10;
+            }
+            
+            .page-title {
+                font-size: 1.6em;
+            }
+            
+            .section-content {
+                padding: 20px;
+            }
+            
+            .map-container {
+                height: 300px;
+            }
+            
+            .info-item {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .facility-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="header-content">
-            <button class="back-btn" onclick="goBack()">← 戻る</button>
-            <h1>📍 会場案内</h1>
+        <div class="header-top">
+            <div class="header-top-content">
+                <a href="#" onclick="goBack(); return false;" class="header-logo">
+                    <img src="https://drive.google.com/thumbnail?id=1i01jLSCnme9KdDuBwL8MufLNGdeo_d0x" alt="全国郵便局長会">
+                </a>
+                <div class="header-info">
+                    2026年千葉県郵便局長ソフトボール大会 | 2026.6.6
+                </div>
+            </div>
+        </div>
+        <div class="header-main">
+            <nav class="nav-links" id="navLinks">
+                <a href="scoreboard.html" class="dynamic-link">試合速報 / 試合結果</a>
+                <a href="gallery.html" class="dynamic-link">写真ギャラリー</a>
+                <a href="schedule.html" class="dynamic-link">大会スケジュール</a>
+                <a href="tournament.html" class="dynamic-link">トーナメント表</a>
+                <a href="teams.html" class="dynamic-link">チーム・選手一覧</a>
+                <a href="venue.html" class="dynamic-link">会場案内・アクセス</a>
+                <a href="rules.html" class="dynamic-link">大会ルール・規約</a>
+                <a href="history.html" class="dynamic-link">優勝記録・歴史</a>
+            </nav>
+            <div class="scroll-indicator" id="scrollIndicator">▶︎</div>
         </div>
     </header>
     
+    <div class="page-header">
+        <div class="page-header-content">
+            <h1 class="page-title">会場案内・アクセス</h1>
+            <p class="page-subtitle">Venue & Access Information</p>
+        </div>
+    </div>
+    
     <div class="container">
+        <!-- 会場情報 -->
         <div class="section">
-            <div class="section-title">会場情報</div>
-            
-            <div class="map-container">
-                🗺️ 地図表示エリア
+            <div class="section-header">
+                <div class="section-title">📍 会場情報</div>
             </div>
-            
-            <div class="address-box">
-                <div class="address-label">〒 123-4567</div>
-                <div class="address-text">
-                    東京都〇〇区△△町1-2-3<br>
-                    〇〇市総合運動公園 ソフトボール場
+            <div class="section-content">
+                <div class="map-container">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3233.7266842856847!2d140.2204444!3d35.7456917!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6022875c7f7c7c7f%3A0x7f7f7f7f7f7f7f7f!2z5bKp5ZCN6YGL5YuV5YWs5ZyS!5e0!3m2!1sja!2sjp!4v1234567890"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
                 </div>
-            </div>
-            
-            <button class="btn-map" onclick="openMap()">📍 Googleマップで開く</button>
-        </div>
-        
-        <div class="section">
-            <div class="section-title">アクセス方法</div>
-            
-            <div class="info-item">
-                <div class="info-icon">🚃</div>
-                <div class="info-content">
-                    <div class="info-title">電車でお越しの場合</div>
-                    <div class="info-text">
-                        JR〇〇線「△△駅」下車<br>
-                        南口より徒歩15分
+                
+                <div class="address-box">
+                    <div class="address-label">佐倉市岩名運動公園</div>
+                    <div class="address-text">
+                        〒285-0005<br>
+                        千葉県佐倉市宮前3丁目4番地1号<br>
+                        TEL: 043-484-6726（佐倉市公園緑地課）
                     </div>
                 </div>
-            </div>
-            
-            <div class="info-item">
-                <div class="info-icon">🚌</div>
-                <div class="info-content">
-                    <div class="info-title">バスでお越しの場合</div>
-                    <div class="info-text">
-                        〇〇バス「運動公園前」下車すぐ<br>
-                        △△駅から約10分（1時間に3本運行）
-                    </div>
-                </div>
-            </div>
-            
-            <div class="info-item">
-                <div class="info-icon">🚗</div>
-                <div class="info-content">
-                    <div class="info-title">お車でお越しの場合</div>
-                    <div class="info-text">
-                        〇〇高速道路「△△IC」より約5分<br>
-                        無料駐車場あり（200台収容）
-                    </div>
-                </div>
+                
+                <button class="btn-map" onclick="openMap()">📍 Googleマップで開く</button>
             </div>
         </div>
         
+        <!-- アクセス方法 -->
         <div class="section">
-            <div class="section-title">施設について</div>
-            
-            <div class="facility-grid">
-                <div class="facility-item">
-                    <div class="facility-icon">⚾</div>
-                    <div class="facility-name">グラウンド<br>4面</div>
+            <div class="section-header">
+                <div class="section-title">🚗 アクセス方法</div>
+            </div>
+            <div class="section-content">
+                <div class="info-item">
+                    <div class="info-icon">🚃</div>
+                    <div class="info-content">
+                        <div class="info-title">電車でお越しの場合</div>
+                        <div class="info-text">
+                            <strong>京成線「京成佐倉駅」下車</strong><br>
+                            南口より徒歩約15分<br>
+                            <br>
+                            <strong>JR総武本線「佐倉駅」下車</strong><br>
+                            北口より徒歩約25分
+                        </div>
+                    </div>
                 </div>
-                <div class="facility-item">
-                    <div class="facility-icon">🚻</div>
-                    <div class="facility-name">トイレ<br>3箇所</div>
+                
+                <div class="info-item">
+                    <div class="info-icon">🚌</div>
+                    <div class="info-content">
+                        <div class="info-title">バスでお越しの場合</div>
+                        <div class="info-text">
+                            <strong>京成佐倉駅南口より</strong><br>
+                            ちばグリーンバス「佐倉市役所」方面行き<br>
+                            「宮前保育園前」下車 徒歩約3分<br>
+                            <br>
+                            <strong>JR佐倉駅北口より</strong><br>
+                            ちばグリーンバス「京成佐倉駅」行き<br>
+                            「宮前保育園前」下車 徒歩約3分
+                        </div>
+                    </div>
                 </div>
-                <div class="facility-item">
-                    <div class="facility-icon">🚰</div>
-                    <div class="facility-name">水飲み場<br>各所</div>
-                </div>
-                <div class="facility-item">
-                    <div class="facility-icon">🏪</div>
-                    <div class="facility-name">自動販売機<br>あり</div>
-                </div>
-                <div class="facility-item">
-                    <div class="facility-icon">🏥</div>
-                    <div class="facility-name">救護室<br>管理棟内</div>
-                </div>
-                <div class="facility-item">
-                    <div class="facility-icon">🅿️</div>
-                    <div class="facility-name">駐車場<br>200台</div>
+                
+                <div class="info-item">
+                    <div class="info-icon">🚗</div>
+                    <div class="info-content">
+                        <div class="info-title">お車でお越しの場合</div>
+                        <div class="info-text">
+                            <strong>東関東自動車道「佐倉IC」より</strong><br>
+                            国道296号線経由 約15分<br>
+                            <br>
+                            <strong>駐車場</strong><br>
+                            無料駐車場あり（約150台収容）<br>
+                            ※大会当日は混雑が予想されますので、時間に余裕をもってお越しください
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
+        <!-- 施設について -->
         <div class="section">
-            <div class="section-title">注意事項</div>
-            
-            <div class="info-text" style="padding: 10px 0; line-height: 2;">
-                ⚠️ グラウンド内は禁煙です<br>
-                ⚠️ ゴミは各自でお持ち帰りください<br>
-                ⚠️ 貴重品の管理は各自で行ってください<br>
-                ⚠️ 熱中症対策として水分補給をこまめに<br>
-                ⚠️ 施設の利用は大会関係者のみとなります
+            <div class="section-header">
+                <div class="section-title">🏟️ 施設について</div>
             </div>
-        </div>
-        
-        <div class="section">
-            <div class="section-title">緊急連絡先</div>
-            
-            <div class="info-item">
-                <div class="info-icon">📞</div>
-                <div class="info-content">
-                    <div class="info-title">大会本部</div>
+            <div class="section-content">
+                <div class="facility-grid">
+                    <div class="facility-item">
+                        <div class="facility-icon">⚾</div>
+                        <div class="facility-name">ソフトボール場<br>2面</div>
+                    </div>
+                    <div class="facility-item">
+                        <div class="facility-icon">🏃</div>
+                        <div class="facility-name">多目的広場<br>併設</div>
+                    </div>
+                    <div class="facility-item">
+                        <div class="facility-icon">🚻</div>
+                        <div class="facility-name">トイレ<br>場内2箇所</div>
+                    </div>
+                    <div class="facility-item">
+                        <div class="facility-icon">🚰</div>
+                        <div class="facility-name">水飲み場<br>各所</div>
+                    </div>
+                    <div class="facility-item">
+                        <div class="facility-icon">🏪</div>
+                        <div class="facility-name">自動販売機<br>あり</div>
+                    </div>
+                    <div class="facility-item">
+                        <div class="facility-icon">🅿️</div>
+                        <div class="facility-name">駐車場<br>約150台</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <div class="info-title">施設の特徴</div>
                     <div class="info-text">
-                        TEL: 080-XXXX-XXXX<br>
-                        （大会当日のみ）
+                        岩名運動公園は、佐倉市が管理する総合運動公園です。ソフトボール場は公式戦対応の2面のグラウンドを備え、水はけも良好です。周辺には桜の木が植えられており、春には美しい景色を楽しめます。また、多目的広場や遊具もあり、ファミリーでの利用にも適しています。
                     </div>
                 </div>
             </div>
-            
-            <div class="info-item">
-                <div class="info-icon">🏢</div>
-                <div class="info-content">
-                    <div class="info-title">施設管理事務所</div>
-                    <div class="info-text">
-                        TEL: 03-XXXX-XXXX<br>
-                        （平日 9:00〜17:00）
+        </div>
+        
+        <!-- 注意事項 -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">⚠️ 注意事項</div>
+            </div>
+            <div class="section-content">
+                <ul class="notice-list">
+                    <li>グラウンド内および施設内は全面禁煙です</li>
+                    <li>ゴミは各自でお持ち帰りください（分別にご協力をお願いします）</li>
+                    <li>貴重品の管理は各自で行ってください</li>
+                    <li>熱中症対策として、こまめな水分補給をお願いします</li>
+                    <li>施設の利用は大会関係者のみとなります</li>
+                    <li>駐車場には限りがありますので、できるだけ公共交通機関をご利用ください</li>
+                    <li>近隣住民の方へのご配慮をお願いします（騒音、路上駐車禁止など）</li>
+                    <li>雨天時は開催可否について、当日朝7:00までに大会本部より連絡します</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 周辺情報 -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">🏪 周辺情報</div>
+            </div>
+            <div class="section-content">
+                <div class="info-item">
+                    <div class="info-icon">🏥</div>
+                    <div class="info-content">
+                        <div class="info-title">医療機関</div>
+                        <div class="info-text">
+                            <strong>佐倉市健康管理センター</strong><br>
+                            徒歩約8分<br>
+                            〒285-0014 千葉県佐倉市栄町18-18<br>
+                            TEL: 043-485-6711<br>
+                            <br>
+                            <strong>緊急時は119番へご連絡ください</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">🏪</div>
+                    <div class="info-content">
+                        <div class="info-title">コンビニエンスストア</div>
+                        <div class="info-text">
+                            <strong>セブンイレブン佐倉宮前店</strong><br>
+                            徒歩約5分<br>
+                            <br>
+                            <strong>ファミリーマート佐倉表町店</strong><br>
+                            徒歩約10分
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 緊急連絡先 -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">📞 緊急連絡先</div>
+            </div>
+            <div class="section-content">
+                <div class="info-item">
+                    <div class="info-icon">📱</div>
+                    <div class="info-content">
+                        <div class="info-title">大会本部（当日のみ）</div>
+                        <div class="info-text">
+                            TEL: 080-XXXX-XXXX<br>
+                            受付時間: 大会当日 7:00〜18:00
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">🏢</div>
+                    <div class="info-content">
+                        <div class="info-title">佐倉市公園緑地課</div>
+                        <div class="info-text">
+                            TEL: 043-484-6726<br>
+                            〒285-8501 千葉県佐倉市海隣寺町97番地<br>
+                            受付時間: 平日 8:30〜17:15
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">🚨</div>
+                    <div class="info-content">
+                        <div class="info-title">緊急時</div>
+                        <div class="info-text">
+                            <strong>救急・消防</strong>: 119<br>
+                            <strong>警察</strong>: 110<br>
+                            <br>
+                            佐倉警察署: 043-484-0110<br>
+                            佐倉市消防本部: 043-481-1511
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="copyright">
+                © 2026 千葉県印旛地区郵便局長会
+            </div>
+        </div>
+    </footer>
 
     <script>
+        // URLパラメータ取得とlocalStorage保存
         const urlParams = new URLSearchParams(window.location.search);
-        const API_URL = urlParams.get('api') || localStorage.getItem('STAFF_BOT_API_URL') || '';
+        
+        if (urlParams.get('staff_api')) {
+            localStorage.setItem('STAFF_BOT_API_URL', urlParams.get('staff_api'));
+        }
+        if (urlParams.get('audience_api')) {
+            localStorage.setItem('AUDIENCE_BOT_API_URL', urlParams.get('audience_api'));
+        }
+        if (urlParams.get('api')) {
+            localStorage.setItem('STAFF_BOT_API_URL', urlParams.get('api'));
+        }
+        
+        const API_URL = localStorage.getItem('STAFF_BOT_API_URL') || '';
         
         function goBack() {
             const params = new URLSearchParams();
@@ -337,9 +675,54 @@
         }
         
         function openMap() {
-            // 実際の住所でGoogleマップを開く
-            const address = encodeURIComponent('東京都〇〇区△△町1-2-3 〇〇市総合運動公園');
-            window.open(`https://www.google.com/maps/search/?api=1&query=${address}`, '_blank');
+            window.open('https://www.google.com/maps/search/?api=1&query=佐倉市岩名運動公園', '_blank');
+        }
+        
+        // スクロールインジケーター
+        const navLinks = document.getElementById('navLinks');
+        const scrollIndicator = document.getElementById('scrollIndicator');
+        
+        function updateScrollIndicator() {
+            if (!navLinks || !scrollIndicator) return;
+            
+            const maxScroll = navLinks.scrollWidth - navLinks.clientWidth;
+            const currentScroll = navLinks.scrollLeft;
+            
+            if (maxScroll <= 0) {
+                scrollIndicator.style.display = 'none';
+                return;
+            }
+            
+            scrollIndicator.style.display = 'flex';
+            
+            if (currentScroll > 5) {
+                scrollIndicator.textContent = '◀︎';
+                scrollIndicator.style.left = '0';
+                scrollIndicator.style.right = 'auto';
+            } else if (currentScroll < maxScroll - 5) {
+                scrollIndicator.textContent = '▶︎';
+                scrollIndicator.style.left = 'auto';
+                scrollIndicator.style.right = '0';
+            } else {
+                scrollIndicator.style.display = 'none';
+            }
+        }
+        
+        if (navLinks) {
+            navLinks.addEventListener('scroll', updateScrollIndicator);
+            window.addEventListener('resize', updateScrollIndicator);
+            updateScrollIndicator();
+        }
+        
+        if (scrollIndicator) {
+            scrollIndicator.addEventListener('click', () => {
+                const scrollAmount = 200;
+                if (scrollIndicator.textContent === '▶︎') {
+                    navLinks.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                } else {
+                    navLinks.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                }
+            });
         }
     </script>
 </body>
