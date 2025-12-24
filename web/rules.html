@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>大会ルール</title>
+    <title>大会ルール・規約 | 2026年千葉県郵便局長ソフトボール大会</title>
     <style>
         * {
             margin: 0;
@@ -12,72 +12,154 @@
         }
         
         body {
-            font-family: 'Hiragino Kaku Gothic Pro', 'メイリオ', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            background: #f5f5f5;
+            color: #333;
         }
         
         header {
-            background: white;
-            padding: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: #003366;
+            color: white;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
-        .header-content {
+        .header-top {
+            background: #002244;
+            padding: 12px 0;
+            font-size: 0.85em;
+        }
+        
+        .header-top-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 15px;
         }
         
-        .back-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            font-size: 1em;
+        .header-logo {
             cursor: pointer;
-            transition: all 0.3s;
+            transition: opacity 0.3s;
+            text-decoration: none;
+            color: white;
         }
         
-        .back-btn:hover {
-            background: #5568d3;
+        .header-logo:hover {
+            opacity: 0.8;
         }
         
-        h1 {
-            font-size: 1.2em;
-            color: #667eea;
+        .header-logo img {
+            height: 35px;
+            width: auto;
+            display: block;
+        }
+        
+        .header-info {
+            color: #aaa;
+            font-size: 0.9em;
+        }
+        
+        .header-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 5px;
+        }
+        
+        .nav-links::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.95em;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-links a:hover {
+            opacity: 0.7;
+        }
+        
+        .scroll-indicator {
+            display: none;
+        }
+        
+        .page-header {
+            background: white;
+            border-bottom: 3px solid #003366;
+            padding: 40px 20px;
+        }
+        
+        .page-header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-title {
+            font-size: 2.2em;
+            font-weight: 300;
+            color: #003366;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        
+        .page-subtitle {
+            color: #666;
+            font-size: 1.1em;
         }
         
         .container {
-            padding: 20px;
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 40px 20px;
         }
         
         .section {
             background: white;
-            border-radius: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .section-header {
+            background: #f8f8f8;
             padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-bottom: 2px solid #003366;
         }
         
         .section-title {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
+            font-size: 1.5em;
+            font-weight: 500;
+            color: #003366;
+            margin: 0;
+        }
+        
+        .section-content {
+            padding: 30px;
         }
         
         .rule-item {
-            padding: 12px 0;
+            padding: 15px 0;
             border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
         }
         
         .rule-item:last-child {
@@ -85,227 +167,588 @@
         }
         
         .rule-number {
-            display: inline-block;
-            background: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #003366;
             color: white;
-            width: 24px;
-            height: 24px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            text-align: center;
-            line-height: 24px;
             font-weight: bold;
-            font-size: 0.9em;
-            margin-right: 10px;
+            font-size: 0.95em;
+            flex-shrink: 0;
         }
         
         .rule-text {
-            display: inline;
+            flex: 1;
             color: #333;
             line-height: 1.8;
+            font-size: 1.05em;
+        }
+        
+        .rule-text strong {
+            color: #003366;
+            font-weight: 600;
         }
         
         .warning-box {
             background: #fff3cd;
             border-left: 4px solid #ffc107;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px 0;
         }
         
         .warning-title {
-            font-weight: bold;
+            font-weight: 600;
             color: #856404;
-            margin-bottom: 8px;
-            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-size: 1.15em;
         }
         
         .warning-text {
             color: #856404;
-            line-height: 1.6;
+            line-height: 1.8;
         }
         
         .info-box {
             background: #e7f3ff;
             border-left: 4px solid #2196F3;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px 0;
         }
         
         .info-title {
-            font-weight: bold;
+            font-weight: 600;
             color: #0d47a1;
-            margin-bottom: 8px;
-            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-size: 1.15em;
         }
         
         .info-text {
             color: #0d47a1;
-            line-height: 1.6;
-        }
-        
-        ul {
-            margin: 10px 0 10px 30px;
-        }
-        
-        li {
-            color: #666;
             line-height: 1.8;
-            margin: 5px 0;
+        }
+        
+        .detail-list {
+            background: #f8f9fa;
+            padding: 20px 25px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        
+        .detail-list h3 {
+            font-size: 1.1em;
+            color: #003366;
+            margin-bottom: 15px;
+        }
+        
+        .detail-list p {
+            line-height: 1.8;
+            color: #555;
+        }
+        
+        footer {
+            background: #002244;
+            color: white;
+            padding: 20px;
+            margin-top: 60px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .copyright {
+            font-size: 0.85em;
+            opacity: 0.6;
+        }
+        
+        @media (max-width: 768px) {
+            .header-main {
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: flex-start;
+                padding-bottom: 5px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                flex-wrap: nowrap;
+            }
+            
+            .nav-links a {
+                flex-shrink: 0;
+            }
+            
+            .scroll-indicator {
+                display: flex;
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                height: 47px;
+                width: 30px;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.2em;
+                color: white;
+                background-color: #003366;
+                cursor: pointer;
+                z-index: 10;
+            }
+            
+            .page-title {
+                font-size: 1.6em;
+            }
+            
+            .section-content {
+                padding: 20px;
+            }
+            
+            .rule-item {
+                gap: 10px;
+            }
+            
+            .rule-number {
+                width: 28px;
+                height: 28px;
+                font-size: 0.85em;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="header-content">
-            <button class="back-btn" onclick="goBack()">← 戻る</button>
-            <h1>📋 大会ルール</h1>
+        <div class="header-top">
+            <div class="header-top-content">
+                <a href="#" onclick="goBack(); return false;" class="header-logo">
+                    <img src="https://drive.google.com/thumbnail?id=1i01jLSCnme9KdDuBwL8MufLNGdeo_d0x" alt="全国郵便局長会">
+                </a>
+                <div class="header-info">
+                    2026年千葉県郵便局長ソフトボール大会 | 2026.6.6
+                </div>
+            </div>
+        </div>
+        <div class="header-main">
+            <nav class="nav-links" id="navLinks">
+                <a href="scoreboard.html" class="dynamic-link">試合速報 / 試合結果</a>
+                <a href="gallery.html" class="dynamic-link">写真ギャラリー</a>
+                <a href="schedule.html" class="dynamic-link">大会スケジュール</a>
+                <a href="tournament.html" class="dynamic-link">トーナメント表</a>
+                <a href="teams.html" class="dynamic-link">チーム・選手一覧</a>
+                <a href="venue.html" class="dynamic-link">会場案内・アクセス</a>
+                <a href="rules.html" class="dynamic-link">大会ルール・規約</a>
+                <a href="history.html" class="dynamic-link">優勝記録・歴史</a>
+            </nav>
+            <div class="scroll-indicator" id="scrollIndicator">▶︎</div>
         </div>
     </header>
     
+    <div class="page-header">
+        <div class="page-header-content">
+            <h1 class="page-title">大会ルール・規約</h1>
+            <p class="page-subtitle">Tournament Rules & Regulations</p>
+        </div>
+    </div>
+    
     <div class="container">
         <div class="section">
-            <div class="section-title">基本ルール</div>
-            
-            <div class="rule-item">
-                <span class="rule-number">1</span>
-                <span class="rule-text">試合は<strong>7イニング制</strong>とします</span>
+            <div class="section-header">
+                <h2 class="section-title">📋 大会基本情報</h2>
             </div>
-            
-            <div class="rule-item">
-                <span class="rule-number">2</span>
-                <span class="rule-text">予選リーグは<strong>45分間</strong>の時間制限があります</span>
-            </div>
-            
-            <div class="rule-item">
-                <span class="rule-number">3</span>
-                <span class="rule-text">決勝トーナメントは時間無制限・延長戦ありとします</span>
-            </div>
-            
-            <div class="rule-item">
-                <span class="rule-number">4</span>
-                <span class="rule-text">5点差以上の場合、<strong>コールドゲーム</strong>が適用されます（5回終了時点）</span>
-            </div>
-            
-            <div class="rule-item">
-                <span class="rule-number">5</span>
-                <span class="rule-text">1イニング<strong>最大5得点</strong>まで（決勝戦を除く）</span>
-            </div>
-        </div>
-        
-        <div class="section">
-            <div class="section-title">チーム編成</div>
-            
-            <div class="rule-item">
-                <span class="rule-number">1</span>
-                <span class="rule-text">1チーム10名〜15名で構成</span>
-            </div>
-            
-            <div class="rule-item">
-                <span class="rule-number">2</span>
-                <span class="rule-text">試合出場は9名（控え選手の交代可）</span>
-            </div>
-            
-            <div class="rule-item">
-                <span class="rule-number">3</span>
-                <span class="rule-text">守備位置は自由に変更可能</span>
-            </div>
-            
-            <div class="info-box">
-                <div class="info-title">💡 選手交代について</div>
-                <div class="info-text">
-                    選手交代は審判に申告してください。再出場は1試合につき1回まで認められます。
+            <div class="section-content">
+                <div class="rule-item">
+                    <div class="rule-number">1</div>
+                    <div class="rule-text">
+                        <strong>開催日時</strong><br>
+                        2025年8月23日（土）<br>
+                        集合時間 8:30 / 監督会議 8:30 / 開会式 9:00 / 第1試合 10:00
+                    </div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-number">2</div>
+                    <div class="rule-text">
+                        <strong>会場</strong><br>
+                        鴨川市総合運動施設<br>
+                        〒296-0014 千葉県鴨川市大屋866-1<br>
+                        TEL: 04-7093-5111 / FAX: 04-7093-5112
+                    </div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-number">3</div>
+                    <div class="rule-text">
+                        <strong>大会方式</strong><br>
+                        県下7地区会のトーナメント方式による地区対抗戦
+                    </div>
                 </div>
             </div>
         </div>
-        
+
         <div class="section">
-            <div class="section-title">用具規定</div>
-            
-            <div class="rule-item">
-                <span class="rule-number">1</span>
-                <span class="rule-text">ボールは大会指定のゴムボール3号を使用</span>
+            <div class="section-header">
+                <h2 class="section-title">⚾ 試合ルール</h2>
             </div>
-            
-            <div class="rule-item">
-                <span class="rule-number">2</span>
-                <span class="rule-text">バットは金属製・木製どちらでも可</span>
-            </div>
-            
-            <div class="rule-item">
-                <span class="rule-number">3</span>
-                <span class="rule-text">スパイクは金属製禁止（ゴム製のみ）</span>
-            </div>
-            
-            <div class="warning-box">
-                <div class="warning-title">⚠️ 安全装備について</div>
-                <div class="warning-text">
-                    捕手はヘルメット・プロテクター・レガースの着用を義務付けます。
+            <div class="section-content">
+                <p style="margin-bottom: 20px; color: #666;">
+                    大会ルールは、JSA(日本ソフトボール協会)オフィシャルルールに準ずるほか、次のローカルルールを適用します。
+                </p>
+                
+                <div class="rule-item">
+                    <div class="rule-number">1</div>
+                    <div class="rule-text">
+                        試合は<strong>6回戦</strong>とするが、6回に達しなくとも試合開始後60分を経過したときには、新しいイニングに入らない。（決勝戦と3位決定戦も同様）
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">2</div>
+                    <div class="rule-text">
+                        試合開始後60分を経過し、両チーム攻撃を終了時点の場合は、終了時出場9名の選手による相互のジャンケンで勝負を決める
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">3</div>
+                    <div class="rule-text">
+                        ダッグアウトは、<strong>若い番号のチームが1塁側</strong>とする
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">4</div>
+                    <div class="rule-text">
+                        試合中のファウルボールは、<strong>近いチームが拾う</strong>こととする
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">5</div>
+                    <div class="rule-text">
+                        出場メンバーは<strong>9人制</strong>とし、指名打者制を採用する
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">6</div>
+                    <div class="rule-text">
+                        出場チーム選手は、<strong>50歳以上3名（女性は50歳以上とみなす）が常時、出場していなければならない</strong><br>
+                        <span style="color: #ff6b6b; font-size: 0.95em;">※ 50歳以上の選手は肩に赤いリボンをつけること</span>
+                    </div>
                 </div>
             </div>
         </div>
-        
+
         <div class="section">
-            <div class="section-title">順位決定方法</div>
-            
-            <div style="padding: 10px 0;">
-                予選リーグの順位は以下の順で決定します：
-                <ul>
-                    <li>勝ち点（勝利2点、引き分け1点、敗北0点）</li>
-                    <li>直接対決の結果</li>
-                    <li>総得失点差</li>
-                    <li>総得点</li>
-                    <li>抽選</li>
-                </ul>
+            <div class="section-header">
+                <h2 class="section-title">🚫 禁止事項・特別ルール</h2>
             </div>
-        </div>
-        
-        <div class="section">
-            <div class="section-title">特別ルール</div>
-            
-            <div class="rule-item">
-                <span class="rule-number">1</span>
-                <span class="rule-text"><strong>盗塁禁止</strong>（リードは可）</span>
-            </div>
-            
-            <div class="rule-item">
-                <span class="rule-number">2</span>
-                <span class="rule-text">バッターボックスでの<strong>タイムは1打席1回まで</strong></span>
-            </div>
-            
-            <div class="rule-item">
-                <span class="rule-number">3</span>
-                <span class="rule-text">故意四球は<strong>申告制</strong>を採用</span>
-            </div>
-            
-            <div class="info-box">
-                <div class="info-title">🎯 大会の精神</div>
-                <div class="info-text">
-                    この大会は親睦を深めることを目的としています。フェアプレーの精神で楽しくプレーしましょう！
+            <div class="section-content">
+                <div class="rule-item">
+                    <div class="rule-number">1</div>
+                    <div class="rule-text">
+                        <strong>ウインドミル及びエイトフィギュア投法は認めない</strong>
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">2</div>
+                    <div class="rule-text">
+                        <strong>盗塁は認めない</strong>。但し、投手の手からボールが離れたら、離塁は可
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">3</div>
+                    <div class="rule-text">
+                        投手の手からボールが離れる前の離塁は、<strong>即アウト</strong>とする
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">4</div>
+                    <div class="rule-text">
+                        <strong>パスボール及びワイルドピッチによる盗塁は認めない</strong>
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">5</div>
+                    <div class="rule-text">
+                        <strong>振り逃げは認めない</strong>
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">6</div>
+                    <div class="rule-text">
+                        <strong>金属のスパイクは、使用禁止</strong>とする
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">7</div>
+                    <div class="rule-text">
+                        リエンターは<strong>1試合3名まで</strong>認める。但し、1人1回のみ
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">8</div>
+                    <div class="rule-text">
+                        ランナー交代（負傷等）は<strong>同イニング出場者のなかからの最終アウト者（50歳以上は同者）</strong>とする
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <div class="warning-title">⚠️ ホームラン特別ルール</div>
+                    <div class="warning-text">
+                        外野の68メートルラインを<strong>ノーバウンドで超えた場合はホームラン</strong><br>
+                        68メートルラインを通り抜けた場合は<strong>エンタイトル2ベース</strong>とする
+                    </div>
                 </div>
             </div>
         </div>
-        
+
         <div class="section">
-            <div class="section-title">悪天候時の対応</div>
-            
-            <div style="padding: 10px 0; color: #666; line-height: 1.8;">
-                ・小雨の場合は続行します<br>
-                ・雷発生時は即座に中断し、安全な場所へ避難<br>
-                ・大会本部の指示に従ってください<br>
-                ・中止の場合は前日18:00までに連絡します
+            <div class="section-header">
+                <h2 class="section-title">🎯 用具規定</h2>
+            </div>
+            <div class="section-content">
+                <div class="rule-item">
+                    <div class="rule-number">1</div>
+                    <div class="rule-text">
+                        <strong>ヘルメット及び、捕手はレガースを必ず着用すること</strong>
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">2</div>
+                    <div class="rule-text">
+                        <strong>ベースコーチはヘルメットを着用する</strong>
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">3</div>
+                    <div class="rule-text">
+                        バットはソフトボール用とし、試合球は<strong>検定3号球（ケンコー）</strong>とする
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">4</div>
+                    <div class="rule-text">
+                        試合開始前のシートノックは<strong>5分間</strong>とし、チームの初戦の前のみ行う
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">5</div>
+                    <div class="rule-text">
+                        <strong>ユニフォームの背中には、局名を付ける</strong>こと
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">📝 その他重要事項</h2>
+            </div>
+            <div class="section-content">
+                <div class="rule-item">
+                    <div class="rule-number">1</div>
+                    <div class="rule-text">
+                        大会当日、局長に就任していれば、<strong>当日でも選手名簿に追加出来る</strong>（当日、本部へ申し出のこと）
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">2</div>
+                    <div class="rule-text">
+                        <strong>抗議権は、監督のみ有する</strong>
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">3</div>
+                    <div class="rule-text">
+                        試合の組み合わせについて、<strong>当番地区会にシード権を与える</strong>
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <div class="info-title">💡 雨天時の対応</div>
+                    <div class="info-text">
+                        雨天時ドームにてホームラン競争を実施。<br>
+                        各チーム5名の打席でホームラン数により順位を決め、上位2チームで決勝戦を行い、優勝を決定する。<br>
+                        ※詳細は当日の監督会議にて周知。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">🤝 ルールに関する協議事項</h2>
+            </div>
+            <div class="section-content">
+                <div class="detail-list">
+                    <h3>○試合前のメンバー表について</h3>
+                    <p>
+                        審判に提出するメンバー表への記入は、スターティングメンバーの打順と守備位置が明確になっていればよいものとする。<br>
+                        控え選手の把握は登録選手名簿とし、選手交代については登録選手名簿に記載されていればよいものとする。
+                    </p>
+                </div>
+                
+                <div class="detail-list">
+                    <h3>○ホームベース上におけるプレーについて</h3>
+                    <p>
+                        ホームベース上においてのプレーを行う際、守備側プレーヤーはホームベースの3塁側一角を開けておかなければならない。<br>
+                        また、タッチプレーの際にその一角をミット以外でブロックしてはならない。
+                    </p>
+                </div>
+                
+                <div class="detail-list">
+                    <h3>○ピッチャー、キャッチャーが2アウトで塁上にいた場合について</h3>
+                    <p>
+                        ピッチャー、キャッチャーが2アウトで塁上にいた場合は、テンポラリーランナーと交替することが出来る。そのランナーとなる者はその時点で打席機会が一番遠い者とする。（50歳以上は関係なし）
+                    </p>
+                </div>
+                
+                <div class="detail-list">
+                    <h3>○次打者のネクストバッターサークルの利用について</h3>
+                    <p>
+                        次打者はネクストバッターサークルで待機する際、現在打席にいる打者の背中側のネクストバッターサークルを使用する。<br>
+                        例、右打者が打席にいる⇒ネクストバッターは三塁側のサークルを使用する
+                    </p>
+                </div>
+                
+                <div class="detail-list">
+                    <h3>○打席においてサインを見る際の行動について</h3>
+                    <p>
+                        打席に立っている者が監督やコーチャー等のサインを見る際は、バッターボックスを外すことなく行うこととする。
+                    </p>
+                </div>
+                
+                <div class="detail-list">
+                    <h3>○投手の投球時におけるピッチャープレートの踏み方について</h3>
+                    <p>
+                        右投手の場合、右足がピッチャープレートに触れていれば、左足がピッチャープレートから離れていてもイリーガルにならない。
+                    </p>
+                </div>
+                
+                <div class="info-box">
+                    <div class="info-title">📋 2025年度ルール改正について</div>
+                    <div class="info-text">
+                        今年度、大きな改正はありません
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <div class="warning-title">🏥 傷害保険の加入について</div>
+                    <div class="warning-text">
+                        各地区会の判断で加入する
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">🏥 救護体制</h2>
+            </div>
+            <div class="section-content">
+                <div class="rule-item">
+                    <div class="rule-number">1</div>
+                    <div class="rule-text">
+                        熱中症対策として、<strong>クーリングシェルターを開設</strong>します（体育館2階会議室）
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">2</div>
+                    <div class="rule-text">
+                        本部に救護コーナーを設けますが救急箱等の設置にとどめ、<strong>大事の場合は救急車を要請</strong>いたします
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="copyright">
+                © 2026 千葉県印旛地区郵便局長会
+            </div>
+        </div>
+    </footer>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const API_URL = urlParams.get('api') || localStorage.getItem('STAFF_BOT_API_URL') || '';
         
+        if (urlParams.get('api')) {
+            localStorage.setItem('STAFF_BOT_API_URL', urlParams.get('api'));
+        }
+        
         function goBack() {
             const params = new URLSearchParams();
             if (API_URL) params.set('api', API_URL);
             window.location.href = `index.html?${params.toString()}`;
+        }
+        
+        const navLinks = document.getElementById('navLinks');
+        const scrollIndicator = document.getElementById('scrollIndicator');
+        
+        function updateScrollIndicator() {
+            if (!navLinks || !scrollIndicator) return;
+            
+            const maxScroll = navLinks.scrollWidth - navLinks.clientWidth;
+            const currentScroll = navLinks.scrollLeft;
+            
+            if (maxScroll <= 0) {
+                scrollIndicator.style.display = 'none';
+                return;
+            }
+            
+            scrollIndicator.style.display = 'flex';
+            
+            if (currentScroll > 5) {
+                scrollIndicator.textContent = '◀︎';
+                scrollIndicator.style.left = '0';
+                scrollIndicator.style.right = 'auto';
+            } else if (currentScroll < maxScroll - 5) {
+                scrollIndicator.textContent = '▶︎';
+                scrollIndicator.style.left = 'auto';
+                scrollIndicator.style.right = '0';
+            } else {
+                scrollIndicator.style.display = 'none';
+            }
+        }
+        
+        if (navLinks) {
+            navLinks.addEventListener('scroll', updateScrollIndicator);
+            window.addEventListener('resize', updateScrollIndicator);
+            updateScrollIndicator();
+        }
+        
+        if (scrollIndicator) {
+            scrollIndicator.addEventListener('click', () => {
+                const scrollAmount = 200;
+                if (scrollIndicator.textContent === '▶︎') {
+                    navLinks.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                } else {
+                    navLinks.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                }
+            });
         }
     </script>
 </body>
