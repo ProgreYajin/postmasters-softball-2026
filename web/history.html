@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>優勝記録</title>
+    <title>優勝記録・歴史 | 2026年千葉県郵便局長ソフトボール大会</title>
     <style>
         * {
             margin: 0;
@@ -12,328 +12,629 @@
         }
         
         body {
-            font-family: 'Hiragino Kaku Gothic Pro', 'メイリオ', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            background: #f5f5f5;
+            color: #333;
         }
         
+        /* ヘッダー */
         header {
-            background: white;
-            padding: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: #003366;
+            color: white;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
-        .header-content {
+        .header-top {
+            background: #002244;
+            padding: 12px 0;
+            font-size: 0.85em;
+        }
+        
+        .header-top-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 15px;
         }
         
-        .back-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            font-size: 1em;
+        .header-logo {
             cursor: pointer;
-            transition: all 0.3s;
+            transition: opacity 0.3s;
         }
         
-        .back-btn:hover {
-            background: #5568d3;
+        .header-logo:hover {
+            opacity: 0.8;
         }
         
-        h1 {
-            font-size: 1.2em;
-            color: #667eea;
+        .header-logo img {
+            height: 35px;
+            width: auto;
+            display: block;
         }
         
-        .container {
-            padding: 20px;
-            max-width: 800px;
+        .header-info {
+            color: #aaa;
+            font-size: 0.9em;
+        }
+        
+        .header-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 5px;
+        }
+        
+        .nav-links::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.95em;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-links a:hover {
+            opacity: 0.7;
+        }
+        
+        .scroll-indicator {
+            display: none;
+        }
+        
+        /* メインコンテンツ */
+        .page-header {
+            background: white;
+            border-bottom: 3px solid #003366;
+            padding: 40px 20px;
+        }
+        
+        .page-header-content {
+            max-width: 1200px;
             margin: 0 auto;
         }
         
-        .current-year {
+        .page-title {
+            font-size: 2.2em;
+            font-weight: 300;
+            color: #003366;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        
+        .page-subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* 現在の大会セクション */
+        .current-tournament {
             background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
             border-radius: 15px;
-            padding: 30px 20px;
-            margin-bottom: 30px;
+            padding: 40px 30px;
+            margin-bottom: 40px;
             box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
             text-align: center;
         }
         
-        .current-year-label {
-            font-size: 1.1em;
+        .current-year {
+            font-size: 1.4em;
             color: #856404;
             font-weight: bold;
-            margin-bottom: 15px;
-        }
-        
-        .current-trophy {
-            font-size: 4em;
-            margin-bottom: 15px;
-        }
-        
-        .current-winner {
-            font-size: 2em;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        
-        .current-tbd {
-            font-size: 1.5em;
-            color: #856404;
-            font-style: italic;
-        }
-        
-        .history-section {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .section-title {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #667eea;
             margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
-        }
-        
-        .history-item {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            padding: 15px;
-            border-bottom: 1px solid #f0f0f0;
-            transition: all 0.3s;
-        }
-        
-        .history-item:hover {
-            background: #f8f9fa;
-            transform: translateX(5px);
-        }
-        
-        .history-item:last-child {
-            border-bottom: none;
-        }
-        
-        .year {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #667eea;
-            min-width: 80px;
         }
         
         .trophy-icon {
-            font-size: 2em;
+            font-size: 5em;
+            margin-bottom: 20px;
         }
         
-        .winner-info {
-            flex: 1;
+        .current-status {
+            font-size: 1.5em;
+            color: #856404;
+            font-weight: 500;
         }
         
-        .winner-name {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
+        /* 統計セクション */
+        .stats-section {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
         
-        .winner-details {
-            font-size: 0.9em;
-            color: #666;
-        }
-        
-        .stats-summary {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        
-        .stats-title {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
+        .section-title {
+            font-size: 1.6em;
+            font-weight: 300;
+            color: #003366;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #003366;
         }
         
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
         
-        .stat-item {
-            text-align: center;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
+        .stat-card {
+            background: #f8f9fa;
             border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 25px 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
         .stat-value {
-            font-size: 2em;
+            font-size: 3em;
             font-weight: bold;
-            color: #667eea;
-            margin-bottom: 5px;
-        }
-        
-        .stat-label {
-            font-size: 0.9em;
-            color: #666;
-        }
-        
-        .champion-list {
-            background: #fff3cd;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 20px;
-            border-left: 4px solid #ffc107;
-        }
-        
-        .champion-list-title {
-            font-weight: bold;
-            color: #856404;
+            color: #003366;
             margin-bottom: 10px;
         }
         
-        .champion-list-content {
+        .stat-label {
+            font-size: 1.1em;
+            color: #666;
+        }
+        
+        /* 歴代優勝記録テーブル */
+        .history-table-wrapper {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .history-table thead {
+            background: #003366;
+            color: white;
+        }
+        
+        .history-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 1em;
+        }
+        
+        .history-table th:first-child {
+            width: 100px;
+        }
+        
+        .history-table th:nth-child(2) {
+            width: 150px;
+        }
+        
+        .history-table th:last-child {
+            width: 150px;
+        }
+        
+        .history-table tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: background 0.3s;
+        }
+        
+        .history-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .history-table tbody tr:last-child {
+            border-bottom: none;
+        }
+        
+        .history-table td {
+            padding: 15px;
+            font-size: 1em;
+        }
+        
+        .year-cell {
+            font-weight: bold;
+            color: #003366;
+            font-size: 1.1em;
+        }
+        
+        .region-cell {
+            color: #666;
+        }
+        
+        .winner-cell {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .winner-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        
+        .winner-badge.inba {
+            background: #ffd700;
             color: #856404;
-            line-height: 1.8;
+        }
+        
+        .winner-badge.tonan {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .winner-badge.chubu {
+            background: #f3e5f5;
+            color: #6a1b9a;
+        }
+        
+        .winner-badge.nanbu {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .winner-badge.tobu {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        
+        .cancelled {
+            color: #999;
+            font-style: italic;
+        }
+        
+        /* フッター */
+        footer {
+            background: #002244;
+            color: white;
+            padding: 20px;
+            margin-top: 60px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .copyright {
+            font-size: 0.85em;
+            opacity: 0.6;
+        }
+        
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .header-main {
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: flex-start;
+                padding-bottom: 5px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                flex-wrap: nowrap;
+            }
+            
+            .nav-links a {
+                flex-shrink: 0;
+            }
+            
+            .scroll-indicator {
+                display: flex;
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                height: 47px;
+                width: 30px;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.2em;
+                color: white;
+                background-color: #003366;
+                cursor: pointer;
+                z-index: 10;
+            }
+            
+            .page-title {
+                font-size: 1.6em;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .history-table-wrapper {
+                overflow-x: auto;
+            }
+            
+            .history-table {
+                min-width: 600px;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="header-content">
-            <button class="back-btn" onclick="goBack()">← 戻る</button>
-            <h1>🥇 優勝記録</h1>
+        <div class="header-top">
+            <div class="header-top-content">
+                <a href="#" onclick="goBack(); return false;" class="header-logo">
+                    <img src="https://drive.google.com/thumbnail?id=1i01jLSCnme9KdDuBwL8MufLNGdeo_d0x" alt="全国郵便局長会">
+                </a>
+                <div class="header-info">
+                    2026年千葉県郵便局長ソフトボール大会 | 2026.6.6
+                </div>
+            </div>
+        </div>
+        <div class="header-main">
+            <nav class="nav-links" id="navLinks">
+                <a href="scoreboard.html" class="dynamic-link">試合速報 / 試合結果</a>
+                <a href="gallery.html" class="dynamic-link">写真ギャラリー</a>
+                <a href="schedule.html" class="dynamic-link">大会スケジュール</a>
+                <a href="tournament.html" class="dynamic-link">トーナメント表</a>
+                <a href="teams.html" class="dynamic-link">チーム・選手一覧</a>
+                <a href="venue.html" class="dynamic-link">会場案内・アクセス</a>
+                <a href="rules.html" class="dynamic-link">大会ルール・規約</a>
+                <a href="history.html" class="dynamic-link">優勝記録・歴史</a>
+            </nav>
+            <div class="scroll-indicator" id="scrollIndicator">▶︎</div>
         </div>
     </header>
     
-    <div class="container">
-        <div class="current-year">
-            <div class="current-year-label">第25回大会（2025年）</div>
-            <div class="current-trophy">🏆</div>
-            <div class="current-tbd">優勝チーム決定まであと少し！</div>
-        </div>
-        
-        <div class="history-section">
-            <div class="section-title">歴代優勝チーム</div>
-            
-            <div class="history-item">
-                <div class="year">2024</div>
-                <div class="trophy-icon">🥇</div>
-                <div class="winner-info">
-                    <div class="winner-name">レッドファイターズ</div>
-                    <div class="winner-details">決勝: 5-3 ブルードラゴンズ</div>
-                </div>
-            </div>
-            
-            <div class="history-item">
-                <div class="year">2023</div>
-                <div class="trophy-icon">🥇</div>
-                <div class="winner-info">
-                    <div class="winner-name">ブルードラゴンズ</div>
-                    <div class="winner-details">決勝: 7-4 グリーンイーグルス</div>
-                </div>
-            </div>
-            
-            <div class="history-item">
-                <div class="year">2022</div>
-                <div class="trophy-icon">🥇</div>
-                <div class="winner-info">
-                    <div class="winner-name">グリーンイーグルス</div>
-                    <div class="winner-details">決勝: 6-2 イエローホークス</div>
-                </div>
-            </div>
-            
-            <div class="history-item">
-                <div class="year">2021</div>
-                <div class="trophy-icon">🥇</div>
-                <div class="winner-info">
-                    <div class="winner-name">レッドファイターズ</div>
-                    <div class="winner-details">決勝: 4-3 ホワイトタイガース</div>
-                </div>
-            </div>
-            
-            <div class="history-item">
-                <div class="year">2020</div>
-                <div class="trophy-icon">🥇</div>
-                <div class="winner-info">
-                    <div class="winner-name">ブラックパンサーズ</div>
-                    <div class="winner-details">決勝: 8-5 レッドファイターズ</div>
-                </div>
-            </div>
-            
-            <div class="history-item">
-                <div class="year">2019</div>
-                <div class="trophy-icon">🥇</div>
-                <div class="winner-info">
-                    <div class="winner-name">イエローホークス</div>
-                    <div class="winner-details">決勝: 5-4 グリーンイーグルス</div>
-                </div>
-            </div>
-            
-            <div class="history-item">
-                <div class="year">2018</div>
-                <div class="trophy-icon">🥇</div>
-                <div class="winner-info">
-                    <div class="winner-name">ブルードラゴンズ</div>
-                    <div class="winner-details">決勝: 9-3 ブラックパンサーズ</div>
-                </div>
-            </div>
-            
-            <div class="history-item">
-                <div class="year">2017</div>
-                <div class="trophy-icon">🥇</div>
-                <div class="winner-info">
-                    <div class="winner-name">レッドファイターズ</div>
-                    <div class="winner-details">決勝: 6-5 ブルードラゴンズ</div>
-                </div>
-            </div>
-            
-            <div class="stats-summary">
-                <div class="stats-title">📊 優勝回数ランキング</div>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-value">3回</div>
-                        <div class="stat-label">レッドファイターズ</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">3回</div>
-                        <div class="stat-label">ブルードラゴンズ</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">1回</div>
-                        <div class="stat-label">グリーンイーグルス</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">1回</div>
-                        <div class="stat-label">ブラックパンサーズ</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="champion-list">
-                <div class="champion-list-title">🎯 連覇記録</div>
-                <div class="champion-list-content">
-                    最多連覇: ブルードラゴンズ（2015-2016年 2連覇）<br>
-                    通算優勝回数: レッドファイターズ・ブルードラゴンズ（各3回）
-                </div>
-            </div>
+    <div class="page-header">
+        <div class="page-header-content">
+            <h1 class="page-title">優勝記録・歴史</h1>
+            <p class="page-subtitle">Championship History</p>
         </div>
     </div>
+    
+    <div class="container">
+        <div class="current-tournament">
+            <div class="current-year">2026年度（令和8年）千葉県大会</div>
+            <div class="trophy-icon">🏆</div>
+            <div class="current-status">大会開催予定 - 2026年6月6日</div>
+        </div>
+        
+        <div class="stats-section">
+            <h2 class="section-title">過去の地区別優勝回数（1997年〜）</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">8回</div>
+                    <div class="stat-label">印旛地区</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">7回</div>
+                    <div class="stat-label">東南地区</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">4回</div>
+                    <div class="stat-label">中部地区</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">2回</div>
+                    <div class="stat-label">南部地区</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">1回</div>
+                    <div class="stat-label">東部地区</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">0回</div>
+                    <div class="stat-label">北部・西部地区</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="history-table-wrapper">
+            <h2 class="section-title" style="padding: 20px 20px 15px;">歴代優勝地区一覧</h2>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>年度</th>
+                        <th>担当地区</th>
+                        <th>開催地</th>
+                        <th>優勝</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="year-cell">2025</td>
+                        <td class="region-cell">南部</td>
+                        <td>鴨川市総合運動施設</td>
+                        <td class="winner-cell"><span class="winner-badge">開催予定</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2024</td>
+                        <td class="region-cell">西部</td>
+                        <td>浦安市運動公園野球場</td>
+                        <td class="winner-cell"><span class="winner-badge tonan">東南</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2023</td>
+                        <td class="region-cell">中部</td>
+                        <td>フクダ電子グラウンド</td>
+                        <td class="winner-cell"><span class="winner-badge tonan">東南</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2022</td>
+                        <td class="region-cell">東南</td>
+                        <td colspan="2" class="cancelled">（中止）</td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2021</td>
+                        <td class="region-cell">東部</td>
+                        <td colspan="2" class="cancelled">（中止）</td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2019</td>
+                        <td class="region-cell">北部</td>
+                        <td>江戸川河川敷運動広場</td>
+                        <td class="winner-cell"><span class="winner-badge tonan">東南</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2018</td>
+                        <td class="region-cell">印旛</td>
+                        <td>長崎茂雄記念岩名球場</td>
+                        <td class="winner-cell"><span class="winner-badge tonan">東南</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2017</td>
+                        <td class="region-cell">南部</td>
+                        <td>鴨川市総合運動施設</td>
+                        <td class="winner-cell"><span class="winner-badge inba">印旛</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2016</td>
+                        <td class="region-cell">西部</td>
+                        <td>福栄スポーツ広場</td>
+                        <td class="winner-cell"><span class="winner-badge tobu">東部</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2015</td>
+                        <td class="region-cell">中部</td>
+                        <td>フクダ電子グラウンド</td>
+                        <td class="winner-cell"><span class="winner-badge tonan">東南</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2014</td>
+                        <td class="region-cell">東南</td>
+                        <td>東陽野球場・東陽スポーツ広場</td>
+                        <td class="winner-cell"><span class="winner-badge chubu">中部</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2013</td>
+                        <td class="region-cell">東部</td>
+                        <td>ナスパスタジアム（成田市大栄野球場）</td>
+                        <td class="winner-cell"><span class="winner-badge tonan">東南</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2012</td>
+                        <td class="region-cell">北部</td>
+                        <td>利根川ゆうゆう公園内野球場</td>
+                        <td class="winner-cell"><span class="winner-badge inba">印旛</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2011</td>
+                        <td class="region-cell">印旛</td>
+                        <td>北羽鳥多目的広場</td>
+                        <td class="winner-cell"><span class="winner-badge tonan">東南</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2010</td>
+                        <td class="region-cell">南部</td>
+                        <td>富津ふれあい公園球技広場</td>
+                        <td class="winner-cell"><span class="winner-badge nanbu">南部</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2009</td>
+                        <td class="region-cell">西部</td>
+                        <td>船橋市若松運動公園</td>
+                        <td class="winner-cell"><span class="winner-badge inba">印旛</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2008</td>
+                        <td class="region-cell">中部</td>
+                        <td>食品福利共済会千葉運動場</td>
+                        <td class="winner-cell"><span class="winner-badge chubu">中部</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2006</td>
+                        <td class="region-cell">東南</td>
+                        <td>芝山町町営</td>
+                        <td class="winner-cell"><span class="winner-badge chubu">中部</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2004</td>
+                        <td class="region-cell">東部</td>
+                        <td>旭スポーツの森公園</td>
+                        <td class="winner-cell"><span class="winner-badge chubu">中部</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2003</td>
+                        <td class="region-cell">北部</td>
+                        <td>沼南町塚崎</td>
+                        <td class="winner-cell"><span class="winner-badge inba">印旛</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2001</td>
+                        <td class="region-cell">印旛</td>
+                        <td>佐倉市岩名</td>
+                        <td class="winner-cell"><span class="winner-badge inba">印旛</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">2000</td>
+                        <td class="region-cell">南部</td>
+                        <td>鴨川市営</td>
+                        <td class="winner-cell"><span class="winner-badge inba">印旛</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">1999</td>
+                        <td class="region-cell">西部</td>
+                        <td>船橋市公務員</td>
+                        <td class="winner-cell"><span class="winner-badge inba">印旛</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">1998</td>
+                        <td class="region-cell">中部</td>
+                        <td>千葉市天台</td>
+                        <td class="winner-cell"><span class="winner-badge nanbu">南部</span></td>
+                    </tr>
+                    <tr>
+                        <td class="year-cell">1997</td>
+                        <td class="region-cell">東南</td>
+                        <td>大原高校</td>
+                        <td class="winner-cell"><span class="winner-badge inba">印旛</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="copyright">
+                © 2026 千葉県印旛地区郵便局長会
+            </div>
+        </div>
+    </footer>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
@@ -343,6 +644,52 @@
             const params = new URLSearchParams();
             if (API_URL) params.set('api', API_URL);
             window.location.href = `index.html?${params.toString()}`;
+        }
+        
+        const navLinks = document.getElementById('navLinks');
+        const scrollIndicator = document.getElementById('scrollIndicator');
+        
+        function updateScrollIndicator() {
+            if (!navLinks || !scrollIndicator) return;
+            
+            const maxScroll = navLinks.scrollWidth - navLinks.clientWidth;
+            const currentScroll = navLinks.scrollLeft;
+            
+            if (maxScroll <= 0) {
+                scrollIndicator.style.display = 'none';
+                return;
+            }
+            
+            scrollIndicator.style.display = 'flex';
+            
+            if (currentScroll > 5) {
+                scrollIndicator.textContent = '◀︎';
+                scrollIndicator.style.left = '0';
+                scrollIndicator.style.right = 'auto';
+            } else if (currentScroll < maxScroll - 5) {
+                scrollIndicator.textContent = '▶︎';
+                scrollIndicator.style.left = 'auto';
+                scrollIndicator.style.right = '0';
+            } else {
+                scrollIndicator.style.display = 'none';
+            }
+        }
+        
+        if (navLinks) {
+            navLinks.addEventListener('scroll', updateScrollIndicator);
+            window.addEventListener('resize', updateScrollIndicator);
+            updateScrollIndicator();
+        }
+        
+        if (scrollIndicator) {
+            scrollIndicator.addEventListener('click', () => {
+                const scrollAmount = 200;
+                if (scrollIndicator.textContent === '▶︎') {
+                    navLinks.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                } else {
+                    navLinks.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                }
+            });
         }
     </script>
 </body>
