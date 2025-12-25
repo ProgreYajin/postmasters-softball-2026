@@ -209,11 +209,19 @@ const App = (() => {
         // イニングデータ取得
         const innings = getInnings(game1, game2);
 
+        // 特別ラベルを生成
+        let specialLabel = '';
+        if (court === 'B' && gameNum === 6) {
+            specialLabel = ' <span style="color: #ffc107; font-weight: bold;">🥉 3位決定戦</span>';
+        } else if (court === 'A' && gameNum === 7) {
+            specialLabel = ' <span style="color: #ffd700; font-weight: bold;">🏆 決勝戦</span>';
+        }
+
         // HTML生成
         let html = `
             <div class="game-section" onclick="App.openScoreboard('${escapeHtml(court)}', ${gameNum})">
                 <div class="game-section-header">
-                    <div class="game-title">${court}コート 第${gameNum}試合</div>
+                    <div class="game-title">${court}コート 第${gameNum}試合${specialLabel}</div>
                     <div class="status-badge ${statusClass}">${escapeHtml(status)}</div>
                 </div>
         `;
