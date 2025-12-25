@@ -147,9 +147,14 @@ const IndexApp = (() => {
             slide.className = 'slide';
             slide.style.cursor = 'pointer';
             slide.onclick = () => {
-                // ギャラリーページへ遷移
+                // ギャラリーページへ遷移（両APIをパラメータに含める）
                 const params = new URLSearchParams();
-                if (CONFIG.API_URL) params.set('api', CONFIG.API_URL);
+                if (CONFIG.STAFF_API_URL && CONFIG.isStaffApiConfigured()) {
+                    params.set('api', CONFIG.STAFF_API_URL);
+                }
+                if (CONFIG.AUDIENCE_API_URL && CONFIG.isAudienceApiConfigured()) {
+                    params.set('audience_api', CONFIG.AUDIENCE_API_URL);
+                }
                 window.location.href = `gallery.html?${params.toString()}`;
             };
 
@@ -216,16 +221,17 @@ const IndexApp = (() => {
      * ギャラリー写真を取得（観客用API使用）
      */
     async function fetchGalleryPhotos() {
-        // 観客用APIがあれば使用、なければスタッフAPIを使用
-        const galleryApiUrl = localStorage.getItem('AUDIENCE_BOT_API_URL') || CONFIG.API_URL;
+        // 観客用APIを優先使用、なければスタッフAPIを代替
+        const apiUrl = CONFIG.AUDIENCE_API_URL || CONFIG.STAFF_API_URL;
         
-        if (!galleryApiUrl || !CONFIG.isApiConfigured()) {
+        if (!apiUrl || !CONFIG.isAudienceApiConfigured()) {
+            // 観客APIが設定されていない場合はスキップ
             return;
         }
 
         try {
             const timestamp = new Date().getTime();
-            const response = await fetch(`${galleryApiUrl}?t=${timestamp}`, {
+            const response = await fetch(`${apiUrl}?t=${timestamp}`, {
                 method: 'GET',
                 mode: 'cors',
                 cache: 'no-cache'
