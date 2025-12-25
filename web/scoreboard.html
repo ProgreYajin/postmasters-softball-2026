@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="2026年千葉県郵便局長ソフトボール大会の試合速報ページです">
-    <title>試合速報 / 試合結果 | 2026年千葉県郵便局長ソフトボール大会</title>
+    <meta name="description" content="2026年千葉県郵便局長ソフトボール大会の公式ページです">
+    <title>2026年千葉県郵便局長ソフトボール大会</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <header class="app-header">
         <div class="header-top">
             <div class="header-container">
-                <a href="#" class="header-logo">
+                <a href="index.html" class="header-logo">
                     <img src="https://drive.google.com/thumbnail?id=1i01jLSCnme9KdDuBwL8MufLNGdeo_d0x" alt="全国郵便局長会">
                 </a>
                 <div class="header-info">
@@ -21,7 +21,8 @@
         </div>
         <div class="header-main">
             <nav class="nav-links" id="navLinks">
-                <a href="#" class="nav-link">試合速報 / 試合結果</a>
+                <a href="index.html" class="nav-link">🏠 ホーム</a>
+                <a href="scoreboard.html" class="nav-link">試合速報 / 試合結果</a>
                 <a href="#" class="nav-link">写真ギャラリー</a>
                 <a href="#" class="nav-link">大会スケジュール</a>
                 <a href="#" class="nav-link">トーナメント表</a>
@@ -34,25 +35,97 @@
     </header>
 
     <main class="app-main">
-        <section class="page-header">
-            <div class="page-header-content">
-                <h1 class="page-title">試合速報 / 試合結果</h1>
-                <p class="page-subtitle">Live Score & Results</p>
+        <!-- ヒーロー部分 -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">2026年千葉県郵便局長ソフトボール大会</h1>
+                <div class="hero-info">
+                    <div class="hero-date">2026年6月6日（土）開催</div>
+                    <div class="hero-venue">📍 佐倉市岩名運動公園</div>
+                </div>
             </div>
         </section>
 
+        <!-- 写真スライダー -->
+        <section class="photo-slider-section">
+            <div class="slider-container">
+                <div class="slider-track" id="sliderTrack">
+                    <div class="slide placeholder">
+                        <div class="slide-content">📷</div>
+                        <div class="slider-overlay">
+                            <div class="slider-title">フォトギャラリー</div>
+                            <div class="slider-subtitle">クリックして写真を見る</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slider-dots" id="sliderDots"></div>
+            </div>
+        </section>
+
+        <!-- メインコンテンツ -->
         <section class="app-container">
-            <div class="tabs" id="tabs"></div>
+            <h2 class="section-title">試合速報</h2>
+            
             <div class="content" id="content">
                 <div class="loading">
                     <div class="loading-spinner"></div>
                     <div>データを読み込んでいます...</div>
                 </div>
             </div>
+
+            <h2 class="section-title" style="margin-top: 60px;">大会情報</h2>
+
+            <div class="quick-links">
+                <a href="scoreboard.html" class="link-card">
+                    <div class="link-icon">⚡</div>
+                    <div class="link-title">試合速報 / 試合結果</div>
+                    <div class="link-description">リアルタイムスコア</div>
+                </a>
+
+                <a href="#" class="link-card">
+                    <div class="link-icon">📸</div>
+                    <div class="link-title">写真ギャラリー</div>
+                    <div class="link-description">大会の様子を写真で</div>
+                </a>
+
+                <a href="#" class="link-card">
+                    <div class="link-icon">📅</div>
+                    <div class="link-title">大会スケジュール</div>
+                    <div class="link-description">当日のタイムテーブル</div>
+                </a>
+
+                <a href="#" class="link-card">
+                    <div class="link-icon">🏆</div>
+                    <div class="link-title">トーナメント表</div>
+                    <div class="link-description">対戦組み合わせ</div>
+                </a>
+
+                <a href="#" class="link-card">
+                    <div class="link-icon">👥</div>
+                    <div class="link-title">チーム・選手一覧</div>
+                    <div class="link-description">参加チーム紹介</div>
+                </a>
+
+                <a href="#" class="link-card">
+                    <div class="link-icon">📍</div>
+                    <div class="link-title">会場案内・アクセス</div>
+                    <div class="link-description">アクセス・施設情報</div>
+                </a>
+
+                <a href="#" class="link-card">
+                    <div class="link-icon">📋</div>
+                    <div class="link-title">大会ルール・規約</div>
+                    <div class="link-description">競技規則・注意事項</div>
+                </a>
+
+                <a href="#" class="link-card">
+                    <div class="link-icon">🥇</div>
+                    <div class="link-title">優勝記録・歴史</div>
+                    <div class="link-description">歴代優勝チーム</div>
+                </a>
+            </div>
         </section>
     </main>
-
-    <button class="refresh-btn" id="refreshBtn" title="更新">🔄</button>
 
     <footer class="app-footer">
         <div class="footer-content">
@@ -61,6 +134,6 @@
     </footer>
 
     <script src="js/config.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/index-app.js"></script>
 </body>
 </html>
