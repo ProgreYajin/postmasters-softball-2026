@@ -152,89 +152,15 @@ const App = (() => {
             return;
         }
 
-        // コート情報を自動抽出してタブを生成
-        const courts = extractCourts(games);
-        if (courts.length === 0) {
-            showEmptyMessage('有効なコート情報が見つかりません。');
-            return;
-        }
-
-        // 前回選択されたコートを復元、なければ最初のコートを選択
-        if (!currentCourt || !courts.includes(currentCourt)) {
-            currentCourt = courts[0];
-        }
-
-        // タブを描画
-        renderTabs(courts);
-
-        // 選択されたコートのデータだけを表示
-        renderGamesByCourtFiltered(games, currentCourt);
-    }
-
-    /**
-     * コート名を自動抽出
-     */
-    function extractCourts(games) {
-        const courts = new Set();
-        games.forEach(game => {
-            const court = getSafeValue(game, 'court', 'Court', 'COURT');
-            if (court) courts.add(court);
-        });
-        return Array.from(courts).sort();
-    }
-
-    /**
-     * タブを描画
-     */
-    function renderTabs(courts) {
+        // タブコンテナを非表示（タブ機能を削除）
         const tabsContainer = document.getElementById('tabs');
-        tabsContainer.innerHTML = '';
-
-        courts.forEach(court => {
-            const button = document.createElement('button');
-            button.className = `tab ${court === currentCourt ? 'active' : ''}`;
-            button.textContent = `${court}コート`;
-            button.onclick = () => switchCourt(court);
-            tabsContainer.appendChild(button);
-        });
-    }
-
-    /**
-     * コートを切り替え
-     */
-    function switchCourt(court) {
-        currentCourt = court;
-        localStorage.setItem(CONFIG.STORAGE_KEY.CURRENT_COURT, court);
-
-        // タブのアクティブ状態を更新
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.classList.toggle('active', tab.textContent.startsWith(court));
-        });
-
-        // 試合データを再描画
-        if (gamesData) {
-            const games = getSafeValue(gamesData, 'games') || [];
-            renderGamesByCourtFiltered(games, court);
-        }
-    }
-
-    /**
-     * コートでフィルタリングして試合を描画
-     */
-    function renderGamesByCourtFiltered(games, court) {
-        const filteredGames = games.filter(game => {
-            const gameCourt = getSafeValue(game, 'court', 'Court', 'COURT');
-            return gameCourt === court;
-        });
-
-        if (filteredGames.length === 0) {
-            showEmptyMessage(`${court}コートに試合データがありません。`);
-            return;
+        if (tabsContainer) {
+            tabsContainer.style.display = 'none';
         }
 
         // 試合番号でグループ化
         const gameGroups = {};
-        filteredGames.forEach(game => {
+        games.forEach(game => {
             const gameNum = getSafeValue(game, 'gameNum', 'gameNumber', 'game_num');
             if (!gameNum) return;
 
@@ -245,7 +171,12 @@ const App = (() => {
             gameGroups[key].push(game);
         });
 
-        // HTML生成
+        if (Object.keys(gameGroups).length === 0) {
+            showEmptyMessage('有効な試合データが見つかりません。');
+            return;
+        }
+
+        // 試合番号順にソート（昇順）
         const contentHtml = Object.entries(gameGroups)
             .sort(([a], [b]) => parseInt(a) - parseInt(b))
             .map(([gameNum, gameList]) => renderGameCard(gameList, parseInt(gameNum)))
@@ -449,10 +380,6 @@ const App = (() => {
          * アプリケーションを初期化
          */
         init() {
-            // 前回選択されたコートを復元
-            const savedCourt = localStorage.getItem(CONFIG.STORAGE_KEY.CURRENT_COURT);
-            if (savedCourt) currentCourt = savedCourt;
-
             // 更新ボタンのイベント設定
             const refreshBtn = document.getElementById('refreshBtn');
             if (refreshBtn) {
