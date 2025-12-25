@@ -1,0 +1,4 @@
+{
+  "staffBotApiUrl": "https://script.google.com/macros/s/YOUR_STAFF_BOT_SCRIPT_ID/exec",
+  "audienceBotApiUrl": "https://script.google.com/macros/s/YOUR_AUDIENCE_BOT_SCRIPT_ID/exec"
+}
