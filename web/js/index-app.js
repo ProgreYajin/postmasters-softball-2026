@@ -1,4 +1,4 @@
-/**
+#"/**
  * トップページアプリケーション
  * 試合速報サマリー、写真スライダー、大会情報を管理
  */
@@ -143,7 +143,7 @@ const IndexApp = (() => {
         sliderTrack.innerHTML = '';
 
         if (photosToShow.length === 0) {
-            sliderTrack.innerHTML = `
+            sliderTrack.innerHTML = 
                 <div class="slide placeholder">
                     <div class="slide-content">📷</div>
                     <div class="slider-overlay">
@@ -151,7 +151,7 @@ const IndexApp = (() => {
                         <div class="slider-subtitle">まだ写真が投稿されていません</div>
                     </div>
                 </div>
-            `;
+            ;
             initSlider(1);
             return;
         }
