@@ -572,6 +572,13 @@ th.team-header {
 /* ============================================================
    スコア要約（トップページ用）
    ============================================================ */
+.live-games-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
 .score-summary {
     padding: 20px 15px;
 }
@@ -588,6 +595,79 @@ th.team-header {
     font-weight: bold;
     color: #003366;
     padding: 0 10px;
+}
+
+.team-score {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #003366;
+    min-width: 40px;
+}
+
+/* 全試合を見るボタン */
+.view-all-btn {
+    display: inline-block;
+    padding: 15px 40px;
+    background: linear-gradient(to right, #003366, #005599);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(0, 51, 102, 0.3);
+}
+
+.view-all-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 51, 102, 0.4);
+    background: linear-gradient(to right, #004080, #0066b3);
+}
+
+/* 次の試合情報カード */
+.next-game-card {
+    background: white;
+    border: 2px dashed #003366;
+    border-radius: 8px;
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s;
+}
+
+.next-game-card:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.next-game-icon {
+    font-size: 3em;
+    margin-bottom: 15px;
+}
+
+.next-game-title {
+    font-size: 1.3em;
+    color: #003366;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.next-game-info {
+    font-size: 1.1em;
+    color: #666;
+    line-height: 1.8;
+}
+
+.next-game-teams {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    margin: 15px 0;
+}
+
+.next-game-time {
+    font-size: 1em;
+    color: #999;
+    margin-top: 10px;
 }
 
 /* ============================================================
@@ -631,4 +711,104 @@ th.team-header {
 .link-description {
     font-size: 0.9em;
     color: #666;
+}
+
+/* ============================================================
+   レスポンシブ対応
+   ============================================================ */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .header-info {
+        text-align: center;
+        font-size: 0.8em;
+    }
+    
+    .nav-links {
+        gap: 15px;
+    }
+    
+    .nav-link {
+        font-size: 0.85em;
+    }
+    
+    .page-title {
+        font-size: 1.5em;
+    }
+    
+    .hero-title {
+        font-size: 1.8em;
+    }
+    
+    .hero-date, .hero-venue {
+        font-size: 1em;
+    }
+    
+    .slider-container {
+        height: 250px;
+    }
+    
+    .section-title {
+        font-size: 1.4em;
+    }
+    
+    .live-games-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .game-section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .game-title {
+        font-size: 1.1em;
+    }
+    
+    .score-line {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .team-score {
+        font-size: 1.5em;
+    }
+    
+    .next-game-card {
+        padding: 20px 15px;
+    }
+    
+    .next-game-icon {
+        font-size: 2.5em;
+    }
+    
+    .next-game-title {
+        font-size: 1.1em;
+    }
+    
+    .next-game-teams {
+        font-size: 1.1em;
+    }
+    
+    .quick-links {
+        grid-template-columns: 1fr;
+    }
+    
+    .view-all-btn {
+        padding: 12px 30px;
+        font-size: 1em;
+    }
+    
+    table {
+        font-size: 0.9em;
+    }
+    
+    th, td {
+        padding: 8px 5px;
+    }
 }
