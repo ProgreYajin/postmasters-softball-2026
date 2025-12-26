@@ -73,6 +73,8 @@ const IndexApp = (() => {
      */
     function initSlider(photoCount = 1) {
         const dots = document.getElementById('sliderDots');
+        if (!dots) return;
+        
         dots.innerHTML = '';
 
         for (let i = 0; i < photoCount; i++) {
@@ -98,7 +100,12 @@ const IndexApp = (() => {
 
         const dots = document.querySelectorAll('.dot');
         currentSlide = (currentSlide + 1) % slides.length;
-        document.getElementById('sliderTrack').style.transform = `translateX(-${currentSlide * 100}%)`;
+        
+        const track = document.getElementById('sliderTrack');
+        if (track) {
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+        
         dots.forEach((dot, index) => {
             dot.classList.toggle('active', index === currentSlide);
         });
@@ -113,7 +120,12 @@ const IndexApp = (() => {
 
         const dots = document.querySelectorAll('.dot');
         currentSlide = index;
-        document.getElementById('sliderTrack').style.transform = `translateX(-${currentSlide * 100}%)`;
+        
+        const track = document.getElementById('sliderTrack');
+        if (track) {
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+        
         dots.forEach((dot, i) => {
             dot.classList.toggle('active', i === currentSlide);
         });
@@ -124,6 +136,8 @@ const IndexApp = (() => {
      */
     function updateGallerySlider(photos) {
         const sliderTrack = document.getElementById('sliderTrack');
+        if (!sliderTrack) return;
+        
         const photosToShow = photos.slice(0, 5); // 最新5枚
 
         sliderTrack.innerHTML = '';
@@ -147,15 +161,7 @@ const IndexApp = (() => {
             slide.className = 'slide';
             slide.style.cursor = 'pointer';
             slide.onclick = () => {
-                // ギャラリーページへ遷移（両APIをパラメータに含める）
-                const params = new URLSearchParams();
-                if (CONFIG.STAFF_API_URL && CONFIG.isStaffApiConfigured()) {
-                    params.set('api', CONFIG.STAFF_API_URL);
-                }
-                if (CONFIG.AUDIENCE_API_URL && CONFIG.isAudienceApiConfigured()) {
-                    params.set('audience_api', CONFIG.AUDIENCE_API_URL);
-                }
-                window.location.href = `gallery.html?${params.toString()}`;
+                window.location.href = 'gallery.html';
             };
 
             const img = document.createElement('img');
@@ -188,14 +194,14 @@ const IndexApp = (() => {
      * スコアボードデータを取得
      */
     async function fetchScores() {
-        if (!CONFIG.isApiConfigured()) {
+        if (!CONFIG || !CONFIG.isStaffApiConfigured || !CONFIG.isStaffApiConfigured()) {
             showEmptyContent('API URLが設定されていません。');
             return;
         }
 
         try {
             const timestamp = new Date().getTime();
-            const url = `${CONFIG.API_URL}?t=${timestamp}`;
+            const url = `${CONFIG.STAFF_API_URL}?t=${timestamp}`;
 
             const response = await fetch(url, {
                 method: 'GET',
@@ -221,17 +227,14 @@ const IndexApp = (() => {
      * ギャラリー写真を取得（観客用API使用）
      */
     async function fetchGalleryPhotos() {
-        // 観客用APIを優先使用、なければスタッフAPIを代替
-        const apiUrl = CONFIG.AUDIENCE_API_URL || CONFIG.STAFF_API_URL;
-        
-        if (!apiUrl || !CONFIG.isAudienceApiConfigured()) {
+        if (!CONFIG || !CONFIG.isAudienceApiConfigured || !CONFIG.isAudienceApiConfigured()) {
             // 観客APIが設定されていない場合はスキップ
             return;
         }
 
         try {
             const timestamp = new Date().getTime();
-            const response = await fetch(`${apiUrl}?t=${timestamp}`, {
+            const response = await fetch(`${CONFIG.AUDIENCE_API_URL}?t=${timestamp}`, {
                 method: 'GET',
                 mode: 'cors',
                 cache: 'no-cache'
@@ -256,13 +259,13 @@ const IndexApp = (() => {
     // ==================== レンダリング ====================
 
     /**
-     * 試合速報サマリーを表示
+     * 試合速報サマリーを表示（試合中のみ）
      */
     function renderScoresSummary(data) {
         const games = getSafeValue(data, 'games') || [];
 
         if (!Array.isArray(games) || games.length === 0) {
-            showEmptyContent('試合データがありません。');
+            showNextGameInfo();
             return;
         }
 
@@ -280,16 +283,28 @@ const IndexApp = (() => {
         });
 
         if (Object.keys(gameGroups).length === 0) {
-            showEmptyContent('有効な試合データが見つかりません。');
+            showNextGameInfo();
             return;
         }
 
-        // 最新3試合を表示
-        const contentHtml = Object.entries(gameGroups)
-            .sort(([a], [b]) => parseInt(b) - parseInt(a)) // 降順：最新から
-            .slice(0, 3) // 最新3試合
-            .reverse() // 昇順に戻す：古い→新しい
-            .map(([gameNum, gameList]) => renderCompactGameCard(gameList, parseInt(gameNum)))
+        // 試合中の試合のみ抽出
+        const liveGames = Object.entries(gameGroups)
+            .filter(([gameNum, gameList]) => {
+                if (gameList.length === 0) return false;
+                const status = getSafeValue(gameList[0], 'status', 'Status', 'STATUS') || '待機';
+                return status === '試合中';
+            })
+            .sort(([a], [b]) => parseInt(a) - parseInt(b));
+
+        if (liveGames.length === 0) {
+            // 試合中がない場合は次の試合を表示
+            showNextGameInfo(gameGroups);
+            return;
+        }
+
+        // 試合中のカードを表示
+        const contentHtml = liveGames
+            .map(([gameNum, gameList]) => renderLiveGameCard(gameList, parseInt(gameNum)))
             .join('');
 
         document.getElementById('content').innerHTML = contentHtml || 
@@ -297,9 +312,9 @@ const IndexApp = (() => {
     }
 
     /**
-     * コンパクト試合カード（トップページ用）
+     * 試合中カード（コート名強調版）
      */
-    function renderCompactGameCard(games, gameNum) {
+    function renderLiveGameCard(games, gameNum) {
         if (games.length < 2) return '';
 
         const game1 = games[0];
@@ -311,7 +326,6 @@ const IndexApp = (() => {
         const team2 = getTeamInfo(game2, 'away');
         const court = getSafeValue(game1, 'court', 'Court', 'COURT');
 
-        // トップページではクリック時に詳細ページへ
         return `
             <div class="game-section" onclick="window.location.href='scoreboard.html';">
                 <div class="game-section-header">
@@ -332,10 +346,75 @@ const IndexApp = (() => {
     }
 
     /**
+     * 次の試合情報を表示
+     */
+    function showNextGameInfo(gameGroups = null) {
+        if (!gameGroups) {
+            document.getElementById('content').innerHTML = `
+                <div class="next-game-card">
+                    <div class="next-game-icon">⏰</div>
+                    <div class="next-game-title">現在試合中の試合はありません</div>
+                    <div class="next-game-info">次の試合をお待ちください</div>
+                </div>
+            `;
+            return;
+        }
+
+        // 待機中の試合を探す
+        const waitingGames = Object.entries(gameGroups)
+            .filter(([gameNum, gameList]) => {
+                if (gameList.length === 0) return false;
+                const status = getSafeValue(gameList[0], 'status', 'Status', 'STATUS') || '待機';
+                return status === '待機';
+            })
+            .sort(([a], [b]) => parseInt(a) - parseInt(b));
+
+        if (waitingGames.length === 0) {
+            document.getElementById('content').innerHTML = `
+                <div class="next-game-card">
+                    <div class="next-game-icon">🏁</div>
+                    <div class="next-game-title">全試合終了</div>
+                    <div class="next-game-info">ご声援ありがとうございました</div>
+                </div>
+            `;
+            return;
+        }
+
+        // 次の試合（最初の待機中の試合）
+        const [nextGameNum, nextGameList] = waitingGames[0];
+        if (nextGameList.length >= 2) {
+            const team1 = getTeamInfo(nextGameList[0], 'home');
+            const team2 = getTeamInfo(nextGameList[1], 'away');
+            const court = getSafeValue(nextGameList[0], 'court', 'Court', 'COURT');
+
+            document.getElementById('content').innerHTML = `
+                <div class="next-game-card">
+                    <div class="next-game-icon">⏰</div>
+                    <div class="next-game-title">次の試合</div>
+                    <div class="next-game-teams">${escapeHtml(team1.name)} vs ${escapeHtml(team2.name)}</div>
+                    <div class="next-game-info">${court}コート 第${nextGameNum}試合</div>
+                    <div class="next-game-time">開始予定時刻をお待ちください</div>
+                </div>
+            `;
+        } else {
+            document.getElementById('content').innerHTML = `
+                <div class="next-game-card">
+                    <div class="next-game-icon">⏰</div>
+                    <div class="next-game-title">現在試合中の試合はありません</div>
+                    <div class="next-game-info">次の試合をお待ちください</div>
+                </div>
+            `;
+        }
+    }
+
+    /**
      * 空コンテンツメッセージ
      */
     function showEmptyContent(message) {
-        document.getElementById('content').innerHTML = `
+        const contentDiv = document.getElementById('content');
+        if (!contentDiv) return;
+        
+        contentDiv.innerHTML = `
             <div class="loading">
                 ${message}
             </div>
@@ -362,10 +441,13 @@ const IndexApp = (() => {
          */
         startAutoRefresh() {
             if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+            
+            const interval = (CONFIG && CONFIG.AUTO_REFRESH_INTERVAL) ? CONFIG.AUTO_REFRESH_INTERVAL : 60000;
+            
             autoRefreshInterval = setInterval(() => {
                 fetchScores();
                 fetchGalleryPhotos();
-            }, CONFIG.AUTO_REFRESH_INTERVAL);
+            }, interval);
         },
 
         /**
