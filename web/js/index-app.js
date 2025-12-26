@@ -298,7 +298,7 @@ const IndexApp = (() => {
 
         if (!Array.isArray(games) || games.length === 0) {
             debugInfo += 'No games array or empty\n';
-            // showDebugInfo(debugInfo);
+            showDebugInfo(debugInfo);
             showNextGameInfo();
             return;
         }
@@ -320,7 +320,7 @@ const IndexApp = (() => {
 
         if (Object.keys(gameGroups).length === 0) {
             debugInfo += 'No game groups\n';
-            // showDebugInfo(debugInfo);
+            showDebugInfo(debugInfo);
             showNextGameInfo();
             return;
         }
@@ -336,7 +336,7 @@ const IndexApp = (() => {
             .sort(([a], [b]) => parseInt(a) - parseInt(b));
 
         debugInfo += `Live games: ${liveGames.length}\n`;
-        // showDebugInfo(debugInfo);
+        showDebugInfo(debugInfo);
 
         let contentHtml = '';
 
@@ -376,6 +376,22 @@ const IndexApp = (() => {
         const team2 = getTeamInfo(game2, 'away');
         const court = getSafeValue(game1, 'court', 'Court', 'COURT');
 
+        // 現在のイニング数を取得
+        const innings1 = getSafeValue(game1, 'innings') || [];
+        const innings2 = getSafeValue(game2, 'innings') || [];
+        let currentInning = '';
+        
+        // 最後に得点が入ったイニングを探す
+        for (let i = innings1.length - 1; i >= 0; i--) {
+            const score1 = innings1[i];
+            const score2 = innings2[i];
+            if ((score1 !== null && score1 !== undefined && score1 !== '') || 
+                (score2 !== null && score2 !== undefined && score2 !== '')) {
+                currentInning = `${i + 1}回`;
+                break;
+            }
+        }
+
         return `
             <div class="game-section" onclick="window.location.href='scoreboard.html';">
                 <div class="game-section-header">
@@ -383,12 +399,19 @@ const IndexApp = (() => {
                     <div class="status-badge ${statusClass}">${escapeHtml(status)}</div>
                 </div>
                 <div class="score-summary">
-                    <div class="score-line">
-                        <span class="team-name">${escapeHtml(team1.name)}</span>
-                        <span class="team-score">${team1.score}</span>
-                        <span class="score-separator">-</span>
-                        <span class="team-score">${team2.score}</span>
-                        <span class="team-name">${escapeHtml(team2.name)}</span>
+                    <div class="score-line-compact">
+                        <div class="team-info">
+                            <span class="team-name-compact">${escapeHtml(team1.name)}</span>
+                            <span class="team-score-compact">${team1.score}</span>
+                        </div>
+                        <div class="score-center">
+                            <span class="score-separator-compact">-</span>
+                            ${currentInning ? `<div class="current-inning">${currentInning}</div>` : ''}
+                        </div>
+                        <div class="team-info">
+                            <span class="team-score-compact">${team2.score}</span>
+                            <span class="team-name-compact">${escapeHtml(team2.name)}</span>
+                        </div>
                     </div>
                 </div>
             </div>
