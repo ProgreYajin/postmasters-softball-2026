@@ -264,7 +264,11 @@ const IndexApp = (() => {
     function renderScoresSummary(data) {
         const games = getSafeValue(data, 'games') || [];
 
+        console.log('=== renderScoresSummary Debug ===');
+        console.log('Total games:', games.length);
+
         if (!Array.isArray(games) || games.length === 0) {
+            console.log('No games array or empty');
             showNextGameInfo();
             return;
         }
@@ -282,7 +286,11 @@ const IndexApp = (() => {
             gameGroups[key].push(game);
         });
 
+        console.log('Game groups:', Object.keys(gameGroups).length);
+        console.log('Game groups detail:', gameGroups);
+
         if (Object.keys(gameGroups).length === 0) {
+            console.log('No game groups');
             showNextGameInfo();
             return;
         }
@@ -292,13 +300,17 @@ const IndexApp = (() => {
             .filter(([gameNum, gameList]) => {
                 if (gameList.length === 0) return false;
                 const status = getSafeValue(gameList[0], 'status', 'Status', 'STATUS') || '待機';
+                console.log(`Game ${gameNum} status:`, status);
                 return status === '試合中';
             })
             .sort(([a], [b]) => parseInt(a) - parseInt(b));
 
+        console.log('Live games count:', liveGames.length);
+
         let contentHtml = '';
 
         if (liveGames.length === 0) {
+            console.log('No live games, showing next game info');
             // 試合中がない場合は次の試合のみ表示
             showNextGameInfo(gameGroups);
             return;
