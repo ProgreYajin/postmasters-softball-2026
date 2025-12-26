@@ -23,13 +23,13 @@
             <nav class="nav-links" id="navLinks">
                 <a href="index.html" class="nav-link">🏠 ホーム</a>
                 <a href="scoreboard.html" class="nav-link">試合速報 / 試合結果</a>
-                <a href="#" class="nav-link">写真ギャラリー</a>
-                <a href="#" class="nav-link">大会スケジュール</a>
-                <a href="#" class="nav-link">トーナメント表</a>
-                <a href="#" class="nav-link">チーム・選手一覧</a>
-                <a href="#" class="nav-link">会場案内・アクセス</a>
-                <a href="#" class="nav-link">大会ルール・規約</a>
-                <a href="#" class="nav-link">優勝記録・歴史</a>
+                <a href="gallery.html" class="nav-link">写真ギャラリー</a>
+                <a href="schedule.html" class="nav-link">大会スケジュール</a>
+                <a href="tournament.html" class="nav-link">トーナメント表</a>
+                <a href="teams.html" class="nav-link">チーム・選手一覧</a>
+                <a href="venue.html" class="nav-link">会場案内・アクセス</a>
+                <a href="rules.html" class="nav-link">大会ルール・規約</a>
+                <a href="history.html" class="nav-link">優勝記録・歴史</a>
             </nav>
         </div>
     </header>
@@ -64,13 +64,19 @@
 
         <!-- メインコンテンツ -->
         <section class="app-container">
-            <h2 class="section-title">試合速報</h2>
+            <h2 class="section-title" id="scores">試合速報</h2>
             
-            <div class="content" id="content">
+            <div class="live-games-container" id="content">
                 <div class="loading">
                     <div class="loading-spinner"></div>
                     <div>データを読み込んでいます...</div>
                 </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="scoreboard.html" class="view-all-btn">
+                    📊 全試合のスコアを見る
+                </a>
             </div>
 
             <h2 class="section-title" style="margin-top: 60px;">大会情報</h2>
@@ -82,43 +88,43 @@
                     <div class="link-description">リアルタイムスコア</div>
                 </a>
 
-                <a href="#" class="link-card">
+                <a href="gallery.html" class="link-card">
                     <div class="link-icon">📸</div>
                     <div class="link-title">写真ギャラリー</div>
                     <div class="link-description">大会の様子を写真で</div>
                 </a>
 
-                <a href="#" class="link-card">
+                <a href="schedule.html" class="link-card">
                     <div class="link-icon">📅</div>
                     <div class="link-title">大会スケジュール</div>
                     <div class="link-description">当日のタイムテーブル</div>
                 </a>
 
-                <a href="#" class="link-card">
+                <a href="tournament.html" class="link-card">
                     <div class="link-icon">🏆</div>
                     <div class="link-title">トーナメント表</div>
                     <div class="link-description">対戦組み合わせ</div>
                 </a>
 
-                <a href="#" class="link-card">
+                <a href="teams.html" class="link-card">
                     <div class="link-icon">👥</div>
                     <div class="link-title">チーム・選手一覧</div>
                     <div class="link-description">参加チーム紹介</div>
                 </a>
 
-                <a href="#" class="link-card">
+                <a href="venue.html" class="link-card">
                     <div class="link-icon">📍</div>
                     <div class="link-title">会場案内・アクセス</div>
                     <div class="link-description">アクセス・施設情報</div>
                 </a>
 
-                <a href="#" class="link-card">
+                <a href="rules.html" class="link-card">
                     <div class="link-icon">📋</div>
                     <div class="link-title">大会ルール・規約</div>
                     <div class="link-description">競技規則・注意事項</div>
                 </a>
 
-                <a href="#" class="link-card">
+                <a href="history.html" class="link-card">
                     <div class="link-icon">🥇</div>
                     <div class="link-title">優勝記録・歴史</div>
                     <div class="link-description">歴代優勝チーム</div>
