@@ -1,4 +1,4 @@
-#"/**
+/**
  * トップページアプリケーション
  * 試合速報サマリー、写真スライダー、大会情報を管理
  */
@@ -143,7 +143,7 @@ const IndexApp = (() => {
         sliderTrack.innerHTML = '';
 
         if (photosToShow.length === 0) {
-            sliderTrack.innerHTML = 
+            sliderTrack.innerHTML = `
                 <div class="slide placeholder">
                     <div class="slide-content">📷</div>
                     <div class="slider-overlay">
@@ -151,7 +151,7 @@ const IndexApp = (() => {
                         <div class="slider-subtitle">まだ写真が投稿されていません</div>
                     </div>
                 </div>
-            ;
+            `;
             initSlider(1);
             return;
         }
@@ -259,12 +259,46 @@ const IndexApp = (() => {
     // ==================== レンダリング ====================
 
     /**
+     * デバッグ情報を画面に表示
+     */
+    function showDebugInfo(info) {
+        let debugDiv = document.getElementById('debug-info');
+        if (!debugDiv) {
+            debugDiv = document.createElement('div');
+            debugDiv.id = 'debug-info';
+            debugDiv.style.cssText = 
+                'position: fixed;' +
+                'bottom: 80px;' +
+                'left: 10px;' +
+                'right: 10px;' +
+                'background: rgba(0, 0, 0, 0.9);' +
+                'color: #0f0;' +
+                'padding: 10px;' +
+                'font-size: 11px;' +
+                'font-family: monospace;' +
+                'z-index: 9999;' +
+                'max-height: 200px;' +
+                'overflow-y: auto;' +
+                'border-radius: 5px;' +
+                'white-space: pre-wrap;' +
+                'word-break: break-all;';
+            document.body.appendChild(debugDiv);
+        }
+        debugDiv.textContent = info;
+    }
+
+    /**
      * 試合速報サマリーを表示（試合中のみ）
      */
     function renderScoresSummary(data) {
         const games = getSafeValue(data, 'games') || [];
 
+        let debugInfo = '=== DEBUG INFO ===\n';
+        debugInfo += `Total games: ${games.length}\n`;
+
         if (!Array.isArray(games) || games.length === 0) {
+            debugInfo += 'No games array or empty\n';
+            showDebugInfo(debugInfo);
             showNextGameInfo();
             return;
         }
@@ -282,7 +316,11 @@ const IndexApp = (() => {
             gameGroups[key].push(game);
         });
 
+        debugInfo += `Game groups: ${Object.keys(gameGroups).length}\n`;
+
         if (Object.keys(gameGroups).length === 0) {
+            debugInfo += 'No game groups\n';
+            showDebugInfo(debugInfo);
             showNextGameInfo();
             return;
         }
@@ -292,20 +330,32 @@ const IndexApp = (() => {
             .filter(([gameNum, gameList]) => {
                 if (gameList.length === 0) return false;
                 const status = getSafeValue(gameList[0], 'status', 'Status', 'STATUS') || '待機';
+                debugInfo += `Game ${gameNum}: ${status}\n`;
                 return status === '試合中';
             })
             .sort(([a], [b]) => parseInt(a) - parseInt(b));
 
+        debugInfo += `Live games: ${liveGames.length}\n`;
+        showDebugInfo(debugInfo);
+
+        let contentHtml = '';
+
         if (liveGames.length === 0) {
-            // 試合中がない場合は次の試合を表示
+            // 試合中がない場合は次の試合のみ表示
             showNextGameInfo(gameGroups);
             return;
         }
 
         // 試合中のカードを表示
-        const contentHtml = liveGames
+        contentHtml = liveGames
             .map(([gameNum, gameList]) => renderLiveGameCard(gameList, parseInt(gameNum)))
             .join('');
+
+        // 次の試合カードを追加
+        const nextGameHtml = renderNextGameCard(gameGroups);
+        if (nextGameHtml) {
+            contentHtml += nextGameHtml;
+        }
 
         document.getElementById('content').innerHTML = contentHtml || 
             `<div class="loading">試合データを処理中...</div>`;
@@ -346,7 +396,52 @@ const IndexApp = (() => {
     }
 
     /**
-     * 次の試合情報を表示
+     * 次の試合カードをレンダリング（インライン表示用）
+     */
+    function renderNextGameCard(gameGroups) {
+        // 待機中の試合を探す
+        const waitingGames = Object.entries(gameGroups)
+            .filter(([gameNum, gameList]) => {
+                if (gameList.length === 0) return false;
+                const status = getSafeValue(gameList[0], 'status', 'Status', 'STATUS') || '待機';
+                return status === '待機';
+            })
+            .sort(([a], [b]) => parseInt(a) - parseInt(b));
+
+        if (waitingGames.length === 0) {
+            // 待機中の試合がない = 全試合終了
+            return `
+                <div class="next-game-card">
+                    <div class="next-game-icon">🏁</div>
+                    <div class="next-game-title">全試合終了</div>
+                    <div class="next-game-info">ご声援ありがとうございました</div>
+                </div>
+            `;
+        }
+
+        // 次の試合（最初の待機中の試合）
+        const [nextGameNum, nextGameList] = waitingGames[0];
+        if (nextGameList.length >= 2) {
+            const team1 = getTeamInfo(nextGameList[0], 'home');
+            const team2 = getTeamInfo(nextGameList[1], 'away');
+            const court = getSafeValue(nextGameList[0], 'court', 'Court', 'COURT');
+
+            return `
+                <div class="next-game-card">
+                    <div class="next-game-icon">⏰</div>
+                    <div class="next-game-title">次の試合</div>
+                    <div class="next-game-teams">${escapeHtml(team1.name)} vs ${escapeHtml(team2.name)}</div>
+                    <div class="next-game-info">${court}コート 第${nextGameNum}試合</div>
+                    <div class="next-game-time">開始予定時刻をお待ちください</div>
+                </div>
+            `;
+        }
+
+        return '';
+    }
+
+    /**
+     * 次の試合情報を表示（試合中がない場合のみ）
      */
     function showNextGameInfo(gameGroups = null) {
         if (!gameGroups) {
@@ -360,51 +455,15 @@ const IndexApp = (() => {
             return;
         }
 
-        // 待機中の試合を探す
-        const waitingGames = Object.entries(gameGroups)
-            .filter(([gameNum, gameList]) => {
-                if (gameList.length === 0) return false;
-                const status = getSafeValue(gameList[0], 'status', 'Status', 'STATUS') || '待機';
-                return status === '待機';
-            })
-            .sort(([a], [b]) => parseInt(a) - parseInt(b));
-
-        if (waitingGames.length === 0) {
-            document.getElementById('content').innerHTML = `
-                <div class="next-game-card">
-                    <div class="next-game-icon">🏁</div>
-                    <div class="next-game-title">全試合終了</div>
-                    <div class="next-game-info">ご声援ありがとうございました</div>
-                </div>
-            `;
-            return;
-        }
-
-        // 次の試合（最初の待機中の試合）
-        const [nextGameNum, nextGameList] = waitingGames[0];
-        if (nextGameList.length >= 2) {
-            const team1 = getTeamInfo(nextGameList[0], 'home');
-            const team2 = getTeamInfo(nextGameList[1], 'away');
-            const court = getSafeValue(nextGameList[0], 'court', 'Court', 'COURT');
-
-            document.getElementById('content').innerHTML = `
-                <div class="next-game-card">
-                    <div class="next-game-icon">⏰</div>
-                    <div class="next-game-title">次の試合</div>
-                    <div class="next-game-teams">${escapeHtml(team1.name)} vs ${escapeHtml(team2.name)}</div>
-                    <div class="next-game-info">${court}コート 第${nextGameNum}試合</div>
-                    <div class="next-game-time">開始予定時刻をお待ちください</div>
-                </div>
-            `;
-        } else {
-            document.getElementById('content').innerHTML = `
-                <div class="next-game-card">
-                    <div class="next-game-icon">⏰</div>
-                    <div class="next-game-title">現在試合中の試合はありません</div>
-                    <div class="next-game-info">次の試合をお待ちください</div>
-                </div>
-            `;
-        }
+        // 次の試合カードを表示
+        const nextGameHtml = renderNextGameCard(gameGroups);
+        document.getElementById('content').innerHTML = nextGameHtml || `
+            <div class="next-game-card">
+                <div class="next-game-icon">⏰</div>
+                <div class="next-game-title">現在試合中の試合はありません</div>
+                <div class="next-game-info">次の試合をお待ちください</div>
+            </div>
+        `;
     }
 
     /**
