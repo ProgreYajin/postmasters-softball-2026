@@ -44,6 +44,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-direction: row;
 }
 
 .header-logo {
@@ -718,14 +719,17 @@ th.team-header {
    ============================================================ */
 @media (max-width: 768px) {
     .header-container {
-        flex-direction: column;
+        flex-direction: row;
         gap: 10px;
-        text-align: center;
+    }
+    
+    .header-logo img {
+        height: 30px;
     }
     
     .header-info {
-        text-align: center;
-        font-size: 0.8em;
+        text-align: right;
+        font-size: 0.75em;
     }
     
     .nav-links {
