@@ -591,6 +591,63 @@ th.team-header {
     gap: 15px;
 }
 
+/* コンパクトスコア表示（1行レイアウト） */
+.score-line-compact {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.team-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.team-info:first-child {
+    justify-content: flex-end;
+}
+
+.team-info:last-child {
+    justify-content: flex-start;
+}
+
+.team-name-compact {
+    font-size: 1em;
+    color: #333;
+    font-weight: 500;
+}
+
+.team-score-compact {
+    font-size: 2em;
+    font-weight: bold;
+    color: #003366;
+    min-width: 40px;
+    text-align: center;
+}
+
+.score-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.score-separator-compact {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #003366;
+}
+
+.current-inning {
+    font-size: 0.85em;
+    color: #666;
+    margin-top: 2px;
+    white-space: nowrap;
+}
+
 .score-separator {
     font-size: 1.5em;
     font-weight: bold;
@@ -765,22 +822,41 @@ th.team-header {
     }
     
     .game-section-header {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        align-items: center;
         gap: 10px;
+        flex-wrap: wrap;
     }
     
     .game-title {
         font-size: 1.1em;
+        flex: 1;
+        min-width: 150px;
     }
     
-    .score-line {
-        flex-wrap: wrap;
-        justify-content: center;
+    .status-badge {
+        flex-shrink: 0;
     }
     
-    .team-score {
-        font-size: 1.5em;
+    .score-line-compact {
+        gap: 8px;
+    }
+    
+    .team-name-compact {
+        font-size: 0.9em;
+    }
+    
+    .team-score-compact {
+        font-size: 1.8em;
+        min-width: 35px;
+    }
+    
+    .score-separator-compact {
+        font-size: 1.3em;
+    }
+    
+    .current-inning {
+        font-size: 0.75em;
     }
     
     .next-game-card {
