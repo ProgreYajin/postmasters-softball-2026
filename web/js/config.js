@@ -396,3 +396,20 @@ if (typeof window !== 'undefined' && window.location.search.includes('debug=conf
   testConcurrentCalls().catch(console.error);
   testStorageResilience().catch(console.error);
 }
+
+// ============================================================
+// index-app.js との橋渡し設定（互換性維持のため）
+// ============================================================
+const CONFIG = {
+    // 実際のURLに書き換えてください
+    STAFF_API_URL: 'https://script.google.com/macros/s/AKfycby17_LC3yqT-_t16_nBkoXyZ7ZL8ku1cD__kCP5oF3VhVUaN3khClsffH70IaMt058/exec', 
+    AUDIENCE_API_URL: 'https://script.google.com/macros/s/AKfycbyuzbb9txRNAsHRbVcmmB17tROBnOii87QtP13KcfoTMk4tSLeJ9tmT5IwHUHa1omS6uw/exec',
+    AUTO_REFRESH_INTERVAL: 60000,
+    
+    isStaffApiConfigured: function() {
+        return !!this.STAFF_API_URL && this.STAFF_API_URL.includes('http');
+    },
+    isAudienceApiConfigured: function() {
+        return !!this.AUDIENCE_API_URL && this.AUDIENCE_API_URL.includes('http');
+    }
+};
