@@ -298,7 +298,7 @@ const IndexApp = (() => {
 
         if (!Array.isArray(games) || games.length === 0) {
             debugInfo += 'No games array or empty\n';
-            showDebugInfo(debugInfo);
+            // showDebugInfo(debugInfo);
             showNextGameInfo();
             return;
         }
@@ -320,7 +320,7 @@ const IndexApp = (() => {
 
         if (Object.keys(gameGroups).length === 0) {
             debugInfo += 'No game groups\n';
-            showDebugInfo(debugInfo);
+            // showDebugInfo(debugInfo);
             showNextGameInfo();
             return;
         }
@@ -336,7 +336,7 @@ const IndexApp = (() => {
             .sort(([a], [b]) => parseInt(a) - parseInt(b));
 
         debugInfo += `Live games: ${liveGames.length}\n`;
-        showDebugInfo(debugInfo);
+        // showDebugInfo(debugInfo);
 
         let contentHtml = '';
 
