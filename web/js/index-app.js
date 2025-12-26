@@ -268,23 +268,22 @@ function showDebugInfo(info) {
     if (!debugDiv) {
         debugDiv = document.createElement('div');
         debugDiv.id = 'debug-info';
-        debugDiv.style.cssText = `
-            position: fixed;
-            bottom: 80px;
-            left: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.9);
-            color: #0f0;
-            padding: 10px;
-            font-size: 11px;
-            font-family: monospace;
-            z-index: 9999;
-            max-height: 200px;
-            overflow-y: auto;
-            border-radius: 5px;
-            white-space: pre-wrap;
-            word-break: break-all;
-        `;
+        debugDiv.style.cssText = 
+            'position: fixed;' +
+            'bottom: 80px;' +
+            'left: 10px;' +
+            'right: 10px;' +
+            'background: rgba(0, 0, 0, 0.9);' +
+            'color: #0f0;' +
+            'padding: 10px;' +
+            'font-size: 11px;' +
+            'font-family: monospace;' +
+            'z-index: 9999;' +
+            'max-height: 200px;' +
+            'overflow-y: auto;' +
+            'border-radius: 5px;' +
+            'white-space: pre-wrap;' +
+            'word-break: break-all;';
         document.body.appendChild(debugDiv);
     }
     debugDiv.textContent = info;
