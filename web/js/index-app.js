@@ -175,10 +175,29 @@ const IndexApp = (() => {
 
             const overlay = document.createElement('div');
             overlay.className = 'slider-overlay';
+            
+            // タイムスタンプをyyyy/mm/dd形式に変換
             const timestamp = getSafeValue(photo, 'timestamp', 'Timestamp') || '';
+            let formattedTime = '';
+            if (timestamp) {
+                try {
+                    const date = new Date(timestamp);
+                    if (!isNaN(date.getTime())) {
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        formattedTime = `${year}/${month}/${day}`;
+                    } else {
+                        formattedTime = timestamp;
+                    }
+                } catch (e) {
+                    formattedTime = timestamp;
+                }
+            }
+            
             overlay.innerHTML = `
                 <div class="slider-title">大会写真ギャラリー</div>
-                <div class="slider-subtitle">${escapeHtml(timestamp)} 投稿</div>
+                <div class="slider-subtitle">${formattedTime ? escapeHtml(formattedTime) + ' 投稿' : ''}</div>
             `;
             slide.appendChild(overlay);
 
