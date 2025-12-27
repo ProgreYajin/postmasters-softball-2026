@@ -610,9 +610,53 @@ const IndexApp = (() => {
 // ==================== 初期化 ====================
 document.addEventListener('DOMContentLoaded', () => {
     IndexApp.init();
+    
+    // ナビゲーションスクロール状態の監視
+    initNavScrollIndicator();
 });
 
 // ページを離れるときに自動更新を停止
 window.addEventListener('beforeunload', () => {
     IndexApp.stopAutoRefresh();
 });
+
+/**
+ * ナビゲーションのスクロールインジケーターを初期化
+ */
+function initNavScrollIndicator() {
+    const navLinks = document.getElementById('navLinks');
+    const navWrapper = document.getElementById('navWrapper');
+    
+    if (!navLinks || !navWrapper) return;
+    
+    function updateScrollIndicator() {
+        const scrollLeft = navLinks.scrollLeft;
+        const scrollWidth = navLinks.scrollWidth;
+        const clientWidth = navLinks.clientWidth;
+        const maxScroll = scrollWidth - clientWidth;
+        
+        // スクロール位置に応じてクラスを変更
+        if (scrollLeft <= 5) {
+            // 左端
+            navWrapper.classList.add('scroll-start');
+            navWrapper.classList.remove('scroll-middle', 'scroll-end');
+        } else if (scrollLeft >= maxScroll - 5) {
+            // 右端
+            navWrapper.classList.add('scroll-end');
+            navWrapper.classList.remove('scroll-start', 'scroll-middle');
+        } else {
+            // 中間
+            navWrapper.classList.add('scroll-middle');
+            navWrapper.classList.remove('scroll-start', 'scroll-end');
+        }
+    }
+    
+    // 初期状態を設定
+    updateScrollIndicator();
+    
+    // スクロールイベントを監視
+    navLinks.addEventListener('scroll', updateScrollIndicator);
+    
+    // ウィンドウリサイズ時も更新
+    window.addEventListener('resize', updateScrollIndicator);
+}
