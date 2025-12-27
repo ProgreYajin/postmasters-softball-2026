@@ -73,19 +73,82 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 15px 20px;
+    position: relative;
+}
+
+.nav-wrapper {
+    position: relative;
 }
 
 .nav-links {
     display: flex;
     gap: 25px;
     overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    padding-bottom: 5px;
+    scroll-behavior: smooth;
+    padding-bottom: 8px;
+    
+    /* スクロールバーを表示（視認性を高める） */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.1);
 }
 
+/* Webkit用のスクロールバースタイル */
 .nav-links::-webkit-scrollbar {
-    display: none;
+    height: 6px;
+}
+
+.nav-links::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.nav-links::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 3px;
+    transition: background 0.3s;
+}
+
+.nav-links::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+/* グラデーションによる視覚的なヒント */
+.nav-wrapper::before,
+.nav-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 8px;
+    width: 40px;
+    pointer-events: none;
+    z-index: 10;
+    transition: opacity 0.3s;
+}
+
+.nav-wrapper::before {
+    left: 0;
+    background: linear-gradient(to right, #003366 0%, transparent 100%);
+    opacity: 0;
+}
+
+.nav-wrapper::after {
+    right: 0;
+    background: linear-gradient(to left, #003366 0%, transparent 100%);
+    opacity: 1;
+}
+
+/* スクロール位置に応じてグラデーション表示を制御 */
+.nav-wrapper.scroll-start::before {
+    opacity: 0;
+}
+
+.nav-wrapper.scroll-end::after {
+    opacity: 0;
+}
+
+.nav-wrapper.scroll-middle::before,
+.nav-wrapper.scroll-middle::after {
+    opacity: 1;
 }
 
 .nav-link {
@@ -94,6 +157,7 @@ body {
     font-size: 0.95em;
     transition: opacity 0.3s;
     white-space: nowrap;
+    padding: 8px 0;
 }
 
 .nav-link:hover {
