@@ -589,13 +589,14 @@ th.team-header {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
+    padding: 10px 0;
 }
 
 .team-side {
-    font-size: 1.05em;
+    font-size: 1.3em;
     color: #333;
-    font-weight: 500;
+    font-weight: 600;
     flex: 0 0 auto;
 }
 
@@ -603,34 +604,35 @@ th.team-header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
     flex: 0 0 auto;
 }
 
 .score-numbers {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 15px;
 }
 
 .team-score-compact {
-    font-size: 2.2em;
+    font-size: 2.8em;
     font-weight: bold;
     color: #003366;
-    min-width: 45px;
+    min-width: 50px;
     text-align: center;
 }
 
 .score-separator-compact {
-    font-size: 1.8em;
+    font-size: 2.2em;
     font-weight: bold;
     color: #003366;
 }
 
 .current-inning {
-    font-size: 0.85em;
+    font-size: 1em;
     color: #666;
     white-space: nowrap;
+    font-weight: 500;
 }
 
 /* 旧スタイル（互換性のため残す） */
@@ -832,24 +834,24 @@ th.team-header {
     }
     
     .score-display {
-        gap: 10px;
+        gap: 15px;
     }
     
-    .team-name-compact {
-        font-size: 0.9em;
+    .team-side {
+        font-size: 1.2em;
     }
     
     .team-score-compact {
-        font-size: 1.8em;
-        min-width: 35px;
+        font-size: 2.5em;
+        min-width: 45px;
     }
     
     .score-separator-compact {
-        font-size: 1.3em;
+        font-size: 2em;
     }
     
     .current-inning {
-        font-size: 0.75em;
+        font-size: 0.9em;
     }
     
     .next-game-card {
