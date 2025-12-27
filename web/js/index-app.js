@@ -412,18 +412,14 @@ const IndexApp = (() => {
                     <div class="status-badge ${statusClass}">${escapeHtml(status)}</div>
                 </div>
                 <div class="score-summary">
-                    <div class="score-display">
-                        <div class="team-side">${escapeHtml(team1.name)}</div>
-                        <div class="score-section">
-                            <div class="score-numbers">
-                                <span class="team-score-compact">${team1.score}</span>
-                                <span class="score-separator-compact">-</span>
-                                <span class="team-score-compact">${team2.score}</span>
-                            </div>
-                            ${currentInning ? `<div class="current-inning">${currentInning}</div>` : ''}
-                        </div>
-                        <div class="team-side">${escapeHtml(team2.name)}</div>
+                    <div class="score-line-single">
+                        <span class="team-label">${escapeHtml(team1.name)}</span>
+                        <span class="score-number">${team1.score}</span>
+                        <span class="score-dash">-</span>
+                        <span class="score-number">${team2.score}</span>
+                        <span class="team-label">${escapeHtml(team2.name)}</span>
                     </div>
+                    ${currentInning ? `<div class="inning-info">${currentInning}</div>` : ''}
                 </div>
             </div>
         `;
