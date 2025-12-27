@@ -584,7 +584,42 @@ th.team-header {
     padding: 20px 15px;
 }
 
-/* 新しいスコア表示レイアウト（1行配置・中央揃え） */
+/* 新しいスコア表示レイアウト（完全1行・中央揃え） */
+.score-line-single {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 10px 5px;
+}
+
+.team-label {
+    font-size: 1.3em;
+    color: #333;
+    font-weight: 600;
+}
+
+.score-number {
+    font-size: 2.8em;
+    font-weight: bold;
+    color: #003366;
+}
+
+.score-dash {
+    font-size: 2.2em;
+    font-weight: bold;
+    color: #003366;
+}
+
+.inning-info {
+    font-size: 1em;
+    color: #666;
+    text-align: center;
+    padding: 5px 0 10px;
+    font-weight: 500;
+}
+
+/* 旧スタイル（削除予定だが互換性のため残す） */
 .score-display {
     display: flex;
     justify-content: center;
@@ -835,6 +870,29 @@ th.team-header {
         flex-shrink: 0;
     }
     
+    .score-line-single {
+        gap: 12px;
+        padding: 12px 8px 5px;
+    }
+    
+    .team-label {
+        font-size: 1.2em;
+    }
+    
+    .score-number {
+        font-size: 2.5em;
+    }
+    
+    .score-dash {
+        font-size: 2em;
+    }
+    
+    .inning-info {
+        font-size: 0.9em;
+        padding: 5px 0 8px;
+    }
+    
+    /* 旧スタイル対応 */
     .score-display {
         gap: 15px;
         padding: 12px 8px;
