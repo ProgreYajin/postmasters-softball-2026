@@ -12,13 +12,13 @@ const CONFIG = {
  * スタッフ用BOTのAPI URL
  * スコアボード、試合予定、チーム名簿データを取得
  */
-STAFF_API_URL: 'https://script.google.com/macros/s/YOUR_STAFF_SCRIPT_ID/exec',
+STAFF_API_URL: 'https://script.google.com/macros/s/AKfycby17_LC3yqT-_t16_nBkoXyZ7ZL8ku1cD__kCP5oF3VhVUaN3khClsffH70IaMt058/exec',
 
 /**
  * 観客用BOTのAPI URL
  * 写真ギャラリーデータを取得
  */
-AUDIENCE_API_URL: 'https://script.google.com/macros/s/YOUR_AUDIENCE_SCRIPT_ID/exec',
+AUDIENCE_API_URL: 'https://script.google.com/macros/s/AKfycbyuzbb9txRNAsHRbVcmmB17tROBnOii87QtP13KcfoTMk4tSLeJ9tmT5IwHUHa1omS6uw/exec',
 
 // ==================== 定数 ====================
 
