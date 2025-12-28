@@ -492,11 +492,11 @@ return {
 })();
 
 // ==================== 初期化 ====================
-document.addEventListener(‘DOMContentLoaded’, () => {
-ScoreboardApp.init();
+document.addEventListener('DOMContentLoaded', () => {
+    ScoreboardApp.init();
 });
 
 // ページを離れるときに自動更新を停止
-window.addEventListener(‘beforeunload’, () => {
-ScoreboardApp.stopAutoRefresh();
+window.addEventListener('beforeunload', () => {
+    ScoreboardApp.stopAutoRefresh();
 });
