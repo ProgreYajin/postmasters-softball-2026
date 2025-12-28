@@ -1,451 +1,93 @@
-// ============================================
-// 観客用BOT - Cloudflare R2対応版（改善版）
-// ============================================
-
-// プロパティを一度だけ読み込み（パフォーマンス改善）
-const PROPS = PropertiesService.getScriptProperties();
-const CONFIG = {
-  LINE_ACCESS_TOKEN: PROPS.getProperty('LINE_ACCESS_TOKEN'),
-  R2_UPLOAD_WORKER_URL: PROPS.getProperty('R2_UPLOAD_WORKER_URL'),
-  WORKER_AUTH_TOKEN: PROPS.getProperty('WORKER_AUTH_TOKEN'),
-  R2_PUBLIC_URL: PROPS.getProperty('R2_PUBLIC_URL'),
-  MAX_IMAGE_SIZE_MB: 10 // 画像サイズ上限（MB）
-};
-
-// 定数
-const SHEET_NAME = '写真投稿';
-const MAX_IMAGE_SIZE_BYTES = CONFIG.MAX_IMAGE_SIZE_MB * 1024 * 1024;
-
-// ============================================
-// LINE Webhook受信
-// ============================================
-function doPost(e) {
-  try {
-    if (!e || !e.postData) {
-      return ContentService.createTextOutput(JSON.stringify({status: 'ok'}));
-    }
-
-    const json = JSON.parse(e.postData.contents);
-    const events = json.events;
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="2026年千葉県郵便局長ソフトボール大会の写真ギャラリーです">
+    <title>写真ギャラリー | 2026年千葉県郵便局長ソフトボール大会</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-top">
+            <div class="header-container">
+                <a href="index.html" class="header-logo">
+                    <img src="https://drive.google.com/thumbnail?id=1i01jLSCnme9KdDuBwL8MufLNGdeo_d0x" alt="全国郵便局長会">
+                </a>
+                <div class="header-info">
+                    <span>2026年千葉県郵便局長ソフトボール大会 | 2026.6.6</span>
+                </div>
+            </div>
+        </div>
+        <div class="header-main">
+            <div class="nav-wrapper" id="navWrapper">
+                <nav class="nav-links" id="navLinks">
+                    <a href="index.html" class="nav-link">ホーム</a>
+                    <a href="scoreboard.html" class="nav-link">試合速報 / 試合結果</a>
+                    <a href="gallery.html" class="nav-link">写真ギャラリー</a>
+                    <a href="schedule.html" class="nav-link">大会スケジュール</a>
+                    <a href="tournament.html" class="nav-link">トーナメント表</a>
+                    <a href="teams.html" class="nav-link">チーム・選手一覧</a>
+                    <a href="venue.html" class="nav-link">会場案内・アクセス</a>
+                    <a href="rules.html" class="nav-link">大会ルール・規約</a>
+                    <a href="history.html" class="nav-link">優勝記録・歴史</a>
+                </nav>
+            </div>
+        </div>
+    </header>
     
-    if (!events) return ContentService.createTextOutput('ok');
+    <main class="app-main">
+        <section class="page-header">
+            <div class="page-header-content">
+                <h1 class="page-title">写真ギャラリー</h1>
+                <p class="page-subtitle">Photo Gallery</p>
+            </div>
+        </section>
 
-    events.forEach(event => {
-      if (event.type === 'message') {
-        const userId = event.source.userId;
-        const replyToken = event.replyToken;
+        <section class="app-container">
+            <div class="gallery-controls">
+                <div class="gallery-stats">
+                    <div class="photo-count">
+                        📸 投稿写真: <strong id="photoCount">0</strong>枚
+                    </div>
+                    <button class="gallery-refresh-btn" id="galleryRefreshBtn">
+                        🔄 更新
+                    </button>
+                </div>
+            </div>
+
+            <div class="gallery-grid" id="galleryGrid">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <div>写真を読み込んでいます...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 写真モーダル -->
+    <div class="modal" id="photoModal">
+        <span class="modal-close" id="modalClose">&times;</span>
+        <button class="modal-nav prev" id="modalPrev">&#10094;</button>
+        <button class="modal-nav next" id="modalNext">&#10095;</button>
         
-        // 画像メッセージの場合
-        if (event.message.type === 'image') {
-          handleImageMessage(event.message.id, userId, replyToken);
-        }
-      }
-      // スタッフBotからのブロードキャスト指示
-      else if (event.type === 'message' && event.message.type === 'text') {
-        if (event.message.text.startsWith('[BROADCAST]')) {
-          const message = event.message.text.replace('[BROADCAST]', '').trim();
-          broadcastToAllUsers(message);
-        }
-      }
-    });
-    
-    return ContentService.createTextOutput(JSON.stringify({status: 'ok'}))
-      .setMimeType(ContentService.MimeType.JSON);
-      
-  } catch (error) {
-    Logger.log('doPost エラー: ' + error);
-    return ContentService.createTextOutput(JSON.stringify({
-      status: 'error',
-      message: error.toString()
-    })).setMimeType(ContentService.MimeType.JSON);
-  }
-}
+        <div class="modal-content">
+            <img id="modalImage" class="modal-image" alt="大会写真">
+            <div class="modal-info">
+                <div class="modal-user" id="modalUser"></div>
+                <div class="modal-time" id="modalTime"></div>
+            </div>
+        </div>
+    </div>
 
-// ============================================
-// 画像メッセージ処理
-// ============================================
-function handleImageMessage(messageId, userId, replyToken) {
-  try {
-    // 設定チェック
-    if (!CONFIG.R2_UPLOAD_WORKER_URL || !CONFIG.WORKER_AUTH_TOKEN) {
-      Logger.log('エラー: R2設定が不完全です');
-      replyMessage(replyToken, '⚠️ システム設定エラー\n管理者に連絡してください');
-      return;
-    }
+    <footer class="app-footer">
+        <div class="footer-content">
+            <p class="copyright">© 2026 千葉県印旛地区郵便局長会</p>
+        </div>
+    </footer>
 
-    // LINEから画像を取得
-    const imageResult = getImageFromLine(messageId);
-    
-    if (!imageResult.success) {
-      Logger.log('画像取得失敗: ' + imageResult.error);
-      replyMessage(replyToken, '⚠️ 画像の取得に失敗しました\n' + imageResult.error);
-      return;
-    }
-    
-    const { blob, contentType, size } = imageResult;
-    
-    // サイズチェック
-    if (size > MAX_IMAGE_SIZE_BYTES) {
-      const sizeMB = (size / (1024 * 1024)).toFixed(2);
-      Logger.log(`画像サイズ超過: ${sizeMB}MB`);
-      replyMessage(replyToken, `⚠️ 画像サイズが大きすぎます\n最大: ${CONFIG.MAX_IMAGE_SIZE_MB}MB / 送信: ${sizeMB}MB`);
-      return;
-    }
-    
-    // R2にアップロード
-    const timestamp = new Date().getTime();
-    const extension = getExtensionFromMimeType(contentType);
-    const filename = `photo_${timestamp}_${messageId}${extension}`;
-    
-    const uploadResult = uploadToR2(blob, filename, contentType);
-    
-    if (!uploadResult.success) {
-      Logger.log('R2アップロード失敗: ' + uploadResult.error);
-      replyMessage(replyToken, '⚠️ 画像のアップロードに失敗しました\nもう一度お試しください');
-      return;
-    }
-    
-    // ユーザー名取得
-    const userName = getUserName(userId);
-    
-    // スプレッドシートに記録
-    savePhotoRecord(uploadResult.url, uploadResult.url, userName, userId, messageId, contentType);
-    
-    // 成功メッセージ
-    const sizeMB = (size / (1024 * 1024)).toFixed(2);
-    replyMessage(replyToken, `📸 写真を受け付けました！\n\nサイズ: ${sizeMB}MB\nギャラリーに表示されます`);
-    
-    Logger.log(`✓ 写真受信成功: ${userName} (${sizeMB}MB) → ${uploadResult.url}`);
-    
-  } catch (error) {
-    Logger.log('画像処理エラー: ' + error.stack || error);
-    replyMessage(replyToken, '⚠️ 画像の処理中にエラーが発生しました');
-  }
-}
-
-// ============================================
-// LINEから画像取得（改善版）
-// ============================================
-function getImageFromLine(messageId) {
-  const url = `https://api-data.line.me/v2/bot/message/${messageId}/content`;
-  
-  try {
-    const response = UrlFetchApp.fetch(url, {
-      headers: {
-        'Authorization': 'Bearer ' + CONFIG.LINE_ACCESS_TOKEN
-      },
-      muteHttpExceptions: true
-    });
-    
-    const statusCode = response.getResponseCode();
-    
-    if (statusCode !== 200) {
-      return {
-        success: false,
-        error: `HTTP ${statusCode}: ${response.getContentText()}`
-      };
-    }
-    
-    const blob = response.getBlob();
-    const contentType = response.getHeaders()['Content-Type'] || 'image/jpeg';
-    const size = blob.getBytes().length;
-    
-    Logger.log(`画像取得成功: ${contentType}, ${(size / 1024).toFixed(2)}KB`);
-    
-    return {
-      success: true,
-      blob: blob,
-      contentType: contentType,
-      size: size
-    };
-    
-  } catch (error) {
-    return {
-      success: false,
-      error: error.toString()
-    };
-  }
-}
-
-// ============================================
-// R2にアップロード（改善版）
-// ============================================
-function uploadToR2(blob, filename, contentType) {
-  try {
-    Logger.log(`R2アップロード開始: ${filename} (${contentType})`);
-    
-    const response = UrlFetchApp.fetch(CONFIG.R2_UPLOAD_WORKER_URL, {
-      method: 'post',
-      contentType: 'application/octet-stream',
-      payload: blob.getBytes(),
-      headers: {
-        'X-Filename': filename,
-        'X-Content-Type': contentType,
-        'X-Auth-Token': CONFIG.WORKER_AUTH_TOKEN
-      },
-      muteHttpExceptions: true
-    });
-    
-    const statusCode = response.getResponseCode();
-    const responseText = response.getContentText();
-    
-    Logger.log(`Worker応答: HTTP ${statusCode}`);
-    Logger.log(`Worker応答内容: ${responseText}`);
-    
-    if (statusCode !== 200) {
-      return {
-        success: false,
-        error: `Worker error (${statusCode}): ${responseText}`
-      };
-    }
-    
-    try {
-      const result = JSON.parse(responseText);
-      
-      if (result.success) {
-        return {
-          success: true,
-          url: result.url
-        };
-      } else {
-        return {
-          success: false,
-          error: result.error || 'Unknown error'
-        };
-      }
-    } catch (parseError) {
-      return {
-        success: false,
-        error: `JSONパースエラー: ${parseError.toString()}`
-      };
-    }
-    
-  } catch (error) {
-    Logger.log('R2アップロード例外: ' + error.stack || error);
-    return {
-      success: false,
-      error: error.toString()
-    };
-  }
-}
-
-// ============================================
-// MIMEタイプから拡張子を取得
-// ============================================
-function getExtensionFromMimeType(mimeType) {
-  const mimeMap = {
-    'image/jpeg': '.jpg',
-    'image/jpg': '.jpg',
-    'image/png': '.png',
-    'image/gif': '.gif',
-    'image/webp': '.webp',
-    'image/bmp': '.bmp'
-  };
-  
-  return mimeMap[mimeType.toLowerCase()] || '.jpg';
-}
-
-// ============================================
-// ユーザー名取得
-// ============================================
-function getUserName(userId) {
-  const url = `https://api.line.me/v2/bot/profile/${userId}`;
-  
-  try {
-    const response = UrlFetchApp.fetch(url, {
-      headers: {
-        'Authorization': 'Bearer ' + CONFIG.LINE_ACCESS_TOKEN
-      },
-      muteHttpExceptions: true
-    });
-    
-    if (response.getResponseCode() === 200) {
-      const profile = JSON.parse(response.getContentText());
-      return profile.displayName || '投稿者';
-    }
-  } catch (error) {
-    Logger.log('ユーザー名取得エラー: ' + error);
-  }
-  
-  return '投稿者';
-}
-
-// ============================================
-// 写真記録を保存
-// ============================================
-function savePhotoRecord(fullImageUrl, thumbnailUrl, userName, userId, messageId, contentType) {
-  try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    let sheet = ss.getSheetByName(SHEET_NAME);
-    
-    // シートが存在しない場合は作成
-    if (!sheet) {
-      sheet = ss.insertSheet(SHEET_NAME);
-      sheet.appendRow([
-        'タイムスタンプ',
-        'ユーザー名',
-        'ユーザーID',
-        '画像URL（フル）',
-        '画像URL（サムネイル）',
-        'メッセージID',
-        'MIMEタイプ'
-      ]);
-      sheet.getRange(1, 1, 1, 7).setFontWeight('bold');
-    }
-    
-    const now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd HH:mm:ss');
-    sheet.appendRow([now, userName, userId, fullImageUrl, thumbnailUrl, messageId, contentType]);
-    
-    Logger.log(`✓ シート記録完了: ${userName}`);
-    
-  } catch (error) {
-    Logger.log('シート記録エラー: ' + error);
-    throw error;
-  }
-}
-
-// ============================================
-// LINE返信
-// ============================================
-function replyMessage(replyToken, message) {
-  const url = 'https://api.line.me/v2/bot/message/reply';
-  
-  try {
-    UrlFetchApp.fetch(url, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + CONFIG.LINE_ACCESS_TOKEN
-      },
-      payload: JSON.stringify({
-        replyToken: replyToken,
-        messages: [{ type: 'text', text: message }]
-      }),
-      muteHttpExceptions: true
-    });
-  } catch (error) {
-    Logger.log('LINE返信エラー: ' + error);
-  }
-}
-
-// ============================================
-// ブロードキャスト機能
-// ============================================
-function broadcastToAllUsers(message) {
-  try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const userSheet = ss.getSheetByName('ユーザー一覧');
-    
-    if (!userSheet || userSheet.getLastRow() <= 1) {
-      Logger.log('ブロードキャスト: 対象ユーザーなし');
-      return;
-    }
-    
-    const userData = userSheet.getDataRange().getValues();
-    const userIds = [];
-    
-    for (let i = 1; i < userData.length; i++) {
-      if (userData[i][1]) {
-        userIds.push(userData[i][1]);
-      }
-    }
-    
-    if (userIds.length === 0) {
-      Logger.log('ブロードキャスト: 有効なユーザーIDなし');
-      return;
-    }
-    
-    // LINE Messaging APIのマルチキャスト
-    const url = 'https://api.line.me/v2/bot/message/multicast';
-    const payload = {
-      to: userIds.slice(0, 500), // 最大500ユーザー
-      messages: [{ type: 'text', text: message }]
-    };
-    
-    const response = UrlFetchApp.fetch(url, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + CONFIG.LINE_ACCESS_TOKEN
-      },
-      payload: JSON.stringify(payload),
-      muteHttpExceptions: true
-    });
-    
-    Logger.log(`ブロードキャスト送信: ${userIds.length}人, HTTP ${response.getResponseCode()}`);
-    
-  } catch (error) {
-    Logger.log('ブロードキャストエラー: ' + error);
-  }
-}
-
-// ============================================
-// Web API: ギャラリーデータ取得
-// ============================================
-function doGet(e) {
-  try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getSheetByName(SHEET_NAME);
-    
-    if (!sheet || sheet.getLastRow() <= 1) {
-      return ContentService.createTextOutput(JSON.stringify({
-        lastUpdate: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd HH:mm:ss'),
-        photos: []
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    const data = sheet.getDataRange().getValues();
-    const photos = [];
-    
-    // ヘッダー行をスキップ（i=1から）
-    for (let i = 1; i < data.length; i++) {
-      if (data[i][3]) { // 画像URLが存在する場合のみ
-        // タイムスタンプをフォーマット
-        let formattedTimestamp = '';
-        if (data[i][0]) {
-          if (data[i][0] instanceof Date) {
-            formattedTimestamp = Utilities.formatDate(data[i][0], 'Asia/Tokyo', 'yyyy-MM-dd HH:mm:ss');
-          } else if (typeof data[i][0] === 'string') {
-            // すでに文字列の場合はそのまま使用
-            formattedTimestamp = data[i][0];
-          }
-        }
-        
-        photos.push({
-          timestamp: formattedTimestamp,
-          userName: data[i][1],
-          fullImage: data[i][3],
-          thumbnail: data[i][4] || data[i][3], // サムネイルがない場合はフル画像
-          contentType: data[i][6] || 'image/jpeg'
-        });
-      }
-    }
-    
-    // 新しい順に並び替え
-    photos.reverse();
-    
-    return ContentService.createTextOutput(JSON.stringify({
-      lastUpdate: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd HH:mm:ss'),
-      photos: photos
-    })).setMimeType(ContentService.MimeType.JSON);
-    
-  } catch (error) {
-    Logger.log('doGet エラー: ' + error);
-    return ContentService.createTextOutput(JSON.stringify({
-      error: error.toString(),
-      photos: []
-    })).setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-// ============================================
-// 設定確認用関数（デバッグ用）
-// ============================================
-function checkConfig() {
-  Logger.log('=== 設定確認 ===');
-  Logger.log('LINE_ACCESS_TOKEN: ' + (CONFIG.LINE_ACCESS_TOKEN ? '✓ 設定済み' : '✗ 未設定'));
-  Logger.log('R2_UPLOAD_WORKER_URL: ' + (CONFIG.R2_UPLOAD_WORKER_URL || '✗ 未設定'));
-  Logger.log('WORKER_AUTH_TOKEN: ' + (CONFIG.WORKER_AUTH_TOKEN ? '✓ 設定済み' : '✗ 未設定'));
-  Logger.log('R2_PUBLIC_URL: ' + (CONFIG.R2_PUBLIC_URL || '✗ 未設定'));
-  Logger.log('MAX_IMAGE_SIZE_MB: ' + CONFIG.MAX_IMAGE_SIZE_MB);
-}
+    <script src="js/config.js"></script>
+    <script src="js/gallery-app.js"></script>
+</body>
+</html>
