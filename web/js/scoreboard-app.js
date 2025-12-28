@@ -11,7 +11,7 @@ let gamesData = null;
 let autoRefreshInterval = null;
 let isRefreshing = false;
 
-```
+
 // ==================== ユーティリティ関数 ====================
 
 /**
@@ -488,7 +488,6 @@ return {
         console.log(`スコアボード詳細: ${court}コート 第${gameNum}試合`);
     }
 };
-```
 
 })();
 
