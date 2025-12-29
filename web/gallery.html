@@ -7,13 +7,15 @@
     <meta name="description" content="2026年千葉県郵便局長ソフトボール大会の写真ギャラリーです">
     <title>写真ギャラリー | 2026年千葉県郵便局長ソフトボール大会</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/pages.css">
 </head>
 <body>
+    <!-- ヘッダー -->
     <header class="app-header">
         <div class="header-top">
             <div class="header-container">
                 <a href="index.html" class="header-logo">
-                    <img src="https://drive.google.com/thumbnail?id=1i01jLSCnme9KdDuBwL8MufLNGdeo_d0x" alt="全国郵便局長会">
+                    <img src="logo.png" alt="全国郵便局長会" class="header-logo-img">
                 </a>
                 <div class="header-info">
                     <span>2026年千葉県郵便局長ソフトボール大会 | 2026.6.6</span>
@@ -38,19 +40,31 @@
     </header>
 
 ```
-<main class="app-main" style="background: #000;">
-    <section class="app-container" style="padding-top: 0; max-width: 100%;">
+<!-- メインコンテンツ -->
+<main class="app-main">
+    <!-- ページヘッダー -->
+    <section class="page-header">
+        <div class="page-header-content">
+            <h1 class="page-title">写真ギャラリー</h1>
+            <p class="page-subtitle">Photo Gallery</p>
+        </div>
+    </section>
+
+    <!-- ギャラリーコンテナ -->
+    <section class="gallery-container">
+        <!-- コントロールバー -->
         <div class="gallery-controls">
             <div class="gallery-stats">
                 <div class="photo-count">
                     📸 投稿写真: <strong id="photoCount">0</strong>枚
                 </div>
-                <button class="gallery-refresh-btn" id="galleryRefreshBtn">
+                <button class="gallery-refresh-btn" id="galleryRefreshBtn" aria-label="写真を更新">
                     🔄 更新
                 </button>
             </div>
         </div>
 
+        <!-- 写真グリッド -->
         <div class="gallery-grid" id="galleryGrid">
             <div class="loading">
                 <div class="loading-spinner"></div>
@@ -61,13 +75,13 @@
 </main>
 
 <!-- 写真モーダル -->
-<div class="modal" id="photoModal">
-    <span class="modal-close" id="modalClose">&times;</span>
-    <button class="modal-nav prev" id="modalPrev">&#10094;</button>
-    <button class="modal-nav next" id="modalNext">&#10095;</button>
+<div class="modal" id="photoModal" role="dialog" aria-modal="true" aria-label="写真拡大表示">
+    <button class="modal-close" id="modalClose" aria-label="閉じる">&times;</button>
+    <button class="modal-nav prev" id="modalPrev" aria-label="前の写真">&#10094;</button>
+    <button class="modal-nav next" id="modalNext" aria-label="次の写真">&#10095;</button>
     
     <div class="modal-content">
-        <img id="modalImage" class="modal-image" alt="大会写真">
+        <img id="modalImage" class="modal-image" alt="大会写真" loading="lazy">
         <div class="modal-info">
             <div class="modal-user" id="modalUser"></div>
             <div class="modal-time" id="modalTime"></div>
@@ -75,12 +89,14 @@
     </div>
 </div>
 
+<!-- フッター -->
 <footer class="app-footer">
     <div class="footer-content">
         <p class="copyright">© 2026 千葉県印旛地区郵便局長会</p>
     </div>
 </footer>
 
+<!-- スクリプト -->
 <script src="js/config.js"></script>
 <script src="js/gallery-app.js"></script>
 ```
