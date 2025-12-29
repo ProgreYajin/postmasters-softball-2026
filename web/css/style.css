@@ -1,331 +1,327 @@
 /* ============================================================
-リセット・ベーススタイル
-============================================================ */
-
-- {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  }
+   リセット・ベーススタイル
+   ============================================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 html {
-scroll-behavior: smooth;
+    scroll-behavior: smooth;
 }
 
 body {
-font-family: “Helvetica Neue”, Arial, “Hiragino Kaku Gothic ProN”, “Hiragino Sans”, Meiryo, sans-serif;
-background: #f5f5f5;
-color: #333;
-line-height: 1.6;
+    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
 }
 
 /* ============================================================
-ヘッダー
-============================================================ */
+   ヘッダー
+   ============================================================ */
 .app-header {
-background: #003366;
-color: white;
-position: sticky;
-top: 0;
-z-index: 1000;
-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: #003366;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .header-top {
-background: #002244;
-padding: 12px 0;
-font-size: 0.85em;
-border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: #002244;
+    padding: 12px 0;
+    font-size: 0.85em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .header-container {
-max-width: 1200px;
-margin: 0 auto;
-padding: 0 20px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-flex-direction: row;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
 }
 
 .header-logo {
-text-decoration: none;
-cursor: pointer;
-transition: opacity 0.3s;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.3s;
 }
 
 .header-logo:hover {
-opacity: 0.8;
+    opacity: 0.8;
 }
 
 .header-logo img,
 .header-logo-img {
-height: 40px;
-width: auto;
-display: block;
-object-fit: contain;
+    height: 40px;
+    width: auto;
+    display: block;
+    object-fit: contain;
 }
 
 .header-info {
-color: #aaa;
-font-size: 0.9em;
-text-align: right;
+    color: #aaa;
+    font-size: 0.9em;
+    text-align: right;
 }
 
 .header-main {
-max-width: 1200px;
-margin: 0 auto;
-padding: 15px 20px;
-position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 15px 20px;
+    position: relative;
 }
 
 .nav-wrapper {
-position: relative;
+    position: relative;
 }
 
 .nav-links {
-display: flex;
-gap: 25px;
-overflow-x: auto;
-scroll-behavior: smooth;
-padding-bottom: 8px;
-scrollbar-width: thin;
-scrollbar-color: rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.1);
+    display: flex;
+    gap: 25px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.1);
 }
 
 .nav-links::-webkit-scrollbar {
-height: 6px;
+    height: 6px;
 }
 
 .nav-links::-webkit-scrollbar-track {
-background: rgba(255, 255, 255, 0.1);
-border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
 }
 
 .nav-links::-webkit-scrollbar-thumb {
-background: rgba(255, 255, 255, 0.5);
-border-radius: 3px;
-transition: background 0.3s;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 3px;
+    transition: background 0.3s;
 }
 
 .nav-links::-webkit-scrollbar-thumb:hover {
-background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.7);
 }
 
 .nav-wrapper::before,
 .nav-wrapper::after {
-content: ‘’;
-position: absolute;
-top: 0;
-bottom: 8px;
-width: 40px;
-pointer-events: none;
-z-index: 10;
-transition: opacity 0.3s;
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 8px;
+    width: 40px;
+    pointer-events: none;
+    z-index: 10;
+    transition: opacity 0.3s;
 }
 
 .nav-wrapper::before {
-left: 0;
-background: linear-gradient(to right, #003366 0%, transparent 100%);
-opacity: 0;
+    left: 0;
+    background: linear-gradient(to right, #003366 0%, transparent 100%);
+    opacity: 0;
 }
 
 .nav-wrapper::after {
-right: 0;
-background: linear-gradient(to left, #003366 0%, transparent 100%);
-opacity: 1;
+    right: 0;
+    background: linear-gradient(to left, #003366 0%, transparent 100%);
+    opacity: 1;
 }
 
 .nav-wrapper.scroll-start::before {
-opacity: 0;
+    opacity: 0;
 }
 
 .nav-wrapper.scroll-end::after {
-opacity: 0;
+    opacity: 0;
 }
 
 .nav-wrapper.scroll-middle::before,
 .nav-wrapper.scroll-middle::after {
-opacity: 1;
+    opacity: 1;
 }
 
 .nav-link {
-color: white;
-text-decoration: none;
-font-size: 0.95em;
-transition: opacity 0.3s;
-white-space: nowrap;
-padding: 8px 0;
+    color: white;
+    text-decoration: none;
+    font-size: 0.95em;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+    padding: 8px 0;
 }
 
 .nav-link:hover {
-opacity: 0.7;
+    opacity: 0.7;
 }
 
 /* ============================================================
-ページヘッダー
-============================================================ */
+   ページヘッダー
+   ============================================================ */
 .page-header {
-background: white;
-border-bottom: 3px solid #003366;
-padding: 40px 20px;
+    background: white;
+    border-bottom: 3px solid #003366;
+    padding: 40px 20px;
 }
 
 .page-header-content {
-max-width: 1200px;
-margin: 0 auto;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .page-title {
-font-size: 2.2em;
-font-weight: 300;
-color: #003366;
-margin-bottom: 10px;
-letter-spacing: 2px;
+    font-size: 2.2em;
+    font-weight: 300;
+    color: #003366;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
 }
 
 .page-subtitle {
-color: #666;
-font-size: 1.1em;
+    color: #666;
+    font-size: 1.1em;
 }
 
 /* ============================================================
-メインコンテンツ
-============================================================ */
+   メインコンテンツ
+   ============================================================ */
 .app-main {
-flex: 1;
+    flex: 1;
 }
 
 .app-container {
-max-width: 1200px;
-margin: 0 auto;
-padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
 }
 
 /* ギャラリーページは余白なし */
 .app-container.gallery-container {
-padding: 0;
-max-width: 100%;
+    padding: 0;
+    max-width: 100%;
 }
 
 /* ============================================================
-共通コンポーネント
-============================================================ */
+   共通コンポーネント
+   ============================================================ */
 .section-title {
-font-size: 1.8em;
-font-weight: 300;
-margin-bottom: 25px;
-padding-bottom: 15px;
-border-bottom: 3px solid #003366;
-letter-spacing: 1px;
+    font-size: 1.8em;
+    font-weight: 300;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 3px solid #003366;
+    letter-spacing: 1px;
 }
 
 .loading {
-text-align: center;
-padding: 60px 20px;
-color: #666;
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
 }
 
 .loading-spinner {
-width: 50px;
-height: 50px;
-border: 4px solid #f0f0f0;
-border-top: 4px solid #003366;
-border-radius: 50%;
-animation: spin 1s linear infinite;
-margin: 0 auto 20px;
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f0f0f0;
+    border-top: 4px solid #003366;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
 }
 
 @keyframes spin {
-0% { transform: rotate(0deg); }
-100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* ============================================================
-更新ボタン
-============================================================ */
+   更新ボタン
+   ============================================================ */
 .refresh-btn {
-position: fixed;
-bottom: 20px;
-right: 20px;
-width: 56px;
-height: 56px;
-border-radius: 50%;
-background: #003366;
-color: white;
-border: none;
-font-size: 1.5em;
-cursor: pointer;
-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-transition: all 0.3s;
-z-index: 100;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #003366;
+    color: white;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s;
+    z-index: 100;
 }
 
 .refresh-btn:hover:not(:disabled) {
-transform: scale(1.1);
-background: #004080;
+    transform: scale(1.1);
+    background: #004080;
 }
 
 .refresh-btn:disabled {
-opacity: 0.5;
-cursor: not-allowed;
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* ============================================================
-フッター
-============================================================ */
+   フッター
+   ============================================================ */
 .app-footer {
-background: #002244;
-color: white;
-padding: 20px;
-margin-top: 60px;
-text-align: center;
+    background: #002244;
+    color: white;
+    padding: 20px;
+    margin-top: 60px;
+    text-align: center;
 }
 
 .footer-content {
-max-width: 1200px;
-margin: 0 auto;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .copyright {
-font-size: 0.85em;
-opacity: 0.6;
+    font-size: 0.85em;
+    opacity: 0.6;
 }
 
 /* ============================================================
-レスポンシブ対応（共通）
-============================================================ */
+   レスポンシブ対応（共通）
+   ============================================================ */
 @media (max-width: 768px) {
-.header-container {
-flex-direction: row;
-gap: 10px;
-}
-
-```
-.header-logo img {
-    height: 30px;
-}
-
-.header-info {
-    text-align: right;
-    font-size: 0.75em;
-}
-
-.nav-links {
-    gap: 15px;
-}
-
-.nav-link {
-    font-size: 0.85em;
-}
-
-.page-title {
-    font-size: 1.5em;
-}
-
-.section-title {
-    font-size: 1.4em;
-}
-```
-
+    .header-container {
+        flex-direction: row;
+        gap: 10px;
+    }
+    
+    .header-logo img {
+        height: 30px;
+    }
+    
+    .header-info {
+        text-align: right;
+        font-size: 0.75em;
+    }
+    
+    .nav-links {
+        gap: 15px;
+    }
+    
+    .nav-link {
+        font-size: 0.85em;
+    }
+    
+    .page-title {
+        font-size: 1.5em;
+    }
+    
+    .section-title {
+        font-size: 1.4em;
+    }
 }
