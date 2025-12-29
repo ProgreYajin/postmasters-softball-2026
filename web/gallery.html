@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -38,66 +37,65 @@
             </div>
         </div>
     </header>
-
-<!-- メインコンテンツ -->
-<main class="app-main">
-    <!-- ページヘッダー -->
-    <section class="page-header">
-        <div class="page-header-content">
-            <h1 class="page-title">写真ギャラリー</h1>
-            <p class="page-subtitle">Photo Gallery</p>
-        </div>
-    </section>
-
-    <!-- ギャラリーコンテナ -->
-    <div class="gallery-container">
-        <!-- コントロールバー -->
-        <div class="gallery-controls">
-            <div class="gallery-stats">
-                <div class="photo-count">
-                    📸 投稿写真: <strong id="photoCount">0</strong>枚
-                </div>
-                <button class="gallery-refresh-btn" id="galleryRefreshBtn" aria-label="写真を更新">
-                    🔄 更新
-                </button>
-            </div>
-        </div>
-
-        <!-- 写真グリッド -->
-        <div class="gallery-grid" id="galleryGrid">
-            <div class="loading">
-                <div class="loading-spinner"></div>
-                <div>写真を読み込んでいます...</div>
-            </div>
-        </div>
-    </div>
-</main>
-
-<!-- 写真モーダル -->
-<div class="modal" id="photoModal" role="dialog" aria-modal="true" aria-label="写真拡大表示">
-    <button class="modal-close" id="modalClose" aria-label="閉じる">&times;</button>
-    <button class="modal-nav prev" id="modalPrev" aria-label="前の写真">&#10094;</button>
-    <button class="modal-nav next" id="modalNext" aria-label="次の写真">&#10095;</button>
     
-    <div class="modal-content">
-        <img id="modalImage" class="modal-image" alt="大会写真" loading="lazy">
-        <div class="modal-info">
-            <div class="modal-user" id="modalUser"></div>
-            <div class="modal-time" id="modalTime"></div>
+    <!-- メインコンテンツ -->
+    <main class="app-main">
+        <!-- ページヘッダー -->
+        <section class="page-header">
+            <div class="page-header-content">
+                <h1 class="page-title">写真ギャラリー</h1>
+                <p class="page-subtitle">Photo Gallery</p>
+            </div>
+        </section>
+
+        <!-- ギャラリーコンテナ -->
+        <div class="gallery-container">
+            <!-- コントロールバー -->
+            <div class="gallery-controls">
+                <div class="gallery-stats">
+                    <div class="photo-count">
+                        📸 投稿写真: <strong id="photoCount">0</strong>枚
+                    </div>
+                    <button class="gallery-refresh-btn" id="galleryRefreshBtn" aria-label="写真を更新">
+                        🔄 更新
+                    </button>
+                </div>
+            </div>
+
+            <!-- 写真グリッド -->
+            <div class="gallery-grid" id="galleryGrid">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <div>写真を読み込んでいます...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 写真モーダル -->
+    <div class="modal" id="photoModal" role="dialog" aria-modal="true" aria-label="写真拡大表示">
+        <button class="modal-close" id="modalClose" aria-label="閉じる">&times;</button>
+        <button class="modal-nav prev" id="modalPrev" aria-label="前の写真">&#10094;</button>
+        <button class="modal-nav next" id="modalNext" aria-label="次の写真">&#10095;</button>
+        
+        <div class="modal-content">
+            <img id="modalImage" class="modal-image" alt="大会写真" loading="lazy">
+            <div class="modal-info">
+                <div class="modal-user" id="modalUser"></div>
+                <div class="modal-time" id="modalTime"></div>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- フッター -->
-<footer class="app-footer">
-    <div class="footer-content">
-        <p class="copyright">© 2026 千葉県印旛地区郵便局長会</p>
-    </div>
-</footer>
+    <!-- フッター -->
+    <footer class="app-footer">
+        <div class="footer-content">
+            <p class="copyright">© 2026 千葉県印旛地区郵便局長会</p>
+        </div>
+    </footer>
 
-<!-- スクリプト -->
-<script src="js/config.js"></script>
-<script src="js/gallery-app.js"></script>
-
+    <!-- スクリプト -->
+    <script src="js/config.js"></script>
+    <script src="js/gallery-app.js"></script>
 </body>
 </html>
