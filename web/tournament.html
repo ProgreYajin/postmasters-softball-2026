@@ -1,510 +1,82 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>トーナメント表 | 2026年千葉県郵便局長ソフトボール大会</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-        }
-        
-        header {
-            background: #003366;
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .header-top {
-            background: #002244;
-            padding: 12px 0;
-            font-size: 0.85em;
-        }
-        
-        .header-top-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .header-logo {
-            cursor: pointer;
-            transition: opacity 0.3s;
-            text-decoration: none;
-            color: white;
-        }
-        
-        .header-logo:hover {
-            opacity: 0.8;
-        }
-        
-        .header-logo img {
-            height: 35px;
-            width: auto;
-        }
-        
-        .header-info {
-            color: #aaa;
-            font-size: 0.9em;
-        }
-        
-        .header-main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 15px 20px;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 25px;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-        
-        .nav-links::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 0.95em;
-            white-space: nowrap;
-        }
-        
-        .page-header {
-            background: white;
-            border-bottom: 3px solid #003366;
-            padding: 40px 20px;
-        }
-        
-        .page-header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .page-title {
-            font-size: 2.2em;
-            font-weight: 300;
-            color: #003366;
-            letter-spacing: 2px;
-        }
-        
-        .page-subtitle {
-            color: #666;
-            font-size: 1.1em;
-            margin-top: 10px;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-        
-        .tournament-wrapper {
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            overflow-x: auto;
-        }
-        
-        .tournament-container {
-            display: flex;
-            gap: 60px;
-            min-width: 900px;
-        }
-        
-        .round {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .round-title {
-            text-align: center;
-            font-weight: bold;
-            color: #003366;
-            font-size: 1.1em;
-            height: 20px;
-        }
-        
-        .round-matches {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .match-card {
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            width: 200px;
-            position: relative;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .match-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
-        }
-        
-        .match-card.playing {
-            border: 2px solid #d32f2f;
-        }
-        
-        .match-info {
-            background: #f8f8f8;
-            font-size: 11px;
-            padding: 8px;
-            text-align: center;
-            border-bottom: 1px solid #e0e0e0;
-            color: #666;
-            border-radius: 8px 8px 0 0;
-        }
-        
-        .match-info.playing {
-            background: #d32f2f;
-            color: white;
-        }
-        
-        .match-info.finished {
-            background: #388e3c;
-            color: white;
-        }
-        
-        .team {
-            padding: 12px;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .team:first-of-type {
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .team-name {
-            flex: 1;
-            font-weight: 500;
-        }
-        
-        .team-name.tbd {
-            color: #ccc;
-            font-style: italic;
-        }
-        
-        .team-score {
-            font-weight: bold;
-            color: #003366;
-            font-size: 1.2em;
-            margin-left: 8px;
-        }
-        
-        .winner-team {
-            background-color: #fff3cd;
-        }
-        
-        .seed-card {
-            background: #e3f2fd;
-            border: 2px dashed #1976d2;
-        }
-        
-        .seed-info {
-            padding: 12px;
-            text-align: center;
-            color: #1565c0;
-            font-weight: bold;
-        }
-        
-        .line-bracket-top {
-            position: absolute;
-            right: -30px;
-            top: 50%;
-            width: 30px;
-            height: 50%;
-            border-right: 2px solid #ddd;
-            border-top: 2px solid #ddd;
-        }
-        
-        .line-bracket-bottom {
-            position: absolute;
-            right: -30px;
-            bottom: 50%;
-            width: 30px;
-            height: 50%;
-            border-right: 2px solid #ddd;
-            border-bottom: 2px solid #ddd;
-        }
-        
-        .line-bracket-top.active,
-        .line-bracket-bottom.active {
-            border-color: #003366;
-            border-width: 3px;
-        }
-        
-        .champion-section {
-            text-align: center;
-            margin-top: 40px;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            border-radius: 8px;
-        }
-        
-        .champion-trophy {
-            font-size: 3em;
-        }
-        
-        .champion-name {
-            font-size: 2em;
-            font-weight: 300;
-            color: #333;
-            margin-top: 10px;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-        }
-        
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #f0f0f0;
-            border-top: 4px solid #003366;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .refresh-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: #003366;
-            color: white;
-            border: none;
-            font-size: 1.5em;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-        
-        footer {
-            background: #002244;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        
-        .copyright {
-            font-size: 0.85em;
-            opacity: 0.6;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/tournament.css">
 </head>
 <body>
-    <header>
+    <header class="app-header">
         <div class="header-top">
-            <div class="header-top-content">
-                <a href="#" onclick="goBack(); return false;" class="header-logo">
+            <div class="header-container">
+                <a href="index.html" class="header-logo">
                     <img src="https://drive.google.com/thumbnail?id=1i01jLSCnme9KdDuBwL8MufLNGdeo_d0x" alt="全国郵便局長会">
                 </a>
-                <div class="header-info">2026年千葉県郵便局長ソフトボール大会 | 2026.6.6</div>
+                <div class="header-info">
+                    <span>2026年千葉県郵便局長ソフトボール大会 | 2026.6.6</span>
+                </div>
             </div>
         </div>
         <div class="header-main">
-            <nav class="nav-links">
-                <a href="scoreboard.html">試合速報 / 試合結果</a>
-                <a href="gallery.html">写真ギャラリー</a>
-                <a href="schedule.html">大会スケジュール</a>
-                <a href="tournament.html">トーナメント表</a>
-                <a href="teams.html">チーム・選手一覧</a>
-                <a href="venue.html">会場案内・アクセス</a>
-                <a href="rules.html">大会ルール・規約</a>
-                <a href="history.html">優勝記録・歴史</a>
-            </nav>
+            <div class="nav-wrapper" id="navWrapper">
+                <nav class="nav-links" id="navLinks">
+                    <a href="index.html" class="nav-link">ホーム</a>
+                    <a href="scoreboard.html" class="nav-link">試合速報 / 試合結果</a>
+                    <a href="gallery.html" class="nav-link">写真ギャラリー</a>
+                    <a href="schedule.html" class="nav-link">大会スケジュール</a>
+                    <a href="tournament.html" class="nav-link">トーナメント表</a>
+                    <a href="teams.html" class="nav-link">チーム・選手一覧</a>
+                    <a href="venue.html" class="nav-link">会場案内・アクセス</a>
+                    <a href="rules.html" class="nav-link">大会ルール・規約</a>
+                    <a href="history.html" class="nav-link">優勝記録・歴史</a>
+                </nav>
+            </div>
         </div>
     </header>
-    
-    <div class="page-header">
+
+```
+<main class="app-main">
+    <section class="page-header">
         <div class="page-header-content">
             <h1 class="page-title">トーナメント表</h1>
             <p class="page-subtitle">Tournament Bracket</p>
         </div>
-    </div>
-    
-    <div class="container" id="content">
-        <div class="loading">
-            <div class="loading-spinner"></div>
-            <div>データを読み込んでいます...</div>
-        </div>
-    </div>
-    
-    <button class="refresh-btn" onclick="manualRefresh()">🔄</button>
-    
-    <footer>
-        <div class="footer-content">
-            <div class="copyright">© 2026 千葉県印旛地区郵便局長会</div>
-        </div>
-    </footer>
+    </section>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('api')) localStorage.setItem('STAFF_BOT_API_URL', urlParams.get('api'));
-        const API_URL = localStorage.getItem('STAFF_BOT_API_URL') || '';
-        
-        let isRefreshing = false;
-        const TOURNAMENT = { round1: [1,2,3], semiFinals: [4,5], final: [7], thirdPlace: [6] };
-        
-        async function fetchScores() {
-            console.log('API_URL:', API_URL);
-            if (!API_URL) {
-                document.getElementById('content').innerHTML = '<div class="loading">❌ API URLが設定されていません</div>';
-                return;
-            }
-            
-            try {
-                const t = new Date().getTime();
-                const res = await fetch(`${API_URL}?t=${t}`);
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                const data = await res.json();
-                
-                const schedRes = await fetch(`${API_URL}?type=schedule&t=${t}`);
-                let sched = {};
-                if (schedRes.ok) {
-                    const sj = await schedRes.json();
-                    if (sj.schedule) sched = sj.schedule.reduce((a,s) => ({...a, [s.gameNum]: s}), {});
-                }
-                
-                displayTournament(data, sched);
-            } catch (e) {
-                console.error(e);
-                document.getElementById('content').innerHTML = `<div class="loading">❌ エラー: ${e.message}</div>`;
-            }
-        }
-        
-        function getMatch(games, n, sched) {
-            const mg = games.filter(g => g.gameNum === n);
-            if (mg.length < 2 && sched[n]) {
-                return { gameNum: n, team1: {name: sched[n].team1, score: 0}, 
-                        team2: {name: sched[n].team2, score: 0}, status: '待機', court: sched[n].court };
-            }
-            if (mg.length < 2) return null;
-            return { gameNum: n, team1: {name: mg[0].team, score: mg[0].total||0}, 
-                    team2: {name: mg[1].team, score: mg[1].total||0}, status: mg[0].status||'待機', court: mg[0].court };
-        }
-        
-        function getWinner(m) {
-            if (!m || m.status !== '終了') return null;
-            return m.team1.score > m.team2.score ? 1 : m.team2.score > m.team1.score ? 2 : null;
-        }
-        
-        function getSeed(games, sched) {
-            const g5 = games.filter(g => g.gameNum === 5);
-            if (g5.length >= 2) return g5[1].team;
-            return sched[5]?.team2 || null;
-        }
-        
-        function displayTournament(data, sched) {
-            if (!data.games) {
-                document.getElementById('content').innerHTML = '<div class="loading">試合データなし</div>';
-                return;
-            }
-            
-            const m = {};
-            [...TOURNAMENT.round1, ...TOURNAMENT.semiFinals, ...TOURNAMENT.final, ...TOURNAMENT.thirdPlace]
-                .forEach(n => m[n] = getMatch(data.games, n, sched));
-            
-            const seed = getSeed(data.games, sched);
-            
-            let h = '<div class="tournament-wrapper"><div class="tournament-container">';
-            h += '<div class="round"><div class="round-title">1回戦</div><div class="round-matches">';
-            h += card(m[1], 1, 'line-bracket-top', getWinner(m[1])!==null);
-            h += card(m[3], 3, 'line-bracket-bottom', getWinner(m[3])!==null);
-            h += '<div style="height:20px"></div>';
-            h += card(m[2], 2, 'line-bracket-top', getWinner(m[2])!==null);
-            if (seed) h += `<div class="match-card seed-card"><div class="match-info">シード</div><div class="seed-info">⭐${seed}</div><div class="line-bracket-bottom active"></div></div>`;
-            h += '</div></div>';
-            
-            h += '<div class="round"><div class="round-title">準決勝</div><div class="round-matches">';
-            h += '<div style="height:60px"></div>';
-            h += card(m[4], 4, 'line-bracket-top', getWinner(m[4])!==null);
-            h += '<div style="height:140px"></div>';
-            h += card(m[5], 5, 'line-bracket-bottom', getWinner(m[5])!==null);
-            h += '</div></div>';
-            
-            h += '<div class="round"><div class="round-title">決勝</div><div class="round-matches">';
-            h += '<div style="height:180px"></div>';
-            h += card(m[7], 7, null, false);
-            h += '<div style="margin-top:50px;text-align:center;font-weight:bold;color:#003366">🥉 3位決定戦</div>';
-            h += card(m[6], 6, null, false);
-            h += '</div></div></div>';
-            
-            const fw = getWinner(m[7]) === 1 ? m[7]?.team1.name : getWinner(m[7]) === 2 ? m[7]?.team2.name : null;
-            if (fw) h += `<div class="champion-section"><div class="champion-trophy">🏆</div><div class="champion-name">${fw}</div></div>`;
-            
-            h += '</div>';
-            document.getElementById('content').innerHTML = h;
-        }
-        
-        function card(m, n, line, act) {
-            if (!m) return `<div class="match-card"><div class="match-info">第${n}試合</div><div class="team"><span class="team-name tbd">未定</span></div><div class="team"><span class="team-name tbd">未定</span></div>${line?`<div class="${line}"></div>`:''}</div>`;
-            const w = getWinner(m);
-            const sc = m.status==='試合中'?'playing':m.status==='終了'?'finished':'';
-            return `<div class="match-card ${sc}" onclick="openScore('${m.court}',${n})"><div class="match-info ${sc}">${m.court}コート 第${n}試合</div><div class="team ${w===1?'winner-team':''}"><span class="team-name">${m.team1.name}</span><span class="team-score">${m.team1.score}</span></div><div class="team ${w===2?'winner-team':''}"><span class="team-name">${m.team2.name}</span><span class="team-score">${m.team2.score}</span></div>${line?`<div class="${line} ${act?'active':''}"></div>`:''}</div>`;
-        }
-        
-        function openScore(c, n) {
-            if (!c) return;
-            const p = new URLSearchParams();
-            if (API_URL) p.set('api', API_URL);
-            p.set('court', c);
-            p.set('game', n);
-            window.location.href = `scoreboard.html?${p}`;
-        }
-        
-        function goBack() {
-            const p = new URLSearchParams();
-            if (API_URL) p.set('api', API_URL);
-            window.location.href = `index.html?${p}`;
-        }
-        
-        async function manualRefresh() {
-            if (isRefreshing) return;
-            isRefreshing = true;
-            await fetchScores();
-            setTimeout(() => isRefreshing = false, 2000);
-        }
-        
-        fetchScores();
-        setInterval(fetchScores, 60000);
-    </script>
+    <section class="app-container">
+        <!-- 優勝チーム表示 -->
+        <div id="championSection" style="display: none;">
+            <div class="champion-banner">
+                <div class="champion-trophy">🏆</div>
+                <div class="champion-label">優勝</div>
+                <div class="champion-name" id="championName"></div>
+            </div>
+        </div>
+
+        <!-- トーナメント本体 -->
+        <div id="tournamentContainer" class="tournament-vertical">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <div>データを読み込んでいます...</div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<button class="refresh-btn" id="refreshBtn" title="更新">🔄</button>
+
+<footer class="app-footer">
+    <div class="footer-content">
+        <p class="copyright">© 2026 千葉県印旛地区郵便局長会</p>
+    </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/tournament.js"></script>
+```
+
 </body>
 </html>
