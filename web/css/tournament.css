@@ -1,5 +1,5 @@
 /* ============================================================
-トーナメント表専用スタイル（横スクロール型）
+トーナメント表専用スタイル（横スクロール型 - 洗練版）
 ============================================================ */
 
 /* 優勝バナー */
@@ -57,7 +57,7 @@ margin-right: 8px;
 .tournament-wrapper {
 background: white;
 border-radius: 12px;
-padding: 20px;
+padding: 40px 20px;
 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 overflow-x: auto;
 overflow-y: hidden;
@@ -66,35 +66,34 @@ overflow-y: hidden;
 
 .tournament-container {
 display: flex;
-gap: 80px;
+gap: 0;
 min-width: max-content;
 padding: 20px 0;
+align-items: center;
 }
 
 /* ラウンド列 */
 .round-column {
 display: flex;
 flex-direction: column;
-gap: 20px;
-min-width: 200px;
+position: relative;
 }
 
 .round-header {
 text-align: center;
-padding-bottom: 15px;
-border-bottom: 3px solid #003366;
-margin-bottom: 20px;
+padding-bottom: 20px;
+margin-bottom: 30px;
 }
 
 .round-title {
-font-size: 1.3em;
+font-size: 1.4em;
 font-weight: bold;
 color: #003366;
-margin-bottom: 5px;
+margin-bottom: 8px;
 }
 
 .round-subtitle {
-font-size: 0.85em;
+font-size: 0.9em;
 color: #666;
 }
 
@@ -103,19 +102,33 @@ color: #666;
 display: flex;
 flex-direction: column;
 justify-content: space-around;
-flex: 1;
+gap: 0;
+position: relative;
+}
+
+/* 試合カードのラッパー */
+.match-wrapper {
+display: flex;
+align-items: center;
+position: relative;
+margin: 30px 0;
 }
 
 /* 試合カード */
 .match-card {
-background: #f8f9fa;
+background: white;
 border: 2px solid #e0e0e0;
-border-radius: 10px;
+border-radius: 8px;
 overflow: hidden;
 transition: all 0.3s ease;
 cursor: pointer;
-position: relative;
-min-height: 120px;
+width: 220px;
+box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.match-card:hover {
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+transform: translateY(-2px);
 }
 
 .match-card:active {
@@ -124,7 +137,7 @@ transform: scale(0.98);
 
 .match-card.playing {
 border-color: #d32f2f;
-box-shadow: 0 4px 15px rgba(211, 47, 47, 0.2);
+box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
 }
 
 .match-card.finished {
@@ -139,8 +152,8 @@ min-height: 100px;
 
 /* 試合ヘッダー */
 .match-header {
-background: white;
-padding: 8px 10px;
+background: #f8f9fa;
+padding: 8px 12px;
 border-bottom: 1px solid #e0e0e0;
 display: flex;
 justify-content: space-between;
@@ -159,20 +172,20 @@ color: #666;
 }
 
 .match-court {
-font-size: 0.9em;
+font-size: 0.95em;
 font-weight: bold;
 color: #003366;
 }
 
 .match-time {
-font-size: 0.75em;
-color: #666;
+font-size: 0.7em;
+color: #999;
 }
 
 .match-status {
 padding: 4px 10px;
 border-radius: 12px;
-font-size: 0.75em;
+font-size: 0.7em;
 font-weight: bold;
 white-space: nowrap;
 }
@@ -200,7 +213,7 @@ color: #666;
 
 /* 試合内容 */
 .match-content {
-padding: 10px;
+background: white;
 }
 
 /* チーム行 */
@@ -208,19 +221,17 @@ padding: 10px;
 display: flex;
 align-items: center;
 justify-content: space-between;
-padding: 8px;
-background: white;
-border-radius: 6px;
-margin-bottom: 6px;
+padding: 12px;
+border-bottom: 1px solid #f0f0f0;
+transition: background 0.2s;
 }
 
 .team-row:last-child {
-margin-bottom: 0;
+border-bottom: none;
 }
 
 .team-row.winner {
-background: #fff3cd;
-border: 2px solid #ffc107;
+background: #fff9e6;
 font-weight: bold;
 }
 
@@ -231,13 +242,13 @@ opacity: 0.5;
 .team-info {
 display: flex;
 align-items: center;
-gap: 6px;
+gap: 8px;
 flex: 1;
 min-width: 0;
 }
 
 .team-icon {
-font-size: 1.2em;
+font-size: 1.3em;
 flex-shrink: 0;
 }
 
@@ -255,10 +266,10 @@ font-style: italic;
 }
 
 .team-score {
-font-size: 1.4em;
+font-size: 1.6em;
 font-weight: bold;
 color: #003366;
-min-width: 30px;
+min-width: 35px;
 text-align: right;
 flex-shrink: 0;
 }
@@ -269,24 +280,25 @@ color: #ddd;
 
 /* シードカード */
 .seed-card {
-padding: 15px;
+padding: 20px 15px;
 text-align: center;
 display: flex;
 flex-direction: column;
 justify-content: center;
 height: 100%;
+min-height: 120px;
 }
 
 .seed-icon {
-font-size: 2em;
-margin-bottom: 8px;
+font-size: 2.5em;
+margin-bottom: 10px;
 }
 
 .seed-label {
-font-size: 0.8em;
+font-size: 0.85em;
 color: #1565c0;
 font-weight: bold;
-margin-bottom: 5px;
+margin-bottom: 8px;
 }
 
 .seed-team {
@@ -295,37 +307,59 @@ font-weight: bold;
 color: #003366;
 }
 
-/* 接続線 */
-.match-card .bracket-line {
+/* 接続線（トーナメントブラケット） */
+.connector {
+position: relative;
+width: 60px;
+height: 100%;
+display: flex;
+align-items: center;
+}
+
+.connector-line {
 position: absolute;
-border: 2px solid #ddd;
+background: #ddd;
 }
 
-.match-card.finished .bracket-line,
-.match-card.playing .bracket-line {
-border-color: #003366;
-border-width: 3px;
-}
-
-.bracket-right {
-right: -40px;
-top: 50%;
-width: 40px;
+/* 横線（試合カードから右へ） */
+.connector-horizontal {
+width: 30px;
 height: 2px;
-border: none;
-border-top: 2px solid #ddd;
+left: 0;
 }
 
-.match-card.finished .bracket-right,
-.match-card.playing .bracket-right {
-border-top: 3px solid #003366;
+/* 縦線（上下の試合を繋ぐ） */
+.connector-vertical {
+width: 2px;
+left: 30px;
+}
+
+/* 横線（縦線から次のラウンドへ） */
+.connector-horizontal-to-next {
+width: 30px;
+height: 2px;
+right: 0;
+}
+
+.match-wrapper.has-result .connector-line {
+background: #003366;
+height: 3px;
+}
+
+.match-wrapper.has-result .connector-vertical {
+width: 3px;
 }
 
 /* 決勝・3位決定戦用スタイル */
 .final-section {
 display: flex;
 flex-direction: column;
-gap: 40px;
+gap: 80px;
+}
+
+.final-wrapper {
+position: relative;
+padding-top: 35px;
 }
 
 .final-match {
@@ -340,30 +374,32 @@ border: 2px solid #ff9800;
 
 .final-label {
 position: absolute;
-top: -25px;
+top: 0;
 left: 50%;
 transform: translateX(-50%);
 background: #ffa000;
 color: white;
-padding: 4px 12px;
-border-radius: 12px;
-font-size: 0.8em;
+padding: 6px 16px;
+border-radius: 20px;
+font-size: 0.85em;
 font-weight: bold;
 white-space: nowrap;
+box-shadow: 0 2px 8px rgba(255, 160, 0, 0.3);
 }
 
 .third-place-label {
 position: absolute;
-top: -25px;
+top: 0;
 left: 50%;
 transform: translateX(-50%);
 background: #ff9800;
 color: white;
-padding: 4px 12px;
-border-radius: 12px;
-font-size: 0.8em;
+padding: 6px 16px;
+border-radius: 20px;
+font-size: 0.85em;
 font-weight: bold;
 white-space: nowrap;
+box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
 }
 
 /* レスポンシブ調整 */
@@ -372,7 +408,6 @@ white-space: nowrap;
 padding: 20px 15px;
 }
 
-```
 .champion-trophy {
     font-size: 3em;
 }
@@ -382,36 +417,43 @@ padding: 20px 15px;
 }
 
 .tournament-wrapper {
-    padding: 15px;
+    padding: 20px 10px;
     margin: 0 -20px;
     border-radius: 0;
 }
 
 .tournament-container {
-    gap: 60px;
     padding: 10px 20px;
 }
 
-.round-column {
-    min-width: 180px;
+.match-card {
+    width: 200px;
 }
 
 .round-title {
-    font-size: 1.1em;
+    font-size: 1.2em;
 }
 
-.match-card {
-    min-height: 110px;
+.connector {
+    width: 50px;
+}
+
+.connector-horizontal,
+.connector-horizontal-to-next {
+    width: 25px;
+}
+
+.connector-vertical {
+    left: 25px;
 }
 
 .team-name {
-    font-size: 0.85em;
+    font-size: 0.9em;
 }
 
 .team-score {
-    font-size: 1.2em;
+    font-size: 1.4em;
 }
-```
 
 }
 
@@ -421,14 +463,12 @@ padding: 20px 15px;
 display: none;
 }
 
-```
 .tournament-wrapper {
-    padding: 30px;
+    padding: 50px 30px;
 }
 
-.round-column {
-    min-width: 220px;
+.match-card {
+    width: 240px;
 }
-```
 
 }
