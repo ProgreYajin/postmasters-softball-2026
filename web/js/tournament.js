@@ -9,7 +9,6 @@ var scheduleData = {};
 var autoRefreshInterval = null;
 var isRefreshing = false;
 
-```
 var TOURNAMENT_STRUCTURE = {
     round1: [1, 2, 3],
     semiFinals: [4, 5],
@@ -458,7 +457,6 @@ return {
         window.location.href = 'scoreboard.html#' + court + '-' + gameNum;
     }
 };
-```
 
 })();
 
