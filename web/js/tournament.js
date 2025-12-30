@@ -462,10 +462,10 @@ return {
 
 })();
 
-document.addEventListener(‘DOMContentLoaded’, function() {
+document.addEventListener('DOMContentLoaded', function() {
 TournamentApp.init();
 });
 
-window.addEventListener(‘beforeunload’, function() {
+window.addEventListener('beforeunload', function() {
 TournamentApp.stopAutoRefresh();
 });
