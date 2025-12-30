@@ -1,6 +1,6 @@
 /**
 
-- トーナメント表アプリケーション（横スクロール型）
+- トーナメント表アプリケーション（横スクロール型 - 洗練版）
   */
 
 var TournamentApp = (function() {
@@ -199,6 +199,10 @@ function getWinner(matchData) {
     return null;
 }
 
+function hasResult(matchData) {
+    return matchData && (matchData.status === '試合中' || matchData.status === '終了');
+}
+
 function getSeedTeam() {
     var match5 = getMatchData(5);
     return match5 && match5.team2 ? match5.team2.name : null;
@@ -225,6 +229,12 @@ function renderTournament() {
 }
 
 function renderRound1() {
+    var matches = [];
+    for (var i = 0; i < TOURNAMENT_STRUCTURE.round1.length; i++) {
+        var match = getMatchData(TOURNAMENT_STRUCTURE.round1[i]);
+        if (match) matches.push(match);
+    }
+
     var html = '<div class="round-column">' +
         '<div class="round-header">' +
         '<div class="round-title">1回戦</div>' +
@@ -232,12 +242,14 @@ function renderRound1() {
         '</div>' +
         '<div class="matches-container">';
 
-    for (var i = 0; i < TOURNAMENT_STRUCTURE.round1.length; i++) {
-        var gameNum = TOURNAMENT_STRUCTURE.round1[i];
-        var match = getMatchData(gameNum);
-        if (match) {
-            html += renderMatchCard(match, true, '');
-        }
+    for (var j = 0; j < matches.length; j++) {
+        var hasRes = hasResult(matches[j]);
+        html += '<div class="match-wrapper ' + (hasRes ? 'has-result' : '') + '">' +
+            renderMatchCard(matches[j]) +
+            '<div class="connector">' +
+            '<div class="connector-line connector-horizontal"></div>' +
+            '</div>' +
+            '</div>';
     }
 
     html += '</div></div>';
@@ -245,8 +257,10 @@ function renderRound1() {
 }
 
 function renderSemiFinals() {
+    var match4 = getMatchData(4);
+    var match5 = getMatchData(5);
     var seedTeam = getSeedTeam();
-    
+
     var html = '<div class="round-column">' +
         '<div class="round-header">' +
         '<div class="round-title">準決勝</div>' +
@@ -254,25 +268,39 @@ function renderSemiFinals() {
         '</div>' +
         '<div class="matches-container">';
 
-    var match4 = getMatchData(4);
     if (match4) {
-        html += renderMatchCard(match4, true, '');
+        var hasRes4 = hasResult(match4);
+        html += '<div class="match-wrapper ' + (hasRes4 ? 'has-result' : '') + '">' +
+            renderMatchCard(match4) +
+            '<div class="connector">' +
+            '<div class="connector-line connector-horizontal"></div>' +
+            '</div>' +
+            '</div>';
     }
 
     if (seedTeam) {
-        html += '<div class="match-card seed">' +
+        html += '<div class="match-wrapper has-result">' +
+            '<div class="match-card seed">' +
             '<div class="seed-card">' +
             '<div class="seed-icon">⭐</div>' +
             '<div class="seed-label">シード</div>' +
             '<div class="seed-team">' + escapeHtml(seedTeam) + '</div>' +
             '</div>' +
-            '<div class="bracket-right"></div>' +
+            '</div>' +
+            '<div class="connector">' +
+            '<div class="connector-line connector-horizontal"></div>' +
+            '</div>' +
             '</div>';
     }
 
-    var match5 = getMatchData(5);
     if (match5) {
-        html += renderMatchCard(match5, true, '');
+        var hasRes5 = hasResult(match5);
+        html += '<div class="match-wrapper ' + (hasRes5 ? 'has-result' : '') + '">' +
+            renderMatchCard(match5) +
+            '<div class="connector">' +
+            '<div class="connector-line connector-horizontal"></div>' +
+            '</div>' +
+            '</div>';
     }
 
     html += '</div></div>';
@@ -292,16 +320,16 @@ function renderFinals() {
         '<div class="final-section">';
 
     if (finalMatch) {
-        html += '<div style="position: relative; padding-top: 30px;">' +
+        html += '<div class="final-wrapper">' +
             '<div class="final-label">🏆 決勝戦</div>' +
-            renderMatchCard(finalMatch, false, 'final-match') +
+            renderMatchCard(finalMatch, 'final-match') +
             '</div>';
     }
 
     if (thirdPlaceMatch) {
-        html += '<div style="position: relative; padding-top: 30px;">' +
+        html += '<div class="final-wrapper">' +
             '<div class="third-place-label">🥉 3位決定戦</div>' +
-            renderMatchCard(thirdPlaceMatch, false, 'third-place-match') +
+            renderMatchCard(thirdPlaceMatch, 'third-place-match') +
             '</div>';
     }
 
@@ -309,7 +337,7 @@ function renderFinals() {
     return html;
 }
 
-function renderMatchCard(match, showLine, extraClass) {
+function renderMatchCard(match, extraClass) {
     var statusClass = match.status === '試合中' ? 'playing' : 
                       match.status === '終了' ? 'finished' : 'waiting';
     var winner = getWinner(match);
@@ -318,8 +346,7 @@ function renderMatchCard(match, showLine, extraClass) {
     var team2Class = winner === 2 ? 'winner' : winner === 1 ? 'loser' : '';
 
     var isTBD = match.team1.name === '未定' || match.team2.name === '未定';
-    var timeHtml = match.time ? '<div class="match-time">' + match.time + '開始予定</div>' : '';
-    var lineHtml = showLine ? '<div class="bracket-right"></div>' : '';
+    var timeHtml = match.time ? '<div class="match-time">' + match.time + '</div>' : '';
     var extraClassStr = extraClass ? ' ' + extraClass : '';
 
     var onclickAttr = 'onclick="TournamentApp.openMatch(\'' + match.court + '\', ' + match.gameNum + ')"';
@@ -353,7 +380,6 @@ function renderMatchCard(match, showLine, extraClass) {
         '</div>' +
         '</div>' +
         '</div>' +
-        lineHtml +
         '</div>';
 }
 
