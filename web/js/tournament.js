@@ -1,440 +1,471 @@
 /**
- * トーナメント表アプリケーション（スマホ最適化版）
- */
+
+- トーナメント表アプリケーション（横スクロール型）
+  */
 
 var TournamentApp = (function() {
-    var gamesData = null;
-    var scheduleData = {};
-    var autoRefreshInterval = null;
-    var isRefreshing = false;
+var gamesData = null;
+var scheduleData = {};
+var autoRefreshInterval = null;
+var isRefreshing = false;
 
-    var TOURNAMENT_STRUCTURE = {
-        round1: [1, 2, 3],
-        semiFinals: [4, 5],
-        final: 7,
-        thirdPlace: 6
-    };
+```
+var TOURNAMENT_STRUCTURE = {
+    round1: [1, 2, 3],
+    semiFinals: [4, 5],
+    final: 7,
+    thirdPlace: 6
+};
 
-    var TEAM_ICONS = {
-        '印旛': '⚾',
-        '東南': '🥎',
-        '中部': '⭐',
-        '南部': '🏆',
-        '東部': '🎯',
-        '北部': '🔥',
-        '西部': '⚡'
-    };
+var TEAM_ICONS = {
+    '印旛': '⚾',
+    '東南': '🥎',
+    '中部': '⭐',
+    '南部': '🏆',
+    '東部': '🎯',
+    '北部': '🔥',
+    '西部': '⚡'
+};
 
-    function getSafeValue(obj) {
-        if (!obj || typeof obj !== 'object') return undefined;
-        var keyVariants = Array.prototype.slice.call(arguments, 1);
-        for (var i = 0; i < keyVariants.length; i++) {
-            var key = keyVariants[i];
-            if (key in obj && obj[key] !== null && obj[key] !== undefined) {
-                return obj[key];
+function getSafeValue(obj) {
+    if (!obj || typeof obj !== 'object') return undefined;
+    var keyVariants = Array.prototype.slice.call(arguments, 1);
+    for (var i = 0; i < keyVariants.length; i++) {
+        var key = keyVariants[i];
+        if (key in obj && obj[key] !== null && obj[key] !== undefined) {
+            return obj[key];
+        }
+    }
+    return undefined;
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function getTeamIcon(teamName) {
+    if (!teamName) return '📍';
+    for (var region in TEAM_ICONS) {
+        if (TEAM_ICONS.hasOwnProperty(region) && teamName.indexOf(region) !== -1) {
+            return TEAM_ICONS[region];
+        }
+    }
+    return '📍';
+}
+
+function formatTime(timestamp) {
+    if (!timestamp) return '';
+    
+    if (typeof timestamp === 'number') {
+        var totalMinutes = Math.round(timestamp * 24 * 60);
+        var hours = Math.floor(totalMinutes / 60);
+        var minutes = totalMinutes % 60;
+        return padZero(hours) + ':' + padZero(minutes);
+    }
+    
+    if (typeof timestamp === 'string') {
+        if (timestamp.indexOf('T') !== -1) {
+            try {
+                var date = new Date(timestamp);
+                var hours = date.getHours();
+                var minutes = date.getMinutes();
+                return padZero(hours) + ':' + padZero(minutes);
+            } catch (e) {
+                return timestamp;
             }
         }
-        return undefined;
-    }
-
-    function escapeHtml(str) {
-        if (!str) return '';
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-
-    function getTeamIcon(teamName) {
-        if (!teamName) return '📍';
-        for (var region in TEAM_ICONS) {
-            if (TEAM_ICONS.hasOwnProperty(region) && teamName.indexOf(region) !== -1) {
-                return TEAM_ICONS[region];
-            }
+        if (/^\d{1,2}:\d{2}$/.test(timestamp)) {
+            var parts = timestamp.split(':');
+            return padZero(parts[0]) + ':' + parts[1];
         }
-        return '📍';
+        return timestamp;
+    }
+    
+    return '';
+}
+
+function padZero(num) {
+    return String(num).length === 1 ? '0' + num : String(num);
+}
+
+function fetchTournamentData() {
+    if (!CONFIG || !CONFIG.isStaffApiConfigured || !CONFIG.isStaffApiConfigured()) {
+        showError('API URLが設定されていません');
+        return;
     }
 
-    function formatTime(timestamp) {
-        if (!timestamp) return '';
+    var timestamp = new Date().getTime();
+    var scoreUrl = CONFIG.STAFF_API_URL + '?t=' + timestamp;
+
+    fetch(scoreUrl, {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache'
+    })
+    .then(function(response) {
+        if (!response.ok) {
+            throw new Error('HTTP Error ' + response.status);
+        }
+        return response.json();
+    })
+    .then(function(scoreData) {
+        gamesData = scoreData;
         
-        if (typeof timestamp === 'number') {
-            var totalMinutes = Math.round(timestamp * 24 * 60);
-            var hours = Math.floor(totalMinutes / 60);
-            var minutes = totalMinutes % 60;
-            return padZero(hours) + ':' + padZero(minutes);
-        }
-        
-        if (typeof timestamp === 'string') {
-            if (timestamp.indexOf('T') !== -1) {
-                try {
-                    var date = new Date(timestamp);
-                    var hours = date.getHours();
-                    var minutes = date.getMinutes();
-                    return padZero(hours) + ':' + padZero(minutes);
-                } catch (e) {
-                    return timestamp;
-                }
-            }
-            if (/^\d{1,2}:\d{2}$/.test(timestamp)) {
-                var parts = timestamp.split(':');
-                return padZero(parts[0]) + ':' + parts[1];
-            }
-            return timestamp;
-        }
-        
-        return '';
-    }
-
-    function padZero(num) {
-        return String(num).length === 1 ? '0' + num : String(num);
-    }
-
-    function fetchTournamentData() {
-        if (!CONFIG || !CONFIG.isStaffApiConfigured || !CONFIG.isStaffApiConfigured()) {
-            showError('API URLが設定されていません');
-            return;
-        }
-
-        var timestamp = new Date().getTime();
-        var scoreUrl = CONFIG.STAFF_API_URL + '?t=' + timestamp;
-
-        fetch(scoreUrl, {
+        var scheduleUrl = CONFIG.STAFF_API_URL + '?type=schedule&t=' + timestamp;
+        return fetch(scheduleUrl, {
             method: 'GET',
             mode: 'cors',
             cache: 'no-cache'
-        })
-        .then(function(response) {
-            if (!response.ok) {
-                throw new Error('HTTP Error ' + response.status);
-            }
-            return response.json();
-        })
-        .then(function(scoreData) {
-            gamesData = scoreData;
-            
-            var scheduleUrl = CONFIG.STAFF_API_URL + '?type=schedule&t=' + timestamp;
-            return fetch(scheduleUrl, {
-                method: 'GET',
-                mode: 'cors',
-                cache: 'no-cache'
-            });
-        })
-        .then(function(scheduleResponse) {
-            if (scheduleResponse.ok) {
-                return scheduleResponse.json();
-            }
-            return null;
-        })
-        .then(function(scheduleJson) {
-            if (scheduleJson && scheduleJson.schedule && Array.isArray(scheduleJson.schedule)) {
-                scheduleData = {};
-                for (var i = 0; i < scheduleJson.schedule.length; i++) {
-                    var game = scheduleJson.schedule[i];
-                    scheduleData[game.gameNum] = game;
-                }
-            }
-            renderTournament();
-        })
-        .catch(function(error) {
-            console.error('データ取得エラー:', error);
-            showError('データの読み込みに失敗しました: ' + error.message);
         });
-    }
-
-    function getMatchData(gameNum) {
-        if (!gamesData || !gamesData.games) return null;
-
-        var games = [];
-        for (var i = 0; i < gamesData.games.length; i++) {
-            var g = gamesData.games[i];
-            if (getSafeValue(g, 'gameNum', 'gameNumber', 'game_num') === gameNum) {
-                games.push(g);
+    })
+    .then(function(scheduleResponse) {
+        if (scheduleResponse.ok) {
+            return scheduleResponse.json();
+        }
+        return null;
+    })
+    .then(function(scheduleJson) {
+        if (scheduleJson && scheduleJson.schedule && Array.isArray(scheduleJson.schedule)) {
+            scheduleData = {};
+            for (var i = 0; i < scheduleJson.schedule.length; i++) {
+                var game = scheduleJson.schedule[i];
+                scheduleData[game.gameNum] = game;
             }
         }
+        renderTournament();
+    })
+    .catch(function(error) {
+        console.error('データ取得エラー:', error);
+        showError('データの読み込みに失敗しました: ' + error.message);
+    });
+}
 
-        if (games.length < 2) {
-            if (scheduleData[gameNum]) {
-                return {
-                    gameNum: gameNum,
-                    court: scheduleData[gameNum].court || '',
-                    time: formatTime(getSafeValue(scheduleData[gameNum], 'time', 'startTime')),
-                    status: '待機',
-                    team1: {
-                        name: scheduleData[gameNum].team1 || '未定',
-                        score: null
-                    },
-                    team2: {
-                        name: scheduleData[gameNum].team2 || '未定',
-                        score: null
-                    }
-                };
-            }
-            return null;
+function getMatchData(gameNum) {
+    if (!gamesData || !gamesData.games) return null;
+
+    var games = [];
+    for (var i = 0; i < gamesData.games.length; i++) {
+        var g = gamesData.games[i];
+        if (getSafeValue(g, 'gameNum', 'gameNumber', 'game_num') === gameNum) {
+            games.push(g);
         }
-
-        return {
-            gameNum: gameNum,
-            court: getSafeValue(games[0], 'court', 'Court', 'COURT') || '',
-            time: formatTime(getSafeValue(scheduleData[gameNum], 'time', 'startTime')),
-            status: getSafeValue(games[0], 'status', 'Status', 'STATUS') || '待機',
-            team1: {
-                name: getSafeValue(games[0], 'team', 'homeTeam', 'topTeam') || '未定',
-                score: getSafeValue(games[0], 'total', 'homeTotal', 'topTotal') || 0
-            },
-            team2: {
-                name: getSafeValue(games[1], 'team', 'awayTeam', 'bottomTeam') || '未定',
-                score: getSafeValue(games[1], 'total', 'awayTotal', 'bottomTotal') || 0
-            }
-        };
     }
 
-    function getWinner(matchData) {
-        if (!matchData || matchData.status !== '終了') return null;
-        if (matchData.team1.score > matchData.team2.score) return 1;
-        if (matchData.team2.score > matchData.team1.score) return 2;
+    if (games.length < 2) {
+        if (scheduleData[gameNum]) {
+            return {
+                gameNum: gameNum,
+                court: scheduleData[gameNum].court || '',
+                time: formatTime(getSafeValue(scheduleData[gameNum], 'time', 'startTime')),
+                status: '待機',
+                team1: {
+                    name: scheduleData[gameNum].team1 || '未定',
+                    score: null
+                },
+                team2: {
+                    name: scheduleData[gameNum].team2 || '未定',
+                    score: null
+                }
+            };
+        }
         return null;
     }
 
-    function getSeedTeam() {
-        var match5 = getMatchData(5);
-        return match5 && match5.team2 ? match5.team2.name : null;
-    }
-
-    function renderTournament() {
-        var container = document.getElementById('tournamentContainer');
-        
-        var round1Html = renderRound('1回戦', '⚾', TOURNAMENT_STRUCTURE.round1, 'round1');
-        var semiFinalHtml = renderRound('準決勝', '🔥', TOURNAMENT_STRUCTURE.semiFinals, 'semifinal');
-        var finalHtml = renderFinalRound();
-
-        container.innerHTML = round1Html +
-            '<div class="flow-arrow">↓</div>' +
-            semiFinalHtml +
-            '<div class="flow-arrow">↓</div>' +
-            finalHtml;
-
-        updateChampion();
-    }
-
-    function renderRound(title, icon, gameNums, roundClass) {
-        var matches = [];
-        for (var i = 0; i < gameNums.length; i++) {
-            var match = getMatchData(gameNums[i]);
-            if (match) matches.push(match);
-        }
-
-        var seedTeam = getSeedTeam();
-        var matchesHtml = '';
-        
-        for (var j = 0; j < matches.length; j++) {
-            matchesHtml += renderMatchCard(matches[j]);
-        }
-
-        if (roundClass === 'semifinal' && seedTeam) {
-            matchesHtml += '<div class="match-card seed">' +
-                '<div class="seed-card">' +
-                '<div class="seed-icon">⭐</div>' +
-                '<div class="seed-label">シード</div>' +
-                '<div class="seed-team">' + escapeHtml(seedTeam) + '</div>' +
-                '</div></div>';
-        }
-
-        return '<div class="round-block ' + roundClass + '-block">' +
-            '<div class="round-header">' +
-            '<div>' +
-            '<div class="round-title">' + title + '</div>' +
-            '<div class="round-subtitle">' + matches.length + '試合</div>' +
-            '</div>' +
-            '<div class="round-icon">' + icon + '</div>' +
-            '</div>' +
-            '<div class="match-list">' + matchesHtml + '</div>' +
-            '</div>';
-    }
-
-    function renderFinalRound() {
-        var finalMatch = getMatchData(TOURNAMENT_STRUCTURE.final);
-        var thirdPlaceMatch = getMatchData(TOURNAMENT_STRUCTURE.thirdPlace);
-
-        var finalHtml = finalMatch ? renderMatchCard(finalMatch, true) : '<div class="loading">試合データなし</div>';
-        var thirdPlaceHtml = thirdPlaceMatch ? renderMatchCard(thirdPlaceMatch) : '<div class="loading">試合データなし</div>';
-
-        return '<div class="round-block final-block">' +
-            '<div class="round-header">' +
-            '<div>' +
-            '<div class="round-title">🏆 決勝戦</div>' +
-            '<div class="round-subtitle">優勝をかけた戦い</div>' +
-            '</div>' +
-            '<div class="round-icon">🏆</div>' +
-            '</div>' +
-            '<div class="match-list">' + finalHtml + '</div>' +
-            '</div>' +
-            '<div class="round-block third-place-block">' +
-            '<div class="round-header">' +
-            '<div>' +
-            '<div class="round-title">🥉 3位決定戦</div>' +
-            '<div class="round-subtitle">3位の座を争う</div>' +
-            '</div>' +
-            '<div class="round-icon">🥉</div>' +
-            '</div>' +
-            '<div class="match-list">' + thirdPlaceHtml + '</div>' +
-            '</div>';
-    }
-
-    function renderMatchCard(match, isFinal) {
-        var statusClass = match.status === '試合中' ? 'playing' : 
-                          match.status === '終了' ? 'finished' : 'waiting';
-        var winner = getWinner(match);
-        
-        var team1Class = winner === 1 ? 'winner' : winner === 2 ? 'loser' : '';
-        var team2Class = winner === 2 ? 'winner' : winner === 1 ? 'loser' : '';
-
-        var isTBD = match.team1.name === '未定' || match.team2.name === '未定';
-        var timeHtml = match.time ? '<div class="match-time">' + match.time + '開始予定</div>' : '';
-
-        return '<div class="match-card ' + statusClass + '" onclick="TournamentApp.openMatch(\'' + match.court + '\', ' + match.gameNum + ')">' +
-            '<div class="match-header">' +
-            '<div class="match-info">' +
-            '<div class="match-number">第' + match.gameNum + '試合</div>' +
-            '<div class="match-court">' + match.court + 'コート</div>' +
-            timeHtml +
-            '</div>' +
-            '<div class="match-status ' + statusClass + '">' + match.status + '</div>' +
-            '</div>' +
-            '<div class="match-content">' +
-            '<div class="team-row ' + team1Class + '">' +
-            '<div class="team-info">' +
-            '<div class="team-icon">' + getTeamIcon(match.team1.name) + '</div>' +
-            '<div class="team-name ' + (isTBD ? 'tbd' : '') + '">' + escapeHtml(match.team1.name) + '</div>' +
-            '</div>' +
-            '<div class="team-score ' + (match.team1.score === null ? 'empty' : '') + '">' +
-            (match.team1.score !== null ? match.team1.score : '-') +
-            '</div>' +
-            '</div>' +
-            '<div class="vs-divider">VS</div>' +
-            '<div class="team-row ' + team2Class + '">' +
-            '<div class="team-info">' +
-            '<div class="team-icon">' + getTeamIcon(match.team2.name) + '</div>' +
-            '<div class="team-name ' + (isTBD ? 'tbd' : '') + '">' + escapeHtml(match.team2.name) + '</div>' +
-            '</div>' +
-            '<div class="team-score ' + (match.team2.score === null ? 'empty' : '') + '">' +
-            (match.team2.score !== null ? match.team2.score : '-') +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '</div>';
-    }
-
-    function updateChampion() {
-        var finalMatch = getMatchData(TOURNAMENT_STRUCTURE.final);
-        var championSection = document.getElementById('championSection');
-        var championName = document.getElementById('championName');
-
-        if (finalMatch && finalMatch.status === '終了') {
-            var winner = getWinner(finalMatch);
-            if (winner) {
-                var championTeam = winner === 1 ? finalMatch.team1.name : finalMatch.team2.name;
-                championName.textContent = championTeam;
-                championSection.style.display = 'block';
-            }
-        } else {
-            championSection.style.display = 'none';
-        }
-    }
-
-    function showError(message) {
-        var container = document.getElementById('tournamentContainer');
-        container.innerHTML = '<div class="loading" style="color: #d32f2f;">⚠️ ' + message + '</div>';
-    }
-
-    function initNavScrollIndicator() {
-        var navLinks = document.getElementById('navLinks');
-        var navWrapper = document.getElementById('navWrapper');
-
-        if (!navLinks || !navWrapper) return;
-
-        function updateScrollIndicator() {
-            var scrollLeft = navLinks.scrollLeft;
-            var scrollWidth = navLinks.scrollWidth;
-            var clientWidth = navLinks.clientWidth;
-            var maxScroll = scrollWidth - clientWidth;
-
-            if (scrollLeft <= 5) {
-                navWrapper.classList.add('scroll-start');
-                navWrapper.classList.remove('scroll-middle', 'scroll-end');
-            } else if (scrollLeft >= maxScroll - 5) {
-                navWrapper.classList.add('scroll-end');
-                navWrapper.classList.remove('scroll-start', 'scroll-middle');
-            } else {
-                navWrapper.classList.add('scroll-middle');
-                navWrapper.classList.remove('scroll-start', 'scroll-end');
-            }
-        }
-
-        updateScrollIndicator();
-        navLinks.addEventListener('scroll', updateScrollIndicator);
-        window.addEventListener('resize', updateScrollIndicator);
-    }
-
     return {
-        init: function() {
-            var refreshBtn = document.getElementById('refreshBtn');
-            if (refreshBtn) {
-                refreshBtn.addEventListener('click', function() {
-                    TournamentApp.manualRefresh();
-                });
-            }
-
-            initNavScrollIndicator();
-            fetchTournamentData();
-            this.startAutoRefresh();
+        gameNum: gameNum,
+        court: getSafeValue(games[0], 'court', 'Court', 'COURT') || '',
+        time: formatTime(getSafeValue(scheduleData[gameNum], 'time', 'startTime')),
+        status: getSafeValue(games[0], 'status', 'Status', 'STATUS') || '待機',
+        team1: {
+            name: getSafeValue(games[0], 'team', 'homeTeam', 'topTeam') || '未定',
+            score: getSafeValue(games[0], 'total', 'homeTotal', 'topTotal') || 0
         },
-
-        manualRefresh: function() {
-            if (isRefreshing) return;
-
-            isRefreshing = true;
-            var btn = document.getElementById('refreshBtn');
-            if (btn) btn.disabled = true;
-
-            fetchTournamentData();
-
-            var timeout = CONFIG && CONFIG.REFRESH_TIMEOUT ? CONFIG.REFRESH_TIMEOUT : 2000;
-            setTimeout(function() {
-                isRefreshing = false;
-                if (btn) btn.disabled = false;
-            }, timeout);
-        },
-
-        startAutoRefresh: function() {
-            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-            
-            var interval = CONFIG && CONFIG.AUTO_REFRESH_INTERVAL ? CONFIG.AUTO_REFRESH_INTERVAL : 60000;
-            autoRefreshInterval = setInterval(function() {
-                fetchTournamentData();
-            }, interval);
-        },
-
-        stopAutoRefresh: function() {
-            if (autoRefreshInterval) {
-                clearInterval(autoRefreshInterval);
-                autoRefreshInterval = null;
-            }
-        },
-
-        openMatch: function(court, gameNum) {
-            if (!court) return;
-            window.location.href = 'scoreboard.html#' + court + '-' + gameNum;
+        team2: {
+            name: getSafeValue(games[1], 'team', 'awayTeam', 'bottomTeam') || '未定',
+            score: getSafeValue(games[1], 'total', 'awayTotal', 'bottomTotal') || 0
         }
     };
+}
+
+function getWinner(matchData) {
+    if (!matchData || matchData.status !== '終了') return null;
+    if (matchData.team1.score > matchData.team2.score) return 1;
+    if (matchData.team2.score > matchData.team1.score) return 2;
+    return null;
+}
+
+function getSeedTeam() {
+    var match5 = getMatchData(5);
+    return match5 && match5.team2 ? match5.team2.name : null;
+}
+
+function renderTournament() {
+    var container = document.getElementById('tournamentContainer');
+    
+    var scrollHint = '<div class="scroll-hint">' +
+        '<span class="scroll-hint-icon">👉</span>' +
+        '左右にスクロールできます' +
+        '</div>';
+
+    var tournamentHtml = '<div class="tournament-wrapper">' +
+        '<div class="tournament-container">' +
+        renderRound1() +
+        renderSemiFinals() +
+        renderFinals() +
+        '</div>' +
+        '</div>';
+
+    container.innerHTML = scrollHint + tournamentHtml;
+    updateChampion();
+}
+
+function renderRound1() {
+    var html = '<div class="round-column">' +
+        '<div class="round-header">' +
+        '<div class="round-title">1回戦</div>' +
+        '<div class="round-subtitle">3試合</div>' +
+        '</div>' +
+        '<div class="matches-container">';
+
+    for (var i = 0; i < TOURNAMENT_STRUCTURE.round1.length; i++) {
+        var gameNum = TOURNAMENT_STRUCTURE.round1[i];
+        var match = getMatchData(gameNum);
+        if (match) {
+            html += renderMatchCard(match, true);
+        }
+    }
+
+    html += '</div></div>';
+    return html;
+}
+
+function renderSemiFinals() {
+    var seedTeam = getSeedTeam();
+    
+    var html = '<div class="round-column">' +
+        '<div class="round-header">' +
+        '<div class="round-title">準決勝</div>' +
+        '<div class="round-subtitle">2試合</div>' +
+        '</div>' +
+        '<div class="matches-container">';
+
+    var match4 = getMatchData(4);
+    if (match4) {
+        html += renderMatchCard(match4, true);
+    }
+
+    if (seedTeam) {
+        html += '<div class="match-card seed">' +
+            '<div class="seed-card">' +
+            '<div class="seed-icon">⭐</div>' +
+            '<div class="seed-label">シード</div>' +
+            '<div class="seed-team">' + escapeHtml(seedTeam) + '</div>' +
+            '</div>' +
+            '<div class="bracket-right"></div>' +
+            '</div>';
+    }
+
+    var match5 = getMatchData(5);
+    if (match5) {
+        html += renderMatchCard(match5, true);
+    }
+
+    html += '</div></div>';
+    return html;
+}
+
+function renderFinals() {
+    var finalMatch = getMatchData(TOURNAMENT_STRUCTURE.final);
+    var thirdPlaceMatch = getMatchData(TOURNAMENT_STRUCTURE.thirdPlace);
+
+    var html = '<div class="round-column">' +
+        '<div class="round-header">' +
+        '<div class="round-title">決勝 / 3位決定戦</div>' +
+        '<div class="round-subtitle">2試合</div>' +
+        '</div>' +
+        '<div class="matches-container">' +
+        '<div class="final-section">';
+
+    if (finalMatch) {
+        html += '<div style="position: relative; padding-top: 30px;">' +
+            '<div class="final-label">🏆 決勝戦</div>' +
+            renderMatchCard(finalMatch, false, 'final-match') +
+            '</div>';
+    }
+
+    if (thirdPlaceMatch) {
+        html += '<div style="position: relative; padding-top: 30px;">' +
+            '<div class="third-place-label">🥉 3位決定戦</div>' +
+            renderMatchCard(thirdPlaceMatch, false, 'third-place-match') +
+            '</div>';
+    }
+
+    html += '</div></div></div>';
+    return html;
+}
+
+function renderMatchCard(match, showLine, extraClass) {
+    var statusClass = match.status === '試合中' ? 'playing' : 
+                      match.status === '終了' ? 'finished' : 'waiting';
+    var winner = getWinner(match);
+    
+    var team1Class = winner === 1 ? 'winner' : winner === 2 ? 'loser' : '';
+    var team2Class = winner === 2 ? 'winner' : winner === 1 ? 'loser' : '';
+
+    var isTBD = match.team1.name === '未定' || match.team2.name === '未定';
+    var timeHtml = match.time ? '<div class="match-time">' + match.time + '開始予定</div>' : '';
+    var lineHtml = showLine ? '<div class="bracket-right"></div>' : '';
+    var extraClassStr = extraClass ? ' ' + extraClass : '';
+
+    return '<div class="match-card ' + statusClass + extraClassStr + '" onclick="TournamentApp.openMatch(\'' + match.court + '\', ' + match.gameNum + ')">' +
+        '<div class="match-header">' +
+        '<div class="match-info">' +
+        '<div class="match-number">第' + match.gameNum + '試合</div>' +
+        '<div class="match-court">' + match.court + 'コート</div>' +
+        timeHtml +
+        '</div>' +
+        '<div class="match-status ' + statusClass + '">' + match.status + '</div>' +
+        '</div>' +
+        '<div class="match-content">' +
+        '<div class="team-row ' + team1Class + '">' +
+        '<div class="team-info">' +
+        '<div class="team-icon">' + getTeamIcon(match.team1.name) + '</div>' +
+        '<div class="team-name ' + (isTBD ? 'tbd' : '') + '">' + escapeHtml(match.team1.name) + '</div>' +
+        '</div>' +
+        '<div class="team-score ' + (match.team1.score === null ? 'empty' : '') + '">' +
+        (match.team1.score !== null ? match.team1.score : '-') +
+        '</div>' +
+        '</div>' +
+        '<div class="team-row ' + team2Class + '">' +
+        '<div class="team-info">' +
+        '<div class="team-icon">' + getTeamIcon(match.team2.name) + '</div>' +
+        '<div class="team-name ' + (isTBD ? 'tbd' : '') + '">' + escapeHtml(match.team2.name) + '</div>' +
+        '</div>' +
+        '<div class="team-score ' + (match.team2.score === null ? 'empty' : '') + '">' +
+        (match.team2.score !== null ? match.team2.score : '-') +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        lineHtml +
+        '</div>';
+}
+
+function updateChampion() {
+    var finalMatch = getMatchData(TOURNAMENT_STRUCTURE.final);
+    var championSection = document.getElementById('championSection');
+    var championName = document.getElementById('championName');
+
+    if (finalMatch && finalMatch.status === '終了') {
+        var winner = getWinner(finalMatch);
+        if (winner) {
+            var championTeam = winner === 1 ? finalMatch.team1.name : finalMatch.team2.name;
+            championName.textContent = championTeam;
+            championSection.style.display = 'block';
+        }
+    } else {
+        championSection.style.display = 'none';
+    }
+}
+
+function showError(message) {
+    var container = document.getElementById('tournamentContainer');
+    container.innerHTML = '<div class="loading" style="color: #d32f2f;">⚠️ ' + message + '</div>';
+}
+
+function initNavScrollIndicator() {
+    var navLinks = document.getElementById('navLinks');
+    var navWrapper = document.getElementById('navWrapper');
+
+    if (!navLinks || !navWrapper) return;
+
+    function updateScrollIndicator() {
+        var scrollLeft = navLinks.scrollLeft;
+        var scrollWidth = navLinks.scrollWidth;
+        var clientWidth = navLinks.clientWidth;
+        var maxScroll = scrollWidth - clientWidth;
+
+        if (scrollLeft <= 5) {
+            navWrapper.classList.add('scroll-start');
+            navWrapper.classList.remove('scroll-middle', 'scroll-end');
+        } else if (scrollLeft >= maxScroll - 5) {
+            navWrapper.classList.add('scroll-end');
+            navWrapper.classList.remove('scroll-start', 'scroll-middle');
+        } else {
+            navWrapper.classList.add('scroll-middle');
+            navWrapper.classList.remove('scroll-start', 'scroll-end');
+        }
+    }
+
+    updateScrollIndicator();
+    navLinks.addEventListener('scroll', updateScrollIndicator);
+    window.addEventListener('resize', updateScrollIndicator);
+}
+
+return {
+    init: function() {
+        var refreshBtn = document.getElementById('refreshBtn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', function() {
+                TournamentApp.manualRefresh();
+            });
+        }
+
+        initNavScrollIndicator();
+        fetchTournamentData();
+        this.startAutoRefresh();
+    },
+
+    manualRefresh: function() {
+        if (isRefreshing) return;
+
+        isRefreshing = true;
+        var btn = document.getElementById('refreshBtn');
+        if (btn) btn.disabled = true;
+
+        fetchTournamentData();
+
+        var timeout = CONFIG && CONFIG.REFRESH_TIMEOUT ? CONFIG.REFRESH_TIMEOUT : 2000;
+        setTimeout(function() {
+            isRefreshing = false;
+            if (btn) btn.disabled = false;
+        }, timeout);
+    },
+
+    startAutoRefresh: function() {
+        if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+        
+        var interval = CONFIG && CONFIG.AUTO_REFRESH_INTERVAL ? CONFIG.AUTO_REFRESH_INTERVAL : 60000;
+        autoRefreshInterval = setInterval(function() {
+            fetchTournamentData();
+        }, interval);
+    },
+
+    stopAutoRefresh: function() {
+        if (autoRefreshInterval) {
+            clearInterval(autoRefreshInterval);
+            autoRefreshInterval = null;
+        }
+    },
+
+    openMatch: function(court, gameNum) {
+        if (!court) return;
+        window.location.href = 'scoreboard.html#' + court + '-' + gameNum;
+    }
+};
+```
+
 })();
 
-document.addEventListener('DOMContentLoaded', function() {
-    TournamentApp.init();
+document.addEventListener(‘DOMContentLoaded’, function() {
+TournamentApp.init();
 });
 
-window.addEventListener('beforeunload', function() {
-    TournamentApp.stopAutoRefresh();
+window.addEventListener(‘beforeunload’, function() {
+TournamentApp.stopAutoRefresh();
 });
