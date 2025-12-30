@@ -1,6 +1,5 @@
 /**
-
-- トーナメント表アプリケーション（横スクロール型 - 洗練版）
+  - トーナメント表アプリケーション（横スクロール型 - 洗練版）
   */
 
 var TournamentApp = (function() {
@@ -229,10 +228,20 @@ function renderTournament() {
 }
 
 function renderRound1() {
-    var matches = [];
+    var allMatches = [];
     for (var i = 0; i < TOURNAMENT_STRUCTURE.round1.length; i++) {
         var match = getMatchData(TOURNAMENT_STRUCTURE.round1[i]);
-        if (match) matches.push(match);
+        if (match) allMatches.push(match);
+    }
+
+    var aMatches = [];
+    var bMatches = [];
+    for (var j = 0; j < allMatches.length; j++) {
+        if (allMatches[j].court === 'A') {
+            aMatches.push(allMatches[j]);
+        } else {
+            bMatches.push(allMatches[j]);
+        }
     }
 
     var html = '<div class="round-column">' +
@@ -242,10 +251,20 @@ function renderRound1() {
         '</div>' +
         '<div class="matches-container">';
 
-    for (var j = 0; j < matches.length; j++) {
-        var hasRes = hasResult(matches[j]);
+    for (var k = 0; k < aMatches.length; k++) {
+        var hasRes = hasResult(aMatches[k]);
         html += '<div class="match-wrapper ' + (hasRes ? 'has-result' : '') + '">' +
-            renderMatchCard(matches[j]) +
+            renderMatchCard(aMatches[k]) +
+            '<div class="connector">' +
+            '<div class="connector-line connector-horizontal"></div>' +
+            '</div>' +
+            '</div>';
+    }
+
+    for (var m = 0; m < bMatches.length; m++) {
+        var hasResB = hasResult(bMatches[m]);
+        html += '<div class="match-wrapper ' + (hasResB ? 'has-result' : '') + '">' +
+            renderMatchCard(bMatches[m]) +
             '<div class="connector">' +
             '<div class="connector-line connector-horizontal"></div>' +
             '</div>' +
@@ -278,25 +297,25 @@ function renderSemiFinals() {
             '</div>';
     }
 
-    if (seedTeam) {
-        html += '<div class="match-wrapper has-result">' +
-            '<div class="match-card seed">' +
-            '<div class="seed-card">' +
-            '<div class="seed-icon">⭐</div>' +
-            '<div class="seed-label">シード</div>' +
-            '<div class="seed-team">' + escapeHtml(seedTeam) + '</div>' +
-            '</div>' +
-            '</div>' +
+    if (match5) {
+        var hasRes5 = hasResult(match5);
+        html += '<div class="match-wrapper ' + (hasRes5 ? 'has-result' : '') + '">' +
+            renderMatchCard(match5) +
             '<div class="connector">' +
             '<div class="connector-line connector-horizontal"></div>' +
             '</div>' +
             '</div>';
     }
 
-    if (match5) {
-        var hasRes5 = hasResult(match5);
-        html += '<div class="match-wrapper ' + (hasRes5 ? 'has-result' : '') + '">' +
-            renderMatchCard(match5) +
+    if (seedTeam) {
+        html += '<div class="match-wrapper has-result">' +
+            '<div class="match-card seed">' +
+            '<div class="seed-card">' +
+            '<div class="seed-icon">⭐</div>' +
+            '<div class="seed-label">シード (1回戦Bコート)</div>' +
+            '<div class="seed-team">' + escapeHtml(seedTeam) + '</div>' +
+            '</div>' +
+            '</div>' +
             '<div class="connector">' +
             '<div class="connector-line connector-horizontal"></div>' +
             '</div>' +
