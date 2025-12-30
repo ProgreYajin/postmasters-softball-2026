@@ -236,7 +236,7 @@ function renderRound1() {
         var gameNum = TOURNAMENT_STRUCTURE.round1[i];
         var match = getMatchData(gameNum);
         if (match) {
-            html += renderMatchCard(match, true);
+            html += renderMatchCard(match, true, '');
         }
     }
 
@@ -256,7 +256,7 @@ function renderSemiFinals() {
 
     var match4 = getMatchData(4);
     if (match4) {
-        html += renderMatchCard(match4, true);
+        html += renderMatchCard(match4, true, '');
     }
 
     if (seedTeam) {
@@ -272,7 +272,7 @@ function renderSemiFinals() {
 
     var match5 = getMatchData(5);
     if (match5) {
-        html += renderMatchCard(match5, true);
+        html += renderMatchCard(match5, true, '');
     }
 
     html += '</div></div>';
@@ -322,7 +322,9 @@ function renderMatchCard(match, showLine, extraClass) {
     var lineHtml = showLine ? '<div class="bracket-right"></div>' : '';
     var extraClassStr = extraClass ? ' ' + extraClass : '';
 
-    return '<div class="match-card ' + statusClass + extraClassStr + '" onclick="TournamentApp.openMatch(\'' + match.court + '\', ' + match.gameNum + ')">' +
+    var onclickAttr = 'onclick="TournamentApp.openMatch(\'' + match.court + '\', ' + match.gameNum + ')"';
+
+    return '<div class="match-card ' + statusClass + extraClassStr + '" ' + onclickAttr + '>' +
         '<div class="match-header">' +
         '<div class="match-info">' +
         '<div class="match-number">第' + match.gameNum + '試合</div>' +
