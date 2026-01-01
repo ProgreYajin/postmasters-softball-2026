@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>トーナメント表 | 2026年千葉県郵便局長ソフトボール大会</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/tournament.css">
@@ -37,44 +36,161 @@
         </div>
     </header>
 
-<main class="app-main">
-    <section class="page-header">
-        <div class="page-header-content">
-            <h1 class="page-title">トーナメント表</h1>
-            <p class="page-subtitle">Tournament Bracket</p>
-        </div>
-    </section>
-
-    <section class="app-container">
-        <!-- 優勝チーム表示 -->
-        <div id="championSection" style="display: none;">
-            <div class="champion-banner">
-                <div class="champion-trophy">🏆</div>
-                <div class="champion-label">優勝</div>
-                <div class="champion-name" id="championName"></div>
+    <main class="app-main">
+        <section class="page-header">
+            <div class="page-header-content">
+                <h1 class="page-title">トーナメント表</h1>
+                <p class="page-subtitle">Tournament Bracket</p>
             </div>
-        </div>
+        </section>
 
-        <!-- トーナメント本体 -->
-        <div id="tournamentContainer" class="tournament-vertical">
-            <div class="loading">
-                <div class="loading-spinner"></div>
-                <div>データを読み込んでいます...</div>
+        <section class="app-container">
+            <!-- 優勝チーム表示 -->
+            <div id="championSection" style="display: none;">
+                <div class="champion-banner">
+                    <div class="champion-trophy">🏆</div>
+                    <div class="champion-label">優勝</div>
+                    <div class="champion-name" id="championName"></div>
+                </div>
             </div>
+
+            <!-- スクロールヒント -->
+            <div class="scroll-hint">
+                <span class="scroll-hint-icon">👉</span>
+                左右にスクロールできます
+            </div>
+
+            <!-- トーナメント表本体 -->
+            <div class="tournament-wrapper">
+                <div class="tournament-container">
+                    <div class="tournament">
+                        <!-- チームカード -->
+                        <div class="card team-A">印旛</div>
+                        <div class="card team-B">東南</div>
+                        <div class="card team-C">中部</div>
+                        <div class="card team-D">南部</div>
+                        <div class="card team-E">東部</div>
+                        <div class="card team-F">北部</div>
+                        <div class="card team-G">西部</div>
+
+                        <!-- Bから上への縦線 -->
+                        <div class="line line-v line-B-up"></div>
+
+                        <!-- Bから右への横線 -->
+                        <div class="line line-h line-B-right"></div>
+
+                        <!-- Cから上への縦線 -->
+                        <div class="line line-v line-C-up"></div>
+
+                        <!-- Cから左への横線 -->
+                        <div class="line line-h line-C-left"></div>
+
+                        <!-- BC中央から上への縦線 -->
+                        <div class="line line-v line-BC-up"></div>
+
+                        <!-- 試合情報 -->
+                        <div class="match-info match-bc">第1試合<br>Aコート<br>10:00</div>
+
+                        <!-- Aから上への縦線 -->
+                        <div class="line line-v line-A-up"></div>
+
+                        <!-- AとBC中央を繋ぐ横線 -->
+                        <div class="line line-h line-A-BC-h"></div>
+
+                        <!-- AとBC横線の中央から上への縦線 -->
+                        <div class="line line-v line-A-BC-up"></div>
+
+                        <!-- 試合情報 -->
+                        <div class="match-info match-abc">第4試合<br>Aコート<br>13:00</div>
+
+                        <!-- Dから上への縦線 -->
+                        <div class="line line-v line-D-up"></div>
+
+                        <!-- Dから右への横線 -->
+                        <div class="line line-h line-D-right"></div>
+
+                        <!-- Eから上への縦線 -->
+                        <div class="line line-v line-E-up"></div>
+
+                        <!-- Eから左への横線 -->
+                        <div class="line line-h line-E-left"></div>
+
+                        <!-- DE中央から上への縦線 -->
+                        <div class="line line-v line-DE-up"></div>
+
+                        <!-- 試合情報 -->
+                        <div class="match-info match-de">第2試合<br>Bコート<br>10:00</div>
+
+                        <!-- Fから上への縦線 -->
+                        <div class="line line-v line-F-up"></div>
+
+                        <!-- Fから右への横線 -->
+                        <div class="line line-h line-F-right"></div>
+
+                        <!-- Gから上への縦線 -->
+                        <div class="line line-v line-G-up"></div>
+
+                        <!-- Gから左への横線 -->
+                        <div class="line line-h line-G-left"></div>
+
+                        <!-- FG中央から上への縦線 -->
+                        <div class="line line-v line-FG-up"></div>
+
+                        <!-- 試合情報 -->
+                        <div class="match-info match-fg">第3試合<br>Aコート<br>11:30〜</div>
+
+                        <!-- DEとFGを繋ぐ横線 -->
+                        <div class="line line-h line-DE-FG-h"></div>
+
+                        <!-- DEとFG横線の中央から上への縦線 -->
+                        <div class="line line-v line-DE-FG-up"></div>
+
+                        <!-- 試合情報 -->
+                        <div class="match-info match-defg">第5試合<br>Bコート<br>13:00</div>
+
+                        <!-- 左ブロックと右ブロックを繋ぐ横線 -->
+                        <div class="line line-h line-final-h"></div>
+
+                        <!-- 決勝への縦線 -->
+                        <div class="line line-v line-final-up"></div>
+
+                        <!-- 試合情報 -->
+                        <div class="match-info match-final">第7試合<br>Aコート<br>15:00</div>
+
+                        <!-- 優勝カード -->
+                        <div class="card winner-card">優勝</div>
+
+                        <!-- 3位決定戦のカード -->
+                        <div class="card team-third-left">準決勝<br>敗者1</div>
+                        <div class="card team-third-right">準決勝<br>敗者2</div>
+
+                        <!-- 3位決定戦の線 -->
+                        <div class="line line-v line-third-left-up"></div>
+                        <div class="line line-h line-third-left-right"></div>
+                        <div class="line line-v line-third-right-up"></div>
+                        <div class="line line-h line-third-right-left"></div>
+                        <div class="line line-v line-third-merge-up"></div>
+
+                        <!-- 試合情報 -->
+                        <div class="match-info match-third">第6試合<br>Bコート<br>15:00</div>
+
+                        <!-- 3位カード -->
+                        <div class="card third-place-card">3位</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <button class="refresh-btn" id="refreshBtn" title="更新">🔄</button>
+
+    <footer class="app-footer">
+        <div class="footer-content">
+            <p class="copyright">© 2026 千葉県印旛地区郵便局長会</p>
         </div>
-    </section>
-</main>
+    </footer>
 
-<button class="refresh-btn" id="refreshBtn" title="更新">🔄</button>
-
-<footer class="app-footer">
-    <div class="footer-content">
-        <p class="copyright">© 2026 千葉県印旛地区郵便局長会</p>
-    </div>
-</footer>
-
-<script src="js/config.js"></script>
-<script src="js/tournament.js"></script>
-
+    <script src="js/config.js"></script>
+    <script src="js/tournament.js"></script>
 </body>
 </html>
