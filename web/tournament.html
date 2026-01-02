@@ -54,130 +54,45 @@
                 </div>
             </div>
 
-            <!-- スクロールヒント -->
-            <div class="scroll-hint">
-                <span class="scroll-hint-icon">👉</span>
-                左右にスクロールできます
+            <!-- グリッド表示用の情報パネル -->
+            <div class="info-panel">
+                <strong>📐 グリッド情報:</strong>
+                • 太い線: 100px間隔
+                • 細い線: 50px間隔
+                • サイズ: 1600px × 800px
+                • マウスを動かすと座標が表示されます
             </div>
 
             <!-- トーナメント表本体 -->
             <div class="tournament-wrapper">
-                <div class="tournament-container">
-                    <div class="tournament">
-                        <!-- チームカード -->
-                        <div class="card team-A">印旛</div>
-                        <div class="card team-B">東南</div>
-                        <div class="card team-C">中部</div>
-                        <div class="card team-D">南部</div>
-                        <div class="card team-E">東部</div>
-                        <div class="card team-F">北部</div>
-                        <div class="card team-G">西部</div>
-
-                        <!-- Bから上への縦線 -->
-                        <div class="line line-v line-B-up"></div>
-
-                        <!-- Bから右への横線 -->
-                        <div class="line line-h line-B-right"></div>
-
-                        <!-- Cから上への縦線 -->
-                        <div class="line line-v line-C-up"></div>
-
-                        <!-- Cから左への横線 -->
-                        <div class="line line-h line-C-left"></div>
-
-                        <!-- BC中央から上への縦線 -->
-                        <div class="line line-v line-BC-up"></div>
-
-                        <!-- 試合情報 -->
-                        <div class="match-info match-bc">第1試合<br>Aコート<br>10:00</div>
-
-                        <!-- Aから上への縦線 -->
-                        <div class="line line-v line-A-up"></div>
-
-                        <!-- AとBC中央を繋ぐ横線 -->
-                        <div class="line line-h line-A-BC-h"></div>
-
-                        <!-- AとBC横線の中央から上への縦線 -->
-                        <div class="line line-v line-A-BC-up"></div>
-
-                        <!-- 試合情報 -->
-                        <div class="match-info match-abc">第4試合<br>Aコート<br>13:00</div>
-
-                        <!-- Dから上への縦線 -->
-                        <div class="line line-v line-D-up"></div>
-
-                        <!-- Dから右への横線 -->
-                        <div class="line line-h line-D-right"></div>
-
-                        <!-- Eから上への縦線 -->
-                        <div class="line line-v line-E-up"></div>
-
-                        <!-- Eから左への横線 -->
-                        <div class="line line-h line-E-left"></div>
-
-                        <!-- DE中央から上への縦線 -->
-                        <div class="line line-v line-DE-up"></div>
-
-                        <!-- 試合情報 -->
-                        <div class="match-info match-de">第2試合<br>Bコート<br>10:00</div>
-
-                        <!-- Fから上への縦線 -->
-                        <div class="line line-v line-F-up"></div>
-
-                        <!-- Fから右への横線 -->
-                        <div class="line line-h line-F-right"></div>
-
-                        <!-- Gから上への縦線 -->
-                        <div class="line line-v line-G-up"></div>
-
-                        <!-- Gから左への横線 -->
-                        <div class="line line-h line-G-left"></div>
-
-                        <!-- FG中央から上への縦線 -->
-                        <div class="line line-v line-FG-up"></div>
-
-                        <!-- 試合情報 -->
-                        <div class="match-info match-fg">第3試合<br>Aコート<br>11:30〜</div>
-
-                        <!-- DEとFGを繋ぐ横線 -->
-                        <div class="line line-h line-DE-FG-h"></div>
-
-                        <!-- DEとFG横線の中央から上への縦線 -->
-                        <div class="line line-v line-DE-FG-up"></div>
-
-                        <!-- 試合情報 -->
-                        <div class="match-info match-defg">第5試合<br>Bコート<br>13:00</div>
-
-                        <!-- 左ブロックと右ブロックを繋ぐ横線 -->
-                        <div class="line line-h line-final-h"></div>
-
-                        <!-- 決勝への縦線 -->
-                        <div class="line line-v line-final-up"></div>
-
-                        <!-- 試合情報 -->
-                        <div class="match-info match-final">第7試合<br>Aコート<br>15:00</div>
-
-                        <!-- 優勝カード -->
-                        <div class="card winner-card">優勝</div>
-
-                        <!-- 3位決定戦のカード -->
-                        <div class="card team-third-left">準決勝<br>敗者1</div>
-                        <div class="card team-third-right">準決勝<br>敗者2</div>
-
-                        <!-- 3位決定戦の線 -->
-                        <div class="line line-v line-third-left-up"></div>
-                        <div class="line line-h line-third-left-right"></div>
-                        <div class="line line-v line-third-right-up"></div>
-                        <div class="line line-h line-third-right-left"></div>
-                        <div class="line line-v line-third-merge-up"></div>
-
-                        <!-- 試合情報 -->
-                        <div class="match-info match-third">第6試合<br>Bコート<br>15:00</div>
-
-                        <!-- 3位カード -->
-                        <div class="card third-place-card">3位</div>
+                <div class="tournament-area" id="tournamentArea">
+                    <div class="grid-overlay" id="gridOverlay"></div>
+                    
+                    <!-- 段のガイド -->
+                    <div class="stage-guide" style="top: 0px; right: -200px;">
+                        <div><strong>優勝</strong><br>Y: 0-50px</div>
+                    </div>
+                    <div class="stage-guide" style="top: 100px; right: -200px;">
+                        <div><strong>決勝戦</strong><br>Y: 100-200px</div>
+                    </div>
+                    <div class="stage-guide" style="top: 300px; right: -200px;">
+                        <div><strong>準決勝</strong><br>Y: 250-350px</div>
+                    </div>
+                    <div class="stage-guide" style="top: 500px; right: -200px;">
+                        <div><strong>1回戦</strong><br>Y: 500-600px</div>
+                    </div>
+                    <div class="stage-guide" style="top: 650px; right: -200px;">
+                        <div><strong>チーム名</strong><br>Y: 700-750px</div>
                     </div>
                 </div>
+            </div>
+
+            <!-- マウス座標表示 -->
+            <div class="mouse-coords" id="mouseCoords">
+                <div><strong>マウス座標</strong></div>
+                <div>X: <span id="coordX">-</span>px</div>
+                <div>Y: <span id="coordY">-</span>px</div>
+                <div style="font-size: 11px; margin-top: 10px; opacity: 0.7;">クリックで座標コピー</div>
             </div>
         </section>
     </main>
@@ -192,5 +107,96 @@
 
     <script src="js/config.js"></script>
     <script src="js/tournament.js"></script>
+    
+    <script>
+        // グリッド生成
+        const gridOverlay = document.getElementById('gridOverlay');
+        const width = 1600;
+        const height = 800;
+
+        // 100pxごとの太い線
+        for (let x = 0; x <= width; x += 100) {
+            const line = document.createElement('div');
+            line.className = 'grid-line-major vertical';
+            line.style.left = x + 'px';
+            gridOverlay.appendChild(line);
+
+            // X座標ラベル
+            if (x > 0) {
+                const label = document.createElement('div');
+                label.className = 'grid-label x';
+                label.textContent = x;
+                label.style.left = (x - 10) + 'px';
+                gridOverlay.appendChild(label);
+            }
+        }
+
+        for (let y = 0; y <= height; y += 100) {
+            const line = document.createElement('div');
+            line.className = 'grid-line-major horizontal';
+            line.style.top = y + 'px';
+            gridOverlay.appendChild(line);
+
+            // Y座標ラベル
+            if (y > 0) {
+                const label = document.createElement('div');
+                label.className = 'grid-label y';
+                label.textContent = y;
+                label.style.top = (y - 10) + 'px';
+                gridOverlay.appendChild(label);
+            }
+        }
+
+        // 50pxごとの細い線
+        for (let x = 50; x < width; x += 100) {
+            const line = document.createElement('div');
+            line.className = 'grid-line-minor vertical';
+            line.style.left = x + 'px';
+            gridOverlay.appendChild(line);
+        }
+
+        for (let y = 50; y < height; y += 100) {
+            const line = document.createElement('div');
+            line.className = 'grid-line-minor horizontal';
+            line.style.top = y + 'px';
+            gridOverlay.appendChild(line);
+        }
+
+        // マウス座標追跡
+        const tournamentArea = document.getElementById('tournamentArea');
+        const coordX = document.getElementById('coordX');
+        const coordY = document.getElementById('coordY');
+
+        tournamentArea.addEventListener('mousemove', (e) => {
+            const rect = tournamentArea.getBoundingClientRect();
+            const x = Math.round(e.clientX - rect.left);
+            const y = Math.round(e.clientY - rect.top);
+            
+            coordX.textContent = x;
+            coordY.textContent = y;
+        });
+
+        tournamentArea.addEventListener('mouseleave', () => {
+            coordX.textContent = '-';
+            coordY.textContent = '-';
+        });
+
+        // クリックで座標をコピー
+        tournamentArea.addEventListener('click', (e) => {
+            const rect = tournamentArea.getBoundingClientRect();
+            const x = Math.round(e.clientX - rect.left);
+            const y = Math.round(e.clientY - rect.top);
+            
+            const coordText = `X: ${x}px, Y: ${y}px`;
+            navigator.clipboard.writeText(coordText).then(() => {
+                const mouseCoords = document.getElementById('mouseCoords');
+                const original = mouseCoords.style.background;
+                mouseCoords.style.background = '#4CAF50';
+                setTimeout(() => {
+                    mouseCoords.style.background = original;
+                }, 200);
+            });
+        });
+    </script>
 </body>
 </html>
