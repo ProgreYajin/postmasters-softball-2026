@@ -8,6 +8,8 @@
     border-radius: 15px;
     padding: 30px 20px;
     margin-bottom: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
     text-align: center;
     box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
     animation: shine 2s ease-in-out infinite;
@@ -40,30 +42,29 @@
 .info-panel {
     background: #e3f2fd;
     padding: 15px;
-    margin-top: 20px;
+    margin: 20px 20px 0 20px;
     border-radius: 4px;
     border-left: 4px solid #1976d2;
     font-size: 0.95em;
 }
 
-/* トーナメントページ専用 */
-.tournament-page {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+/* トーナメントページ専用 - パディングを完全に削除 */
+.app-container.tournament-page {
+    padding: 0 !important;
+    max-width: 100% !important;
 }
 
 /* トーナメント全体のラッパー */
 .tournament-wrapper {
     background: white;
-    border-radius: 0;
     padding: 0;
+    margin: 0;
     box-shadow: none;
     overflow-x: auto;
     overflow-y: visible;
     -webkit-overflow-scrolling: touch;
     position: relative;
     width: 100%;
-    max-width: 100%;
 }
 
 .tournament-area {
@@ -168,6 +169,7 @@
     line-height: 1.6;
     pointer-events: none;
     left: 10px;
+    z-index: 100;
 }
 
 .stage-guide div {
@@ -186,10 +188,6 @@ body {
     overflow-x: hidden;
 }
 
-.app-container {
-    overflow-x: hidden;
-}
-
 /* ============================================================
    レスポンシブ対応
    ============================================================ */
@@ -197,6 +195,8 @@ body {
 @media (max-width: 768px) {
     .champion-banner {
         padding: 20px 15px;
+        margin-left: 15px;
+        margin-right: 15px;
     }
 
     .champion-trophy {
@@ -231,13 +231,5 @@ body {
     .stage-guide {
         font-size: 10px;
         width: 130px;
-    }
-}
-
-/* デスクトップ（大画面） */
-@media (min-width: 1800px) {
-    .info-panel {
-        margin-left: 40px;
-        margin-right: 40px;
     }
 }
