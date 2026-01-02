@@ -164,7 +164,6 @@
 
         // マウス座標追跡
         const tournamentArea = document.getElementById('tournamentArea');
-        const tournamentWrapper = document.getElementById('tournamentWrapper');
         const coordX = document.getElementById('coordX');
         const coordY = document.getElementById('coordY');
 
@@ -199,51 +198,21 @@
             });
         });
 
-        // トーナメントエリア内での縦スクロールをページ全体のスクロールに変換
+        // PC用: マウスホイールでの縦スクロールをページ全体に委譲
+        const tournamentWrapper = document.getElementById('tournamentWrapper');
+        
         tournamentWrapper.addEventListener('wheel', (e) => {
-            // 横スクロールの場合は通常動作
+            // 横スクロールが発生している、または横方向への操作の場合は通常動作
             if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
                 return;
             }
             
-            // 縦スクロールの場合はページ全体をスクロール
-            e.preventDefault();
-            window.scrollBy({
-                top: e.deltaY,
-                behavior: 'auto'
-            });
-        }, { passive: false });
-
-        // タッチスクロール対応（モバイル）
-        let touchStartY = 0;
-        let touchStartX = 0;
-
-        tournamentWrapper.addEventListener('touchstart', (e) => {
-            touchStartY = e.touches[0].clientY;
-            touchStartX = e.touches[0].clientX;
+            // 縦方向のホイール操作の場合
+            // トーナメントエリアの高さがビューポートより小さいため、
+            // 縦スクロールは常にページ全体のスクロールとして扱う
+            // ブラウザのデフォルト動作を許可（preventDefault しない）
+            // これにより、自然なページスクロールが発生する
         }, { passive: true });
-
-        tournamentWrapper.addEventListener('touchmove', (e) => {
-            const touchY = e.touches[0].clientY;
-            const touchX = e.touches[0].clientX;
-            const deltaY = touchStartY - touchY;
-            const deltaX = touchStartX - touchX;
-            
-            // 横方向の移動が大きい場合は横スクロール（通常動作）
-            if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                return;
-            }
-            
-            // 縦方向の移動が大きい場合はページスクロール
-            e.preventDefault();
-            window.scrollBy({
-                top: deltaY * 0.5,
-                behavior: 'auto'
-            });
-            
-            touchStartY = touchY;
-            touchStartX = touchX;
-        }, { passive: false });
     </script>
 </body>
 </html>
