@@ -44,7 +44,7 @@
             </div>
         </section>
 
-        <section class="app-container">
+        <section class="app-container tournament-page">
             <!-- 優勝チーム表示 -->
             <div id="championSection" style="display: none;">
                 <div class="champion-banner">
@@ -54,37 +54,37 @@
                 </div>
             </div>
 
-            <!-- グリッド表示用の情報パネル -->
+            <!-- トーナメント表本体 -->
+            <div class="tournament-wrapper">
+                <div class="tournament-area" id="tournamentArea">
+                    <div class="grid-overlay" id="gridOverlay"></div>
+                    
+                    <!-- 段のガイド（左側に配置） -->
+                    <div class="stage-guide" style="top: 10px;">
+                        <div><strong>優勝</strong> Y: 0-50px</div>
+                    </div>
+                    <div class="stage-guide" style="top: 120px;">
+                        <div><strong>決勝戦</strong> Y: 100-200px</div>
+                    </div>
+                    <div class="stage-guide" style="top: 280px;">
+                        <div><strong>準決勝</strong> Y: 250-350px</div>
+                    </div>
+                    <div class="stage-guide" style="top: 480px;">
+                        <div><strong>1回戦</strong> Y: 500-600px</div>
+                    </div>
+                    <div class="stage-guide" style="top: 680px;">
+                        <div><strong>チーム名</strong> Y: 700-750px</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- グリッド情報パネル（下部） -->
             <div class="info-panel">
                 <strong>📐 グリッド情報:</strong>
                 • 太い線: 100px間隔
                 • 細い線: 50px間隔
                 • サイズ: 1600px × 800px
                 • マウスを動かすと座標が表示されます
-            </div>
-
-            <!-- トーナメント表本体 -->
-            <div class="tournament-wrapper">
-                <div class="tournament-area" id="tournamentArea">
-                    <div class="grid-overlay" id="gridOverlay"></div>
-                    
-                    <!-- 段のガイド -->
-                    <div class="stage-guide" style="top: 0px; right: -200px;">
-                        <div><strong>優勝</strong><br>Y: 0-50px</div>
-                    </div>
-                    <div class="stage-guide" style="top: 100px; right: -200px;">
-                        <div><strong>決勝戦</strong><br>Y: 100-200px</div>
-                    </div>
-                    <div class="stage-guide" style="top: 300px; right: -200px;">
-                        <div><strong>準決勝</strong><br>Y: 250-350px</div>
-                    </div>
-                    <div class="stage-guide" style="top: 500px; right: -200px;">
-                        <div><strong>1回戦</strong><br>Y: 500-600px</div>
-                    </div>
-                    <div class="stage-guide" style="top: 650px; right: -200px;">
-                        <div><strong>チーム名</strong><br>Y: 700-750px</div>
-                    </div>
-                </div>
             </div>
 
             <!-- マウス座標表示 -->
