@@ -55,7 +55,7 @@
             </div>
 
             <!-- トーナメント表本体 -->
-            <div class="tournament-wrapper">
+            <div class="tournament-wrapper" id="tournamentWrapper">
                 <div class="tournament-area" id="tournamentArea">
                     <div class="grid-overlay" id="gridOverlay"></div>
                     
@@ -164,6 +164,7 @@
 
         // マウス座標追跡
         const tournamentArea = document.getElementById('tournamentArea');
+        const tournamentWrapper = document.getElementById('tournamentWrapper');
         const coordX = document.getElementById('coordX');
         const coordY = document.getElementById('coordY');
 
@@ -197,6 +198,52 @@
                 }, 200);
             });
         });
+
+        // トーナメントエリア内での縦スクロールをページ全体のスクロールに変換
+        tournamentWrapper.addEventListener('wheel', (e) => {
+            // 横スクロールの場合は通常動作
+            if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+                return;
+            }
+            
+            // 縦スクロールの場合はページ全体をスクロール
+            e.preventDefault();
+            window.scrollBy({
+                top: e.deltaY,
+                behavior: 'auto'
+            });
+        }, { passive: false });
+
+        // タッチスクロール対応（モバイル）
+        let touchStartY = 0;
+        let touchStartX = 0;
+
+        tournamentWrapper.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+            touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+
+        tournamentWrapper.addEventListener('touchmove', (e) => {
+            const touchY = e.touches[0].clientY;
+            const touchX = e.touches[0].clientX;
+            const deltaY = touchStartY - touchY;
+            const deltaX = touchStartX - touchX;
+            
+            // 横方向の移動が大きい場合は横スクロール（通常動作）
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                return;
+            }
+            
+            // 縦方向の移動が大きい場合はページスクロール
+            e.preventDefault();
+            window.scrollBy({
+                top: deltaY * 0.5,
+                behavior: 'auto'
+            });
+            
+            touchStartY = touchY;
+            touchStartX = touchX;
+        }, { passive: false });
     </script>
 </body>
 </html>
