@@ -65,6 +65,10 @@
     -webkit-overflow-scrolling: touch;
     position: relative;
     width: 100%;
+    /* 横方向のみスクロール可能、縦方向はページスクロールに委譲 */
+    touch-action: pan-x pinch-zoom;
+    overscroll-behavior-x: contain;
+    overscroll-behavior-y: none;
 }
 
 .tournament-area {
