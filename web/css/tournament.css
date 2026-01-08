@@ -38,6 +38,54 @@
     color: #333;
 }
 
+/* ズームコントロール */
+.zoom-control {
+    display: none;
+    background: white;
+    padding: 15px;
+    margin: 0 15px 15px 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: 2px solid #003366;
+}
+
+.zoom-label {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #003366;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.zoom-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.zoom-btn {
+    flex: 1;
+    padding: 10px 15px;
+    background: #f5f5f5;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.zoom-btn:active {
+    transform: scale(0.95);
+}
+
+.zoom-btn.active {
+    background: #003366;
+    color: white;
+    border-color: #003366;
+}
+
 /* 情報パネル */
 .info-panel {
     background: #e3f2fd;
@@ -61,14 +109,13 @@
     margin: 0;
     box-shadow: none;
     overflow-x: auto;
-    overflow-y: visible;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     position: relative;
     width: 100%;
-    /* 横方向のみスクロール可能、縦方向はページスクロールに委譲 */
-    touch-action: pan-x pinch-zoom;
-    overscroll-behavior-x: contain;
-    overscroll-behavior-y: none;
+    /* タッチ操作を完全に許可 */
+    touch-action: auto;
+    overscroll-behavior: contain;
 }
 
 .tournament-area {
@@ -78,6 +125,7 @@
     background: white;
     border: 2px solid #333;
     margin: 0;
+    transition: transform 0.3s ease;
 }
 
 /* グリッド線 */
@@ -197,6 +245,19 @@ body {
    ============================================================ */
 
 @media (max-width: 768px) {
+    /* ズームコントロールを表示 */
+    .zoom-control {
+        display: block;
+    }
+    
+    /* トーナメント表を縦横スクロール可能に */
+    .tournament-wrapper {
+        max-height: 65vh;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        margin: 0 10px;
+    }
+    
     .champion-banner {
         padding: 20px 15px;
         margin-left: 15px;
@@ -219,10 +280,7 @@ body {
     }
 
     .mouse-coords {
-        top: 120px;
-        right: 10px;
-        font-size: 12px;
-        padding: 10px 15px;
+        display: none;
     }
 
     .stage-guide {
