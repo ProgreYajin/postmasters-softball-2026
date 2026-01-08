@@ -209,18 +209,10 @@
             });
         });
 
-        // PC用: マウスホイールでの縦スクロールをページ全体に委譲
-        const tournamentWrapper = document.getElementById('tournamentWrapper');
-        
-        tournamentWrapper.addEventListener('wheel', (e) => {
-            if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-                return;
-            }
-        }, { passive: true });
-
         // ズーム機能
         let currentZoom = 1.0;
         const zoomButtons = document.querySelectorAll('.zoom-btn');
+        const tournamentWrapper = document.getElementById('tournamentWrapper');
         
         zoomButtons.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -233,50 +225,17 @@
                 
                 // ラッパーの高さを調整
                 const newHeight = 800 * zoom;
-                tournamentWrapper.style.minHeight = `${newHeight}px`;
+                tournamentWrapper.style.height = `${newHeight}px`;
                 
                 // アクティブボタンの切り替え
                 zoomButtons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 
                 // スクロール位置をリセット
-                tournamentWrapper.scrollTop = 0;
                 tournamentWrapper.scrollLeft = 0;
+                window.scrollTo(0, tournamentWrapper.offsetTop - 100);
             });
         });
-
-        // タッチスクロールの改善（スクロール方向の判定を緩和）
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let isScrolling = null;
-        
-        tournamentWrapper.addEventListener('touchstart', (e) => {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-            isScrolling = null;
-        }, { passive: true });
-        
-        tournamentWrapper.addEventListener('touchmove', (e) => {
-            if (isScrolling === null) {
-                const touchX = e.touches[0].clientX;
-                const touchY = e.touches[0].clientY;
-                const deltaX = Math.abs(touchX - touchStartX);
-                const deltaY = Math.abs(touchY - touchStartY);
-                
-                // 縦方向の移動が明確な場合（横移動の1.5倍以上）
-                if (deltaY > deltaX * 1.5) {
-                    isScrolling = 'vertical';
-                } 
-                // 横方向の移動が明確な場合（縦移動の1.5倍以上）
-                else if (deltaX > deltaY * 1.5) {
-                    isScrolling = 'horizontal';
-                }
-                // どちらとも言えない場合は縦スクロールを優先
-                else if (deltaY > 10 || deltaX > 10) {
-                    isScrolling = 'vertical';
-                }
-            }
-        }, { passive: true });
     </script>
 </body>
 </html>
