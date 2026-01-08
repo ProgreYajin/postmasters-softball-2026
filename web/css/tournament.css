@@ -109,13 +109,15 @@
     margin: 0;
     box-shadow: none;
     overflow-x: auto;
-    overflow-y: auto;
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     position: relative;
     width: 100%;
-    /* タッチ操作を完全に許可 */
-    touch-action: auto;
-    overscroll-behavior: contain;
+    /* 横スクロールと縦スクロール（ページ全体）を両方許可 */
+    touch-action: pan-x pan-y;
+    /* iOSのバウンスを防止 */
+    overscroll-behavior-x: contain;
+    overscroll-behavior-y: none;
 }
 
 .tournament-area {
@@ -126,6 +128,8 @@
     border: 2px solid #333;
     margin: 0;
     transition: transform 0.3s ease;
+    /* タッチ操作を親要素に伝播させる */
+    touch-action: inherit;
 }
 
 /* グリッド線 */
@@ -250,12 +254,13 @@ body {
         display: block;
     }
     
-    /* トーナメント表を縦横スクロール可能に */
+    /* トーナメント表のスタイル調整 */
     .tournament-wrapper {
-        max-height: 65vh;
         border: 1px solid #e0e0e0;
         border-radius: 8px;
         margin: 0 10px;
+        /* モバイルでも overflow-y は hidden のまま */
+        overflow-y: hidden;
     }
     
     .champion-banner {
