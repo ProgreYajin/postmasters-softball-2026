@@ -54,6 +54,17 @@
                 </div>
             </div>
 
+            <!-- ズームコントロール（モバイル専用） -->
+            <div class="zoom-control" id="zoomControl">
+                <div class="zoom-label">表示サイズ</div>
+                <div class="zoom-buttons">
+                    <button class="zoom-btn" data-zoom="0.6" id="zoom60">60%</button>
+                    <button class="zoom-btn" data-zoom="0.8" id="zoom80">80%</button>
+                    <button class="zoom-btn active" data-zoom="1.0" id="zoom100">100%</button>
+                    <button class="zoom-btn" data-zoom="1.2" id="zoom120">120%</button>
+                </div>
+            </div>
+
             <!-- トーナメント表本体 -->
             <div class="tournament-wrapper" id="tournamentWrapper">
                 <div class="tournament-area" id="tournamentArea">
@@ -202,16 +213,69 @@
         const tournamentWrapper = document.getElementById('tournamentWrapper');
         
         tournamentWrapper.addEventListener('wheel', (e) => {
-            // 横スクロールが発生している、または横方向への操作の場合は通常動作
             if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
                 return;
             }
-            
-            // 縦方向のホイール操作の場合
-            // トーナメントエリアの高さがビューポートより小さいため、
-            // 縦スクロールは常にページ全体のスクロールとして扱う
-            // ブラウザのデフォルト動作を許可（preventDefault しない）
-            // これにより、自然なページスクロールが発生する
+        }, { passive: true });
+
+        // ズーム機能
+        let currentZoom = 1.0;
+        const zoomButtons = document.querySelectorAll('.zoom-btn');
+        
+        zoomButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const zoom = parseFloat(btn.dataset.zoom);
+                currentZoom = zoom;
+                
+                // トーナメントエリアにズームを適用
+                tournamentArea.style.transform = `scale(${zoom})`;
+                tournamentArea.style.transformOrigin = 'top left';
+                
+                // ラッパーの高さを調整
+                const newHeight = 800 * zoom;
+                tournamentWrapper.style.minHeight = `${newHeight}px`;
+                
+                // アクティブボタンの切り替え
+                zoomButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // スクロール位置をリセット
+                tournamentWrapper.scrollTop = 0;
+                tournamentWrapper.scrollLeft = 0;
+            });
+        });
+
+        // タッチスクロールの改善（スクロール方向の判定を緩和）
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let isScrolling = null;
+        
+        tournamentWrapper.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            isScrolling = null;
+        }, { passive: true });
+        
+        tournamentWrapper.addEventListener('touchmove', (e) => {
+            if (isScrolling === null) {
+                const touchX = e.touches[0].clientX;
+                const touchY = e.touches[0].clientY;
+                const deltaX = Math.abs(touchX - touchStartX);
+                const deltaY = Math.abs(touchY - touchStartY);
+                
+                // 縦方向の移動が明確な場合（横移動の1.5倍以上）
+                if (deltaY > deltaX * 1.5) {
+                    isScrolling = 'vertical';
+                } 
+                // 横方向の移動が明確な場合（縦移動の1.5倍以上）
+                else if (deltaX > deltaY * 1.5) {
+                    isScrolling = 'horizontal';
+                }
+                // どちらとも言えない場合は縦スクロールを優先
+                else if (deltaY > 10 || deltaX > 10) {
+                    isScrolling = 'vertical';
+                }
+            }
         }, { passive: true });
     </script>
 </body>
