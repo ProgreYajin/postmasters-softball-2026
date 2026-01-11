@@ -16,6 +16,7 @@ body {
     background: #f5f5f5;
     color: #333;
     line-height: 1.6;
+    overflow-x: hidden;
 }
 
 /* ============================================================
@@ -193,12 +194,19 @@ body {
    ============================================================ */
 .app-main {
     flex: 1;
+    min-height: calc(100vh - 200px);
 }
 
 .app-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 40px 20px;
+}
+
+/* トーナメントページは余白なし */
+.app-container.tournament-page {
+    padding: 0 !important;
+    max-width: 100% !important;
 }
 
 /* ギャラリーページは余白なし */
@@ -225,7 +233,7 @@ body {
     color: #666;
 }
 
-.loading-spinner {
+.spinner {
     width: 50px;
     height: 50px;
     border: 4px solid #f0f0f0;
@@ -323,5 +331,13 @@ body {
     
     .section-title {
         font-size: 1.4em;
+    }
+    
+    .refresh-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 1.2em;
+        bottom: 15px;
+        right: 15px;
     }
 }
