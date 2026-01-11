@@ -1121,6 +1121,11 @@ function doGet(e) {
     if (params.type === 'teams') {
       return getTeamsData(ss);
     }
+
+    // トーナメント表APIのリクエスト判定（★この3行を追加★）
+    if (params.type === 'tournament') {
+      return getTournamentData(ss);
+    }
     
     // 既存のスコアボードAPI
     return getScoreboardData(ss);
@@ -1291,4 +1296,46 @@ function getScheduleData(ss) {
     lastUpdate: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'HH:mm:ss'),
     schedule: schedule
   })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// トーナメント表データ取得
+function getTournamentData(ss) {
+  const tournamentSheet = ss.getSheetByName('トーナメント表');
+  
+  if (!tournamentSheet) {
+    return ContentService.createTextOutput(JSON.stringify({
+      error: 'トーナメント表シートが見つかりません',
+      lastUpdate: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'HH:mm:ss'),
+      teams: []
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  if (tournamentSheet.getLastRow() <= 1) {
+    return ContentService.createTextOutput(JSON.stringify({
+      lastUpdate: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'HH:mm:ss'),
+      teams: []
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  const data = tournamentSheet.getDataRange().getValues();
+  const teams = [];
+  
+  // ヘッダー行をスキップ（i=1から開始）
+  for (let i = 1; i < data.length; i++) {
+    teams.push({
+      position: data[i][0],      // 位置番号
+      teamName: data[i][1],      // チーム名
+      x: data[i][2],             // X座標
+      firstGame: data[i][3],     // 試合番号
+      note: data[i][4] || ''     // 備考
+    });
+  }
+  
+  const result = {
+    lastUpdate: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'HH:mm:ss'),
+    teams: teams
+  };
+  
+  return ContentService.createTextOutput(JSON.stringify(result))
+    .setMimeType(ContentService.MimeType.JSON);
 }
