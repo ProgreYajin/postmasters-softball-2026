@@ -1,302 +1,121 @@
-/* ============================================================
-   トーナメント表専用スタイル
-   ============================================================ */
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>トーナメント表 | 2026年千葉県郵便局長ソフトボール大会</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/tournament.css">
+</head>
+<body>
 
-/* 優勝バナー */
-.champion-banner {
-    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-    border-radius: 15px;
-    padding: 30px 20px;
-    margin-bottom: 30px;
-    margin-left: 20px;
-    margin-right: 20px;
-    text-align: center;
-    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
-    animation: shine 2s ease-in-out infinite;
-}
+<!-- ============================================================
+     ヘッダー
+     ============================================================ -->
+<header class="app-header">
+    <div class="header-top">
+        <div class="header-container">
+            <a href="index.html" class="header-logo">
+                <img src="https://drive.google.com/thumbnail?id=1i01jLSCnme9KdDuBwL8MufLNGdeo_d0x" alt="全国郵便局長会">
+            </a>
+            <div class="header-info">
+                <span>2026年千葉県郵便局長ソフトボール大会 | 2026.6.6</span>
+            </div>
+        </div>
+    </div>
+    <div class="header-main">
+        <div class="nav-wrapper" id="navWrapper">
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link">ホーム</a>
+                <a href="scoreboard.html" class="nav-link">試合速報 / 試合結果</a>
+                <a href="gallery.html" class="nav-link">写真ギャラリー</a>
+                <a href="schedule.html" class="nav-link">大会スケジュール</a>
+                <a href="tournament.html" class="nav-link">トーナメント表</a>
+                <a href="teams.html" class="nav-link">チーム・選手一覧</a>
+                <a href="venue.html" class="nav-link">会場案内・アクセス</a>
+                <a href="rules.html" class="nav-link">大会ルール・規約</a>
+                <a href="history.html" class="nav-link">優勝記録・歴史</a>
+            </nav>
+        </div>
+    </div>
+</header>
 
-@keyframes shine {
-    0%, 100% { box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4); }
-    50% { box-shadow: 0 12px 35px rgba(255, 215, 0, 0.6); }
-}
+<!-- ============================================================
+     メインコンテンツ
+     ============================================================ -->
+<main class="app-main">
+    <!-- ページヘッダー -->
+    <section class="page-header">
+        <div class="page-header-content">
+            <h1 class="page-title">トーナメント表</h1>
+            <p class="page-subtitle">Tournament Bracket</p>
+        </div>
+    </section>
 
-.champion-trophy {
-    font-size: 4em;
-    margin-bottom: 10px;
-}
+    <!-- トーナメント表コンテナ -->
+    <section class="app-container tournament-page">
+        <!-- 優勝チーム表示 -->
+        <div id="championSection" style="display: none;">
+            <div class="champion-banner">
+                <div class="champion-trophy">🏆</div>
+                <div class="champion-label">優勝</div>
+                <div class="champion-name" id="championName"></div>
+            </div>
+        </div>
 
-.champion-label {
-    font-size: 1.3em;
-    color: #856404;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
+        <!-- ズームコントロール（モバイル専用） -->
+        <div class="zoom-control" id="zoomControl">
+            <div class="zoom-label">表示サイズ</div>
+            <div class="zoom-buttons">
+                <button class="zoom-btn" data-zoom="0.6" id="zoom60">60%</button>
+                <button class="zoom-btn" data-zoom="0.8" id="zoom80">80%</button>
+                <button class="zoom-btn active" data-zoom="1.0" id="zoom100">100%</button>
+                <button class="zoom-btn" data-zoom="1.2" id="zoom120">120%</button>
+            </div>
+        </div>
 
-.champion-name {
-    font-size: 2em;
-    font-weight: bold;
-    color: #333;
-}
+        <!-- トーナメント表本体 -->
+        <div class="tournament-wrapper" id="tournamentWrapper">
+            <div class="loading">
+                <div class="spinner"></div>
+                <div>データを読み込んでいます...</div>
+            </div>
+        </div>
 
-/* ズームコントロール */
-.zoom-control {
-    display: none;
-    background: white;
-    padding: 15px;
-    margin: 0 15px 15px 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border: 2px solid #003366;
-}
+        <!-- 情報パネル -->
+        <div class="info-panel">
+            <strong>📱 操作方法：</strong> 左右と上下にスクロール可能です
+        </div>
+    </section>
+</main>
 
-.zoom-label {
-    font-size: 0.9em;
-    font-weight: bold;
-    color: #003366;
-    margin-bottom: 10px;
-    text-align: center;
-}
+<!-- ============================================================
+     フッター
+     ============================================================ -->
+<footer class="app-footer">
+    <div class="footer-content">
+        <p class="copyright">© 2026 千葉県印旛地区郵便局長会</p>
+    </div>
+</footer>
 
-.zoom-buttons {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-}
+<!-- ============================================================
+     更新ボタン
+     ============================================================ -->
+<button class="refresh-btn" id="refreshBtn" title="更新">🔄</button>
 
-.zoom-btn {
-    flex: 1;
-    padding: 10px 15px;
-    background: #f5f5f5;
-    border: 2px solid #ddd;
-    border-radius: 6px;
-    font-size: 0.9em;
-    font-weight: bold;
-    color: #333;
-    cursor: pointer;
-    transition: all 0.3s;
-}
+<!-- ============================================================
+     スクロールヒント
+     ============================================================ -->
+<div class="scroll-hint" id="scrollHint">
+    <div>👉 左右にスクロール</div>
+    <div>☝️ 上下にもスクロール可能</div>
+</div>
 
-.zoom-btn:active {
-    transform: scale(0.95);
-}
+<!-- ============================================================
+     スクリプト読み込み
+     ============================================================ -->
+<script src="js/config.js"></script>
+<script src="js/tournament-main.js"></script>
 
-.zoom-btn.active {
-    background: #003366;
-    color: white;
-    border-color: #003366;
-}
-
-/* 情報パネル */
-.info-panel {
-    background: #e3f2fd;
-    padding: 15px;
-    margin: 20px 20px 0 20px;
-    border-radius: 4px;
-    border-left: 4px solid #1976d2;
-    font-size: 0.95em;
-}
-
-/* トーナメントページ専用 - パディングを完全に削除 */
-.app-container.tournament-page {
-    padding: 0 !important;
-    max-width: 100% !important;
-}
-
-/* トーナメント全体のラッパー */
-.tournament-wrapper {
-    background: white;
-    padding: 0;
-    margin: 0;
-    box-shadow: none;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    position: relative;
-    width: 100%;
-    /* 横スクロールと縦スクロール（ページ全体）を両方許可 */
-    touch-action: pan-x pan-y;
-    /* iOSのバウンスを防止 */
-    overscroll-behavior-x: contain;
-    overscroll-behavior-y: none;
-}
-
-.tournament-area {
-    position: relative;
-    width: 1600px;
-    height: 800px;
-    background: white;
-    border: 2px solid #333;
-    margin: 0;
-    transition: transform 0.3s ease;
-    /* タッチ操作を親要素に伝播させる */
-    touch-action: inherit;
-}
-
-/* グリッド線 */
-.grid-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1000;
-}
-
-/* 100pxごとの太い線 */
-.grid-line-major {
-    position: absolute;
-    background: rgba(0, 0, 0, 0.3);
-}
-
-.grid-line-major.vertical {
-    width: 1px;
-    height: 100%;
-}
-
-.grid-line-major.horizontal {
-    width: 100%;
-    height: 1px;
-}
-
-/* 50pxごとの細い線 */
-.grid-line-minor {
-    position: absolute;
-    background: rgba(0, 0, 0, 0.15);
-}
-
-.grid-line-minor.vertical {
-    width: 1px;
-    height: 100%;
-}
-
-.grid-line-minor.horizontal {
-    width: 100%;
-    height: 1px;
-}
-
-/* 座標ラベル */
-.grid-label {
-    position: absolute;
-    font-size: 10px;
-    color: #666;
-    font-weight: bold;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 2px 4px;
-    border-radius: 2px;
-}
-
-.grid-label.x {
-    top: 2px;
-}
-
-.grid-label.y {
-    left: 2px;
-}
-
-/* マウス座標表示 */
-.mouse-coords {
-    position: fixed;
-    top: 200px;
-    right: 20px;
-    background: #333;
-    color: white;
-    padding: 15px 20px;
-    border-radius: 8px;
-    font-family: monospace;
-    font-size: 14px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    z-index: 2000;
-}
-
-.mouse-coords div {
-    margin: 5px 0;
-}
-
-/* 段のガイド - トーナメントエリア内に配置 */
-.stage-guide {
-    position: absolute;
-    width: 150px;
-    background: #fff3cd;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ffc107;
-    font-size: 11px;
-    line-height: 1.6;
-    pointer-events: none;
-    left: 10px;
-    z-index: 100;
-}
-
-.stage-guide div {
-    margin: 3px 0;
-    padding: 4px;
-    background: white;
-    border-radius: 3px;
-}
-
-/* ページ全体の横スクロール防止 */
-body {
-    overflow-x: hidden;
-}
-
-.app-main {
-    overflow-x: hidden;
-}
-
-/* ============================================================
-   レスポンシブ対応
-   ============================================================ */
-
-@media (max-width: 768px) {
-    /* ズームコントロールを表示 */
-    .zoom-control {
-        display: block;
-    }
-    
-    /* トーナメント表のスタイル調整 */
-    .tournament-wrapper {
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        margin: 0 10px;
-        /* モバイルでも overflow-y は hidden のまま */
-        overflow-y: hidden;
-    }
-    
-    .champion-banner {
-        padding: 20px 15px;
-        margin-left: 15px;
-        margin-right: 15px;
-    }
-
-    .champion-trophy {
-        font-size: 3em;
-    }
-
-    .champion-name {
-        font-size: 1.5em;
-    }
-
-    .info-panel {
-        font-size: 0.85em;
-        padding: 12px;
-        margin-left: 15px;
-        margin-right: 15px;
-    }
-
-    .mouse-coords {
-        display: none;
-    }
-
-    .stage-guide {
-        display: none;
-    }
-}
-
-/* タブレット */
-@media (min-width: 769px) and (max-width: 1024px) {
-    .stage-guide {
-        font-size: 10px;
-        width: 130px;
-    }
-}
+</body>
+</html>
