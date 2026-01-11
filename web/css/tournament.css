@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    
+    <meta name="description" content="2026年千葉県郵便局長ソフトボール大会のトーナメント表ページです。試合の組み合わせと結果を確認できます。">
+    
     <title>トーナメント表 | 2026年千葉県郵便局長ソフトボール大会</title>
+    
+    <link rel="icon" href="images/favicon.ico">
+
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/tournament.css">
 </head>
 <body>
 
-<!-- ============================================================
-     ヘッダー
-     ============================================================ -->
 <header class="app-header">
     <div class="header-top">
         <div class="header-container">
             <a href="index.html" class="header-logo">
-                <img src="https://drive.google.com/thumbnail?id=1i01jLSCnme9KdDuBwL8MufLNGdeo_d0x" alt="全国郵便局長会">
+                <img src="images/logo.png" alt="全国郵便局長会ロゴ" width="100" height="auto">
             </a>
             <div class="header-info">
                 <span>2026年千葉県郵便局長ソフトボール大会 | 2026.6.6</span>
@@ -30,7 +33,7 @@
                 <a href="scoreboard.html" class="nav-link">試合速報 / 試合結果</a>
                 <a href="gallery.html" class="nav-link">写真ギャラリー</a>
                 <a href="schedule.html" class="nav-link">大会スケジュール</a>
-                <a href="tournament.html" class="nav-link">トーナメント表</a>
+                <a href="tournament.html" class="nav-link active" aria-current="page">トーナメント表</a>
                 <a href="teams.html" class="nav-link">チーム・選手一覧</a>
                 <a href="venue.html" class="nav-link">会場案内・アクセス</a>
                 <a href="rules.html" class="nav-link">大会ルール・規約</a>
@@ -40,11 +43,7 @@
     </div>
 </header>
 
-<!-- ============================================================
-     メインコンテンツ
-     ============================================================ -->
 <main class="app-main">
-    <!-- ページヘッダー -->
     <section class="page-header">
         <div class="page-header-content">
             <h1 class="page-title">トーナメント表</h1>
@@ -52,10 +51,8 @@
         </div>
     </section>
 
-    <!-- トーナメント表コンテナ -->
     <section class="app-container tournament-page">
-        <!-- 優勝チーム表示 -->
-        <div id="championSection" style="display: none;">
+        <div id="championSection" style="display: none;" aria-live="polite">
             <div class="champion-banner">
                 <div class="champion-trophy">🏆</div>
                 <div class="champion-label">優勝</div>
@@ -63,18 +60,23 @@
             </div>
         </div>
 
-        <!-- ズームコントロール（モバイル専用） -->
         <div class="zoom-control" id="zoomControl">
             <div class="zoom-label">表示サイズ</div>
             <div class="zoom-buttons">
-                <button class="zoom-btn" data-zoom="0.6" id="zoom60">60%</button>
-                <button class="zoom-btn" data-zoom="0.8" id="zoom80">80%</button>
-                <button class="zoom-btn active" data-zoom="1.0" id="zoom100">100%</button>
-                <button class="zoom-btn" data-zoom="1.2" id="zoom120">120%</button>
+                <button type="button" class="zoom-btn" data-zoom="0.6" id="zoom60">60%</button>
+                <button type="button" class="zoom-btn" data-zoom="0.8" id="zoom80">80%</button>
+                <button type="button" class="zoom-btn active" data-zoom="1.0" id="zoom100">100%</button>
+                <button type="button" class="zoom-btn" data-zoom="1.2" id="zoom120">120%</button>
             </div>
         </div>
 
-        <!-- トーナメント表本体 -->
+        <noscript>
+            <div class="error-message">
+                <p>トーナメント表を表示するにはJavaScriptを有効にしてください。</p>
+                <p>または <a href="files/tournament.pdf">PDF版トーナメント表</a> をご覧ください。</p>
+            </div>
+        </noscript>
+
         <div class="tournament-wrapper" id="tournamentWrapper">
             <div class="loading">
                 <div class="spinner"></div>
@@ -82,38 +84,25 @@
             </div>
         </div>
 
-        <!-- 情報パネル -->
         <div class="info-panel">
             <strong>📱 操作方法：</strong> 左右と上下にスクロール可能です
         </div>
     </section>
 </main>
 
-<!-- ============================================================
-     フッター
-     ============================================================ -->
 <footer class="app-footer">
     <div class="footer-content">
         <p class="copyright">© 2026 千葉県印旛地区郵便局長会</p>
     </div>
 </footer>
 
-<!-- ============================================================
-     更新ボタン
-     ============================================================ -->
-<button class="refresh-btn" id="refreshBtn" title="更新">🔄</button>
+<button type="button" class="refresh-btn" id="refreshBtn" title="データを更新する" aria-label="データを更新">🔄</button>
 
-<!-- ============================================================
-     スクロールヒント
-     ============================================================ -->
-<div class="scroll-hint" id="scrollHint">
+<div class="scroll-hint" id="scrollHint" aria-hidden="true">
     <div>👉 左右にスクロール</div>
     <div>☝️ 上下にもスクロール可能</div>
 </div>
 
-<!-- ============================================================
-     スクリプト読み込み
-     ============================================================ -->
 <script src="js/config.js"></script>
 <script src="js/tournament-main.js"></script>
 
