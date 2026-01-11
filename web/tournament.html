@@ -3,239 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    
+    <meta name="description" content="2026年千葉県郵便局長ソフトボール大会のトーナメント表ページです。試合の組み合わせと結果を確認できます。">
+    
     <title>トーナメント表 | 2026年千葉県郵便局長ソフトボール大会</title>
+    
+    <link rel="icon" href="images/favicon.ico">
+
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/tournament.css">
 </head>
 <body>
-    <header class="app-header">
-        <div class="header-top">
-            <div class="header-container">
-                <a href="index.html" class="header-logo">
-                    <img src="https://drive.google.com/thumbnail?id=1i01jLSCnme9KdDuBwL8MufLNGdeo_d0x" alt="全国郵便局長会">
-                </a>
-                <div class="header-info">
-                    <span>2026年千葉県郵便局長ソフトボール大会 | 2026.6.6</span>
-                </div>
+
+<header class="app-header">
+    <div class="header-top">
+        <div class="header-container">
+            <a href="index.html" class="header-logo">
+                <img src="images/logo.png" alt="全国郵便局長会ロゴ" width="100" height="auto">
+            </a>
+            <div class="header-info">
+                <span>2026年千葉県郵便局長ソフトボール大会 | 2026.6.6</span>
             </div>
         </div>
-        <div class="header-main">
-            <div class="nav-wrapper" id="navWrapper">
-                <nav class="nav-links" id="navLinks">
-                    <a href="index.html" class="nav-link">ホーム</a>
-                    <a href="scoreboard.html" class="nav-link">試合速報 / 試合結果</a>
-                    <a href="gallery.html" class="nav-link">写真ギャラリー</a>
-                    <a href="schedule.html" class="nav-link">大会スケジュール</a>
-                    <a href="tournament.html" class="nav-link">トーナメント表</a>
-                    <a href="teams.html" class="nav-link">チーム・選手一覧</a>
-                    <a href="venue.html" class="nav-link">会場案内・アクセス</a>
-                    <a href="rules.html" class="nav-link">大会ルール・規約</a>
-                    <a href="history.html" class="nav-link">優勝記録・歴史</a>
-                </nav>
+    </div>
+    <div class="header-main">
+        <div class="nav-wrapper" id="navWrapper">
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link">ホーム</a>
+                <a href="scoreboard.html" class="nav-link">試合速報 / 試合結果</a>
+                <a href="gallery.html" class="nav-link">写真ギャラリー</a>
+                <a href="schedule.html" class="nav-link">大会スケジュール</a>
+                <a href="tournament.html" class="nav-link active" aria-current="page">トーナメント表</a>
+                <a href="teams.html" class="nav-link">チーム・選手一覧</a>
+                <a href="venue.html" class="nav-link">会場案内・アクセス</a>
+                <a href="rules.html" class="nav-link">大会ルール・規約</a>
+                <a href="history.html" class="nav-link">優勝記録・歴史</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main class="app-main">
+    <section class="page-header">
+        <div class="page-header-content">
+            <h1 class="page-title">トーナメント表</h1>
+            <p class="page-subtitle">Tournament Bracket</p>
+        </div>
+    </section>
+
+    <section class="app-container tournament-page">
+        <div id="championSection" style="display: none;" aria-live="polite">
+            <div class="champion-banner">
+                <div class="champion-trophy">🏆</div>
+                <div class="champion-label">優勝</div>
+                <div class="champion-name" id="championName"></div>
             </div>
         </div>
-    </header>
 
-    <main class="app-main">
-        <section class="page-header">
-            <div class="page-header-content">
-                <h1 class="page-title">トーナメント表</h1>
-                <p class="page-subtitle">Tournament Bracket</p>
+        <div class="zoom-control" id="zoomControl">
+            <div class="zoom-label">表示サイズ</div>
+            <div class="zoom-buttons">
+                <button type="button" class="zoom-btn" data-zoom="0.6" id="zoom60">60%</button>
+                <button type="button" class="zoom-btn" data-zoom="0.8" id="zoom80">80%</button>
+                <button type="button" class="zoom-btn active" data-zoom="1.0" id="zoom100">100%</button>
+                <button type="button" class="zoom-btn" data-zoom="1.2" id="zoom120">120%</button>
             </div>
-        </section>
-
-        <section class="app-container tournament-page">
-            <!-- 優勝チーム表示 -->
-            <div id="championSection" style="display: none;">
-                <div class="champion-banner">
-                    <div class="champion-trophy">🏆</div>
-                    <div class="champion-label">優勝</div>
-                    <div class="champion-name" id="championName"></div>
-                </div>
-            </div>
-
-            <!-- ズームコントロール（モバイル専用） -->
-            <div class="zoom-control" id="zoomControl">
-                <div class="zoom-label">表示サイズ</div>
-                <div class="zoom-buttons">
-                    <button class="zoom-btn" data-zoom="0.6" id="zoom60">60%</button>
-                    <button class="zoom-btn" data-zoom="0.8" id="zoom80">80%</button>
-                    <button class="zoom-btn active" data-zoom="1.0" id="zoom100">100%</button>
-                    <button class="zoom-btn" data-zoom="1.2" id="zoom120">120%</button>
-                </div>
-            </div>
-
-            <!-- トーナメント表本体 -->
-            <div class="tournament-wrapper" id="tournamentWrapper">
-                <div class="tournament-area" id="tournamentArea">
-                    <div class="grid-overlay" id="gridOverlay"></div>
-                    
-                    <!-- 段のガイド（左側に配置） -->
-                    <div class="stage-guide" style="top: 10px;">
-                        <div><strong>優勝</strong> Y: 0-50px</div>
-                    </div>
-                    <div class="stage-guide" style="top: 120px;">
-                        <div><strong>決勝戦</strong> Y: 100-200px</div>
-                    </div>
-                    <div class="stage-guide" style="top: 280px;">
-                        <div><strong>準決勝</strong> Y: 250-350px</div>
-                    </div>
-                    <div class="stage-guide" style="top: 480px;">
-                        <div><strong>1回戦</strong> Y: 500-600px</div>
-                    </div>
-                    <div class="stage-guide" style="top: 680px;">
-                        <div><strong>チーム名</strong> Y: 700-750px</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- グリッド情報パネル（下部） -->
-            <div class="info-panel">
-                <strong>📐 グリッド情報:</strong>
-                • 太い線: 100px間隔
-                • 細い線: 50px間隔
-                • サイズ: 1600px × 800px
-                • マウスを動かすと座標が表示されます
-            </div>
-
-            <!-- マウス座標表示 -->
-            <div class="mouse-coords" id="mouseCoords">
-                <div><strong>マウス座標</strong></div>
-                <div>X: <span id="coordX">-</span>px</div>
-                <div>Y: <span id="coordY">-</span>px</div>
-                <div style="font-size: 11px; margin-top: 10px; opacity: 0.7;">クリックで座標コピー</div>
-            </div>
-        </section>
-    </main>
-
-    <button class="refresh-btn" id="refreshBtn" title="更新">🔄</button>
-
-    <footer class="app-footer">
-        <div class="footer-content">
-            <p class="copyright">© 2026 千葉県印旛地区郵便局長会</p>
         </div>
-    </footer>
 
-    <script src="js/config.js"></script>
-    <script src="js/tournament.js"></script>
-    
-    <script>
-        // グリッド生成
-        const gridOverlay = document.getElementById('gridOverlay');
-        const width = 1600;
-        const height = 800;
+        <noscript>
+            <div class="error-message">
+                <p>トーナメント表を表示するにはJavaScriptを有効にしてください。</p>
+                <p>または <a href="files/tournament.pdf">PDF版トーナメント表</a> をご覧ください。</p>
+            </div>
+        </noscript>
 
-        // 100pxごとの太い線
-        for (let x = 0; x <= width; x += 100) {
-            const line = document.createElement('div');
-            line.className = 'grid-line-major vertical';
-            line.style.left = x + 'px';
-            gridOverlay.appendChild(line);
+        <div class="tournament-wrapper" id="tournamentWrapper">
+            <div class="loading">
+                <div class="spinner"></div>
+                <div>データを読み込んでいます...</div>
+            </div>
+        </div>
 
-            // X座標ラベル
-            if (x > 0) {
-                const label = document.createElement('div');
-                label.className = 'grid-label x';
-                label.textContent = x;
-                label.style.left = (x - 10) + 'px';
-                gridOverlay.appendChild(label);
-            }
-        }
+        <div class="info-panel">
+            <strong>📱 操作方法：</strong> 左右と上下にスクロール可能です
+        </div>
+    </section>
+</main>
 
-        for (let y = 0; y <= height; y += 100) {
-            const line = document.createElement('div');
-            line.className = 'grid-line-major horizontal';
-            line.style.top = y + 'px';
-            gridOverlay.appendChild(line);
+<footer class="app-footer">
+    <div class="footer-content">
+        <p class="copyright">© 2026 千葉県印旛地区郵便局長会</p>
+    </div>
+</footer>
 
-            // Y座標ラベル
-            if (y > 0) {
-                const label = document.createElement('div');
-                label.className = 'grid-label y';
-                label.textContent = y;
-                label.style.top = (y - 10) + 'px';
-                gridOverlay.appendChild(label);
-            }
-        }
+<button type="button" class="refresh-btn" id="refreshBtn" title="データを更新する" aria-label="データを更新">🔄</button>
 
-        // 50pxごとの細い線
-        for (let x = 50; x < width; x += 100) {
-            const line = document.createElement('div');
-            line.className = 'grid-line-minor vertical';
-            line.style.left = x + 'px';
-            gridOverlay.appendChild(line);
-        }
+<div class="scroll-hint" id="scrollHint" aria-hidden="true">
+    <div>👉 左右にスクロール</div>
+    <div>☝️ 上下にもスクロール可能</div>
+</div>
 
-        for (let y = 50; y < height; y += 100) {
-            const line = document.createElement('div');
-            line.className = 'grid-line-minor horizontal';
-            line.style.top = y + 'px';
-            gridOverlay.appendChild(line);
-        }
+<script src="js/config.js"></script>
+<script src="js/tournament-main.js"></script>
 
-        // マウス座標追跡
-        const tournamentArea = document.getElementById('tournamentArea');
-        const coordX = document.getElementById('coordX');
-        const coordY = document.getElementById('coordY');
-
-        tournamentArea.addEventListener('mousemove', (e) => {
-            const rect = tournamentArea.getBoundingClientRect();
-            const x = Math.round(e.clientX - rect.left);
-            const y = Math.round(e.clientY - rect.top);
-            
-            coordX.textContent = x;
-            coordY.textContent = y;
-        });
-
-        tournamentArea.addEventListener('mouseleave', () => {
-            coordX.textContent = '-';
-            coordY.textContent = '-';
-        });
-
-        // クリックで座標をコピー
-        tournamentArea.addEventListener('click', (e) => {
-            const rect = tournamentArea.getBoundingClientRect();
-            const x = Math.round(e.clientX - rect.left);
-            const y = Math.round(e.clientY - rect.top);
-            
-            const coordText = `X: ${x}px, Y: ${y}px`;
-            navigator.clipboard.writeText(coordText).then(() => {
-                const mouseCoords = document.getElementById('mouseCoords');
-                const original = mouseCoords.style.background;
-                mouseCoords.style.background = '#4CAF50';
-                setTimeout(() => {
-                    mouseCoords.style.background = original;
-                }, 200);
-            });
-        });
-
-        // ズーム機能
-        let currentZoom = 1.0;
-        const zoomButtons = document.querySelectorAll('.zoom-btn');
-        const tournamentWrapper = document.getElementById('tournamentWrapper');
-        
-        zoomButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const zoom = parseFloat(btn.dataset.zoom);
-                currentZoom = zoom;
-                
-                // トーナメントエリアにズームを適用
-                tournamentArea.style.transform = `scale(${zoom})`;
-                tournamentArea.style.transformOrigin = 'top left';
-                
-                // ラッパーの高さを調整
-                const newHeight = 800 * zoom;
-                tournamentWrapper.style.height = `${newHeight}px`;
-                
-                // アクティブボタンの切り替え
-                zoomButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                // スクロール位置をリセット
-                tournamentWrapper.scrollLeft = 0;
-                window.scrollTo(0, tournamentWrapper.offsetTop - 100);
-            });
-        });
-    </script>
 </body>
 </html>
