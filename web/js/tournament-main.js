@@ -62,7 +62,7 @@ const TournamentApp = (() => {
         return '';
     }
 
-    // ==================== データ取得 ====================
+    // ==================== データ取得（並列化による高速化） ====================
 
     async function fetchTournamentData() {
         if (!CONFIG || !CONFIG.isStaffApiConfigured || !CONFIG.isStaffApiConfigured()) {
@@ -73,19 +73,34 @@ const TournamentApp = (() => {
         try {
             const timestamp = new Date().getTime();
             
-            // 【重要】1. トーナメント表データ取得
-            console.log('🔄 トーナメント表データ取得開始...');
-            const tournamentUrl = `${CONFIG.STAFF_API_URL}?type=tournament&t=${timestamp}`;
-            const tournamentResponse = await fetch(tournamentUrl, {
-                method: 'GET',
-                mode: 'cors',
-                cache: 'no-cache'
-            });
+            console.log('🔄 データ取得開始（並列処理）...');
+            
+            // 【修正1】3つのAPIリクエストを並列で実行（高速化）
+            const [tournamentResponse, scoreResponse, scheduleResponse] = await Promise.all([
+                // トーナメント表データ
+                fetch(`${CONFIG.STAFF_API_URL}?type=tournament&t=${timestamp}`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                }),
+                // スコアボードデータ
+                fetch(`${CONFIG.STAFF_API_URL}?t=${timestamp}`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                }),
+                // 試合予定データ
+                fetch(`${CONFIG.STAFF_API_URL}?type=schedule&t=${timestamp}`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                })
+            ]);
 
+            // トーナメント表データの処理
             if (tournamentResponse.ok) {
                 tournamentData = await tournamentResponse.json();
                 
-                // CONFIGを更新（これが重要！）
                 if (tournamentData.teams && tournamentData.teams.length > 0) {
                     CONFIG.updateTeamCoordinates(tournamentData.teams);
                     console.log('✅ トーナメント表データ取得成功:', tournamentData.teams.length + 'チーム');
@@ -96,28 +111,13 @@ const TournamentApp = (() => {
                 console.error('⚠️ トーナメント表データ取得失敗。デフォルト値を使用します。');
             }
             
-            // 2. スコアボードデータ取得
-            const scoreUrl = `${CONFIG.STAFF_API_URL}?t=${timestamp}`;
-            const scoreResponse = await fetch(scoreUrl, {
-                method: 'GET',
-                mode: 'cors',
-                cache: 'no-cache'
-            });
-
+            // スコアボードデータの処理
             if (!scoreResponse.ok) {
                 throw new Error(`HTTP Error ${scoreResponse.status}`);
             }
-
             gamesData = await scoreResponse.json();
             
-            // 3. 試合予定データ取得
-            const scheduleUrl = `${CONFIG.STAFF_API_URL}?type=schedule&t=${timestamp}`;
-            const scheduleResponse = await fetch(scheduleUrl, {
-                method: 'GET',
-                mode: 'cors',
-                cache: 'no-cache'
-            });
-            
+            // 試合予定データの処理
             if (scheduleResponse.ok) {
                 const scheduleJson = await scheduleResponse.json();
                 if (scheduleJson.schedule && Array.isArray(scheduleJson.schedule)) {
@@ -128,6 +128,7 @@ const TournamentApp = (() => {
                 }
             }
             
+            console.log('✅ 全データ取得完了（並列処理）');
             renderTournament();
 
         } catch (error) {
