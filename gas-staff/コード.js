@@ -1,5 +1,5 @@
 // ============================================================
-// ソフトボールスコア管理システム（統合・最適化版）
+// ソフトボールスコア管理システム（統合・最適化版 + 排他制御対応）
 // ============================================================
 
 // ★★★ 設定項目 ★★★
@@ -16,6 +16,10 @@ const SHEETS = {
 
 // ★★★ イニング数設定 ★★★
 const MAX_INNINGS = 20;
+
+// ★★★ ロック設定（追加：排他制御用） ★★★
+const LOCK_TIMEOUT = 30000; // 30秒（ロック取得のタイムアウト）
+const LOCK_WAIT_TIME = 10000; // 10秒（ロック解放までの最大待機時間）
 
 // ★★★ 列番号定義 ★★★
 const COLS = {
@@ -89,7 +93,8 @@ function doPost(e) {
           return;
         }
 
-        const result = processMessage(message, userId);
+        // ★★★ 排他制御を追加：processMessageWithLock を使用 ★★★
+        const result = processMessageWithLock(message, userId);
         
         if (result.success) {
           replyMessage(replyToken, '✓ 記録: ' + result.message);
@@ -108,6 +113,44 @@ function doPost(e) {
   } catch (error) {
     Logger.log('doPost エラー: ' + error);
     return ContentService.createTextOutput(JSON.stringify({status: 'error', message: error.toString()}));
+  }
+}
+
+// ============================================================
+// 排他制御付きメッセージ処理（追加）
+// ============================================================
+/**
+ * LockServiceを使用して排他制御を行う
+ * 同時書き込みによるデータ競合を防止
+ */
+function processMessageWithLock(message, userId) {
+  // スクリプトロックを取得（同一スクリプト全体で排他）
+  const lock = LockService.getScriptLock();
+  
+  try {
+    // ロック取得を試行（最大30秒待機）
+    lock.waitLock(LOCK_TIMEOUT);
+    
+    Logger.log(`ロック取得成功: ${userId} / メッセージ: ${message}`);
+    
+    // ロック取得後、実際の処理を実行
+    const result = processMessage(message, userId);
+    
+    return result;
+    
+  } catch (error) {
+    Logger.log(`ロック取得失敗またはタイムアウト: ${error}`);
+    
+    // ロックが取得できなかった場合のエラーレスポンス
+    return {
+      success: false,
+      message: '他の処理と競合しました。数秒後に再度お試しください。'
+    };
+    
+  } finally {
+    // ★必ずロックを解放（エラー時も確実に解放）
+    lock.releaseLock();
+    Logger.log(`ロック解放: ${userId}`);
   }
 }
 
@@ -209,7 +252,6 @@ function handleGameStart(sheetsData, parsed, userId, fullTimestamp) {
   }
   
   // スコアボードを初期化
-  // updateOrCreateScoreboardにリダイレクトされるinitializeScoreboardを使用
   initializeScoreboard(scoreboardSheet, parsed.court, parsed.gameNum, teams.top, teams.bottom, fullTimestamp);
   
   // ステータス更新
@@ -1105,7 +1147,7 @@ function resetAllStatus() {
 }
 
 // ============================================================
-// Web公開用API（スコアボード＋チーム名簿）
+// Web公開用API（スコアボード＋チーム名簿＋試合予定）
 // ============================================================
 function doGet(e) {
   try {
@@ -1120,11 +1162,6 @@ function doGet(e) {
     // チーム名簿APIのリクエスト判定
     if (params.type === 'teams') {
       return getTeamsData(ss);
-    }
-
-    // トーナメント表APIのリクエスト判定（★この3行を追加★）
-    if (params.type === 'tournament') {
-      return getTournamentData(ss);
     }
     
     // 既存のスコアボードAPI
@@ -1296,46 +1333,4 @@ function getScheduleData(ss) {
     lastUpdate: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'HH:mm:ss'),
     schedule: schedule
   })).setMimeType(ContentService.MimeType.JSON);
-}
-
-// トーナメント表データ取得
-function getTournamentData(ss) {
-  const tournamentSheet = ss.getSheetByName('トーナメント表');
-  
-  if (!tournamentSheet) {
-    return ContentService.createTextOutput(JSON.stringify({
-      error: 'トーナメント表シートが見つかりません',
-      lastUpdate: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'HH:mm:ss'),
-      teams: []
-    })).setMimeType(ContentService.MimeType.JSON);
-  }
-  
-  if (tournamentSheet.getLastRow() <= 1) {
-    return ContentService.createTextOutput(JSON.stringify({
-      lastUpdate: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'HH:mm:ss'),
-      teams: []
-    })).setMimeType(ContentService.MimeType.JSON);
-  }
-  
-  const data = tournamentSheet.getDataRange().getValues();
-  const teams = [];
-  
-  // ヘッダー行をスキップ（i=1から開始）
-  for (let i = 1; i < data.length; i++) {
-    teams.push({
-      position: data[i][0],      // 位置番号
-      teamName: data[i][1],      // チーム名
-      x: data[i][2],             // X座標
-      firstGame: data[i][3],     // 試合番号
-      note: data[i][4] || ''     // 備考
-    });
-  }
-  
-  const result = {
-    lastUpdate: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'HH:mm:ss'),
-    teams: teams
-  };
-  
-  return ContentService.createTextOutput(JSON.stringify(result))
-    .setMimeType(ContentService.MimeType.JSON);
 }
