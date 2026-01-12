@@ -48,9 +48,7 @@ const CONFIG = {
 
     /**
      * トーナメント表：チーム座標マッピング
-     * x, y: 絶対座標（ピクセル）
-     * isSeed: シードチームかどうか
-     * gameNum: 参加する1回戦の試合番号（シードはnull）
+     * ※ デフォルト値（APIが取得できない場合のバックアップ）
      */
     TEAM_COORDINATES: {
         '南部': { x: 50, y: 900, isSeed: true, gameNum: null },
@@ -64,20 +62,13 @@ const CONFIG = {
 
     /**
      * トーナメント表：試合ブロック座標
-     * x, y: 試合ブロックの中心座標
-     * round: ラウンド（1=1回戦, 2=準決勝, 3=決勝/3位決定戦）
      */
     MATCH_COORDINATES: {
-        // 1回戦
         1: { x: 275, y: 750, round: 1, label: '第1試合' },
         2: { x: 575, y: 750, round: 1, label: '第2試合' },
         3: { x: 875, y: 750, round: 1, label: '第3試合' },
-        
-        // 準決勝
         4: { x: 200, y: 500, round: 2, label: '第4試合（準決勝）' },
         5: { x: 725, y: 500, round: 2, label: '第5試合（準決勝）' },
-        
-        // 決勝・3位決定戦
         6: { x: 650, y: 250, round: 3, label: '第6試合（3位決定戦）', special: 'third' },
         7: { x: 275, y: 250, round: 3, label: '第7試合（決勝）', special: 'final' }
     },
@@ -181,6 +172,31 @@ const CONFIG = {
     getTeamIcon(teamName) {
         if (!teamName) return '📍';
         return this.TEAM_ICONS[teamName] || '📍';
+    },
+
+    /**
+     * 【重要】APIから取得したチーム座標でTEAM_COORDINATESを更新
+     * この関数はtournament-main.jsから呼び出されます
+     */
+    updateTeamCoordinates(apiTeams) {
+        if (!Array.isArray(apiTeams) || apiTeams.length === 0) {
+            console.warn('⚠️ トーナメント表データが空です。デフォルト値を使用します。');
+            return;
+        }
+        
+        const newCoordinates = {};
+        apiTeams.forEach(team => {
+            newCoordinates[team.name] = {
+                x: team.x,
+                y: team.y,
+                isSeed: team.isSeed,
+                gameNum: team.gameNum,
+                position: team.position
+            };
+        });
+        
+        this.TEAM_COORDINATES = newCoordinates;
+        console.log('✅ トーナメント表座標を更新しました:', Object.keys(newCoordinates));
     }
 };
 
