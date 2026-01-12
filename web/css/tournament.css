@@ -120,11 +120,23 @@
     transform: scale(1.02);
 }
 
+/* ★★★ 追加: スマホでタップした瞬間の視覚フィードバック ★★★ */
+.match-block:active {
+    transform: scale(0.98);
+}
+
 .match-block-bg {
     fill: white;
     stroke: #e0e0e0;
     stroke-width: 2;
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.08));
+    /* ★★★ 追加: タップ時の背景色変化用トランジション ★★★ */
+    transition: fill 0.1s ease;
+}
+
+/* ★★★ 追加: タップ時の背景色を微妙に変化 ★★★ */
+.match-block:active .match-block-bg {
+    fill: #f5f5f5;
 }
 
 .match-block.playing .match-block-bg {
@@ -134,10 +146,20 @@
     animation: pulse 2s infinite;
 }
 
+/* ★★★ 追加: 試合中カードのタップ時の背景色 ★★★ */
+.match-block.playing:active .match-block-bg {
+    fill: #ffe8a3;
+}
+
 .match-block.finished .match-block-bg {
     fill: #e8f5e9;
     stroke: #388e3c;
     stroke-width: 2;
+}
+
+/* ★★★ 追加: 終了カードのタップ時の背景色 ★★★ */
+.match-block.finished:active .match-block-bg {
+    fill: #c8e6c9;
 }
 
 .match-block.final .match-block-bg {
@@ -147,11 +169,21 @@
     filter: drop-shadow(0 4px 12px rgba(255, 160, 0, 0.3));
 }
 
+/* ★★★ 追加: 決勝カードのタップ時の背景色 ★★★ */
+.match-block.final:active .match-block-bg {
+    fill: #ffd54f;
+}
+
 .match-block.third-place .match-block-bg {
     fill: linear-gradient(135deg, #fff3e0 0%, #ffcc80 100%);
     stroke: #ff9800;
     stroke-width: 2;
     filter: drop-shadow(0 4px 12px rgba(255, 152, 0, 0.3));
+}
+
+/* ★★★ 追加: 3位決定戦カードのタップ時の背景色 ★★★ */
+.match-block.third-place:active .match-block-bg {
+    fill: #ffb74d;
 }
 
 @keyframes pulse {
@@ -320,6 +352,11 @@
 
     .match-time {
         font-size: 9px;
+    }
+
+    /* ★★★ 追加: スマホではタップ反応をより明確に ★★★ */
+    .match-block:active {
+        transform: scale(0.96);
     }
 }
 
