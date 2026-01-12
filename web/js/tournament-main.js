@@ -9,6 +9,7 @@ const TournamentApp = (() => {
     // ==================== プライベート変数 ====================
     let gamesData = null;
     let scheduleData = {};
+    let tournamentData = null;
     let autoRefreshInterval = null;
     let isRefreshing = false;
     let isDevelopmentMode = window.location.search.includes('dev=true');
@@ -72,7 +73,30 @@ const TournamentApp = (() => {
         try {
             const timestamp = new Date().getTime();
             
-            // スコアボードデータ取得
+            // 【重要】1. トーナメント表データ取得
+            console.log('🔄 トーナメント表データ取得開始...');
+            const tournamentUrl = `${CONFIG.STAFF_API_URL}?type=tournament&t=${timestamp}`;
+            const tournamentResponse = await fetch(tournamentUrl, {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache'
+            });
+
+            if (tournamentResponse.ok) {
+                tournamentData = await tournamentResponse.json();
+                
+                // CONFIGを更新（これが重要！）
+                if (tournamentData.teams && tournamentData.teams.length > 0) {
+                    CONFIG.updateTeamCoordinates(tournamentData.teams);
+                    console.log('✅ トーナメント表データ取得成功:', tournamentData.teams.length + 'チーム');
+                } else {
+                    console.warn('⚠️ トーナメント表データが空です。デフォルト値を使用します。');
+                }
+            } else {
+                console.error('⚠️ トーナメント表データ取得失敗。デフォルト値を使用します。');
+            }
+            
+            // 2. スコアボードデータ取得
             const scoreUrl = `${CONFIG.STAFF_API_URL}?t=${timestamp}`;
             const scoreResponse = await fetch(scoreUrl, {
                 method: 'GET',
@@ -86,7 +110,7 @@ const TournamentApp = (() => {
 
             gamesData = await scoreResponse.json();
             
-            // 試合予定データ取得
+            // 3. 試合予定データ取得
             const scheduleUrl = `${CONFIG.STAFF_API_URL}?type=schedule&t=${timestamp}`;
             const scheduleResponse = await fetch(scheduleUrl, {
                 method: 'GET',
@@ -107,7 +131,7 @@ const TournamentApp = (() => {
             renderTournament();
 
         } catch (error) {
-            console.error('データ取得エラー:', error);
+            console.error('❌ データ取得エラー:', error);
             showError(`データの読み込みに失敗しました: ${error.message}`);
         }
     }
@@ -116,7 +140,6 @@ const TournamentApp = (() => {
 
     function getMatchData(gameNum) {
         if (!gamesData || !gamesData.games) {
-            // スケジュールデータから取得
             if (scheduleData[gameNum]) {
                 return {
                     gameNum: gameNum,
@@ -141,7 +164,6 @@ const TournamentApp = (() => {
         );
 
         if (games.length < 2) {
-            // スケジュールデータにフォールバック
             if (scheduleData[gameNum]) {
                 return {
                     gameNum: gameNum,
@@ -189,6 +211,11 @@ const TournamentApp = (() => {
     function renderTournament() {
         const container = document.getElementById('tournamentContainer');
         
+        if (!CONFIG.TEAM_COORDINATES || Object.keys(CONFIG.TEAM_COORDINATES).length === 0) {
+            showError('トーナメント表データが見つかりません');
+            return;
+        }
+        
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svg.setAttribute('viewBox', CONFIG.TOURNAMENT_CANVAS.viewBox);
         svg.setAttribute('width', '100%');
@@ -196,23 +223,18 @@ const TournamentApp = (() => {
         svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
         svg.classList.add('tournament-svg');
 
-        // 開発用グリッド
         if (isDevelopmentMode) {
             svg.appendChild(renderGrid());
         }
 
-        // チームカードを描画
         Object.entries(CONFIG.TEAM_COORDINATES).forEach(([teamName, coords]) => {
             svg.appendChild(renderTeamCard(teamName, coords));
         });
 
-        // 試合ブロックと接続線を描画
         Object.entries(CONFIG.MATCH_COORDINATES).forEach(([gameNum, coords]) => {
             const matchData = getMatchData(parseInt(gameNum));
             if (matchData) {
-                // 接続線
                 svg.appendChild(renderConnectorLines(parseInt(gameNum), coords));
-                // 試合ブロック
                 svg.appendChild(renderMatchBlock(matchData, coords));
             }
         });
@@ -235,7 +257,6 @@ const TournamentApp = (() => {
         const x = coords.x - CONFIG.CARD_SIZE.width / 2;
         const y = coords.y - CONFIG.CARD_SIZE.height / 2;
 
-        // カード背景
         const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         rect.setAttribute('x', x);
         rect.setAttribute('y', y);
@@ -245,7 +266,6 @@ const TournamentApp = (() => {
         rect.classList.add('team-card-bg');
         group.appendChild(rect);
 
-        // アイコン
         const icon = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         icon.setAttribute('x', coords.x);
         icon.setAttribute('y', coords.y - 10);
@@ -254,7 +274,6 @@ const TournamentApp = (() => {
         icon.textContent = CONFIG.getTeamIcon(teamName);
         group.appendChild(icon);
 
-        // チーム名
         const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         text.setAttribute('x', coords.x);
         text.setAttribute('y', coords.y + 20);
@@ -263,7 +282,6 @@ const TournamentApp = (() => {
         text.textContent = teamName;
         group.appendChild(text);
 
-        // シードマーク
         if (coords.isSeed) {
             const seedMark = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             seedMark.setAttribute('x', x + CONFIG.CARD_SIZE.width - 5);
@@ -298,7 +316,6 @@ const TournamentApp = (() => {
         const x = coords.x - blockWidth / 2;
         const y = coords.y - blockHeight / 2;
 
-        // ブロック背景
         const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         rect.setAttribute('x', x);
         rect.setAttribute('y', y);
@@ -308,7 +325,6 @@ const TournamentApp = (() => {
         rect.classList.add('match-block-bg');
         group.appendChild(rect);
 
-        // ラベル
         const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         label.setAttribute('x', coords.x);
         label.setAttribute('y', y + 20);
@@ -317,7 +333,6 @@ const TournamentApp = (() => {
         label.textContent = coords.label;
         group.appendChild(label);
 
-        // チーム1
         const team1Text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         team1Text.setAttribute('x', x + 10);
         team1Text.setAttribute('y', y + 45);
@@ -330,7 +345,6 @@ const TournamentApp = (() => {
         team1Text.textContent = matchData.team1.name;
         group.appendChild(team1Text);
 
-        // スコア1
         if (matchData.team1.score !== null) {
             const score1 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             score1.setAttribute('x', x + blockWidth - 10);
@@ -342,7 +356,6 @@ const TournamentApp = (() => {
             group.appendChild(score1);
         }
 
-        // チーム2
         const team2Text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         team2Text.setAttribute('x', x + 10);
         team2Text.setAttribute('y', y + 70);
@@ -354,7 +367,6 @@ const TournamentApp = (() => {
         team2Text.textContent = matchData.team2.name;
         group.appendChild(team2Text);
 
-        // スコア2
         if (matchData.team2.score !== null) {
             const score2 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             score2.setAttribute('x', x + blockWidth - 10);
@@ -366,7 +378,6 @@ const TournamentApp = (() => {
             group.appendChild(score2);
         }
 
-        // 時刻表示
         if (matchData.time) {
             const time = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             time.setAttribute('x', coords.x);
@@ -377,7 +388,6 @@ const TournamentApp = (() => {
             group.appendChild(time);
         }
 
-        // クリックイベント
         group.style.cursor = 'pointer';
         group.addEventListener('click', () => {
             openMatch(matchData.court, matchData.gameNum);
@@ -392,15 +402,12 @@ const TournamentApp = (() => {
         const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         group.classList.add('connector-lines');
 
-        // 1回戦の接続線
         if (matchCoords.round === 1) {
-            // 該当するチームを探す
             const teams = Object.entries(CONFIG.TEAM_COORDINATES).filter(
                 ([_, coords]) => coords.gameNum === gameNum
             );
 
             teams.forEach(([teamName, teamCoords]) => {
-                // チームカードから試合ブロックへの線
                 const line = createLine(
                     teamCoords.x,
                     teamCoords.y - CONFIG.CARD_SIZE.height / 2,
@@ -409,7 +416,6 @@ const TournamentApp = (() => {
                 );
                 group.appendChild(line);
 
-                // 横線で試合ブロックへ
                 const hLine = createLine(
                     teamCoords.x,
                     matchCoords.y + 50,
@@ -418,12 +424,6 @@ const TournamentApp = (() => {
                 );
                 group.appendChild(hLine);
             });
-        }
-
-        // 準決勝・決勝の接続線（前の試合から）
-        if (matchCoords.round === 2 || matchCoords.round === 3) {
-            // ここは試合予定データから前の試合を特定して線を引く
-            // TODO: 試合予定データの構造に応じて実装
         }
 
         return group;
@@ -445,7 +445,6 @@ const TournamentApp = (() => {
         const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         group.classList.add('grid');
 
-        // 縦線
         for (let x = 0; x <= 1000; x += 50) {
             const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
             line.setAttribute('x1', x);
@@ -457,7 +456,6 @@ const TournamentApp = (() => {
             group.appendChild(line);
         }
 
-        // 横線
         for (let y = 0; y <= 1000; y += 50) {
             const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
             line.setAttribute('x1', 0);
