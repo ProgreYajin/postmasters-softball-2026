@@ -1,34 +1,15 @@
 /* ============================================================
-   トーナメント表専用スタイル（座標ベース・SVG版）
+   トーナメント表専用スタイル
    ============================================================ */
 
-/* コンテナ */
-#tournamentContainer {
-    width: 100%;
-    min-height: 600px;
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    overflow: auto;
-}
-
-/* SVGキャンバス */
-.tournament-svg {
-    display: block;
-    max-width: 100%;
-    height: auto;
-    touch-action: pan-x pan-y;
-}
-
-/* ============================================================
-   優勝バナー
-   ============================================================ */
+/* 優勝バナー */
 .champion-banner {
     background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
     border-radius: 15px;
     padding: 30px 20px;
     margin-bottom: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
     text-align: center;
     box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
     animation: shine 2s ease-in-out infinite;
@@ -57,133 +38,215 @@
     color: #333;
 }
 
-/* ============================================================
-   チームカード
-   ============================================================ */
+/* ズームコントロール */
+.zoom-control {
+    display: none;
+    background: white;
+    padding: 15px;
+    margin: 0 15px 15px 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: 2px solid #003366;
+}
+
+.zoom-label {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #003366;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.zoom-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.zoom-btn {
+    flex: 1;
+    padding: 10px 15px;
+    background: #f5f5f5;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.zoom-btn:active {
+    transform: scale(0.95);
+}
+
+.zoom-btn.active {
+    background: #003366;
+    color: white;
+    border-color: #003366;
+}
+
+/* 情報パネル */
+.info-panel {
+    background: #e3f2fd;
+    padding: 15px;
+    margin: 20px 20px 0 20px;
+    border-radius: 4px;
+    border-left: 4px solid #1976d2;
+    font-size: 0.95em;
+}
+
+/* トーナメントページ専用 - パディングを完全に削除 */
+.app-container.tournament-page {
+    padding: 0 !important;
+    max-width: 100% !important;
+}
+
+/* トーナメント全体のラッパー */
+.tournament-wrapper {
+    background: white;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+    width: 100%;
+    touch-action: pan-x pan-y;
+    overscroll-behavior-x: contain;
+    overscroll-behavior-y: none;
+}
+
+.tournament-area {
+    position: relative;
+    width: 1600px;
+    height: 800px;
+    background: white;
+    border: 2px solid #333;
+    margin: 0;
+    transition: transform 0.3s ease;
+    touch-action: inherit;
+}
+
+/* チームカード */
 .team-card {
+    position: absolute;
+    width: 120px;
+    height: 80px;
+    background: white;
+    border: 2px solid #003366;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     cursor: default;
     transition: transform 0.2s ease;
+    transform: translate(-50%, -50%);
 }
 
 .team-card:hover {
-    transform: scale(1.05);
+    transform: translate(-50%, -50%) scale(1.05);
 }
 
-.team-card-bg {
-    fill: white;
-    stroke: #003366;
-    stroke-width: 2;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-.team-card.seed .team-card-bg {
-    fill: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-    stroke: #ffa000;
-    stroke-width: 3;
-    filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.3));
+.team-card.seed {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    border: 3px solid #ffa000;
+    box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
 }
 
 .team-icon {
     font-size: 24px;
-    fill: #003366;
+    margin-bottom: 5px;
 }
 
 .team-card.seed .team-icon {
-    fill: #856404;
+    color: #856404;
 }
 
 .team-name {
     font-size: 14px;
     font-weight: bold;
-    fill: #003366;
+    color: #003366;
+    text-align: center;
 }
 
 .team-card.seed .team-name {
-    fill: #856404;
+    color: #856404;
     font-size: 15px;
 }
 
 .seed-mark {
+    position: absolute;
+    top: 5px;
+    right: 5px;
     font-size: 20px;
-    fill: #ffa000;
+    color: #ffa000;
 }
 
-/* ============================================================
-   試合ブロック
-   ============================================================ */
+/* 試合ブロック */
 .match-block {
+    position: absolute;
+    width: 160px;
+    height: 100px;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition: all 0.2s ease;
+    transform: translate(-50%, -50%);
+    padding: 10px;
 }
 
 .match-block:hover {
-    transform: scale(1.02);
+    transform: translate(-50%, -50%) scale(1.02);
 }
 
-/* ★★★ 追加: スマホでタップした瞬間の視覚フィードバック ★★★ */
 .match-block:active {
-    transform: scale(0.98);
+    transform: translate(-50%, -50%) scale(0.98);
+    background: #f5f5f5;
 }
 
-.match-block-bg {
-    fill: white;
-    stroke: #e0e0e0;
-    stroke-width: 2;
-    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.08));
-    /* ★★★ 追加: タップ時の背景色変化用トランジション ★★★ */
-    transition: fill 0.1s ease;
-}
-
-/* ★★★ 追加: タップ時の背景色を微妙に変化 ★★★ */
-.match-block:active .match-block-bg {
-    fill: #f5f5f5;
-}
-
-.match-block.playing .match-block-bg {
-    fill: #fff3cd;
-    stroke: #ff6b6b;
-    stroke-width: 3;
+.match-block.playing {
+    background: #fff3cd;
+    border: 3px solid #ff6b6b;
     animation: pulse 2s infinite;
 }
 
-/* ★★★ 追加: 試合中カードのタップ時の背景色 ★★★ */
-.match-block.playing:active .match-block-bg {
-    fill: #ffe8a3;
+.match-block.playing:active {
+    background: #ffe8a3;
 }
 
-.match-block.finished .match-block-bg {
-    fill: #e8f5e9;
-    stroke: #388e3c;
-    stroke-width: 2;
+.match-block.finished {
+    background: #e8f5e9;
+    border: 2px solid #388e3c;
 }
 
-/* ★★★ 追加: 終了カードのタップ時の背景色 ★★★ */
-.match-block.finished:active .match-block-bg {
-    fill: #c8e6c9;
+.match-block.finished:active {
+    background: #c8e6c9;
 }
 
-.match-block.final .match-block-bg {
-    fill: linear-gradient(135deg, #fff8e1 0%, #ffe082 100%);
-    stroke: #ffa000;
-    stroke-width: 3;
-    filter: drop-shadow(0 4px 12px rgba(255, 160, 0, 0.3));
+.match-block.final {
+    background: linear-gradient(135deg, #fff8e1 0%, #ffe082 100%);
+    border: 3px solid #ffa000;
+    box-shadow: 0 4px 12px rgba(255, 160, 0, 0.3);
 }
 
-/* ★★★ 追加: 決勝カードのタップ時の背景色 ★★★ */
-.match-block.final:active .match-block-bg {
-    fill: #ffd54f;
+.match-block.final:active {
+    background: #ffd54f;
 }
 
-.match-block.third-place .match-block-bg {
-    fill: linear-gradient(135deg, #fff3e0 0%, #ffcc80 100%);
-    stroke: #ff9800;
-    stroke-width: 2;
-    filter: drop-shadow(0 4px 12px rgba(255, 152, 0, 0.3));
+.match-block.third-place {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffcc80 100%);
+    border: 2px solid #ff9800;
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
 }
 
-/* ★★★ 追加: 3位決定戦カードのタップ時の背景色 ★★★ */
-.match-block.third-place:active .match-block-bg {
-    fill: #ffb74d;
+.match-block.third-place:active {
+    background: #ffb74d;
 }
 
 @keyframes pulse {
@@ -194,31 +257,45 @@
 .match-label {
     font-size: 12px;
     font-weight: bold;
-    fill: #666;
+    color: #666;
+    text-align: center;
+    margin-bottom: 5px;
 }
 
 .match-block.final .match-label {
-    fill: #ffa000;
+    color: #ffa000;
     font-size: 13px;
 }
 
 .match-block.third-place .match-label {
-    fill: #ff9800;
+    color: #ff9800;
+}
+
+.match-teams {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.match-team-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .match-team {
     font-size: 14px;
     font-weight: 600;
-    fill: #333;
+    color: #333;
 }
 
 .match-team.placeholder {
-    fill: #999;
+    color: #999;
     font-style: italic;
 }
 
 .match-team.winner {
-    fill: #003366;
+    color: #003366;
     font-weight: bold;
     font-size: 15px;
 }
@@ -226,56 +303,149 @@
 .match-score {
     font-size: 18px;
     font-weight: bold;
-    fill: #003366;
+    color: #003366;
 }
 
 .match-score.winner {
-    fill: #d32f2f;
+    color: #d32f2f;
     font-size: 20px;
 }
 
 .match-time {
     font-size: 10px;
-    fill: #999;
+    color: #999;
+    text-align: center;
+    margin-top: 5px;
 }
 
-/* ============================================================
-   接続線
-   ============================================================ */
+/* 接続線 */
 .connector-line {
-    stroke: #ddd;
-    stroke-width: 2;
-    fill: none;
+    position: absolute;
+    background: #003366;
 }
 
-.connector-lines .connector-line {
-    stroke: #003366;
-    stroke-width: 2;
-    fill: none;
+.connector-line.vertical {
+    width: 2px;
 }
 
-/* 試合結果が出た場合は太くする */
-.connector-lines.has-result .connector-line {
-    stroke: #003366;
-    stroke-width: 3;
+.connector-line.horizontal {
+    height: 2px;
 }
 
-/* ============================================================
-   開発用グリッド
-   ============================================================ */
-.grid {
-    opacity: 0.3;
+.connector-line.has-result {
+    width: 3px;
+}
+
+/* グリッド線 */
+.grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
+    z-index: 1000;
 }
 
-.grid line {
-    stroke: #e0e0e0;
-    stroke-width: 0.5;
+.grid-line-major {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.3);
 }
 
-/* ============================================================
-   ローディング
-   ============================================================ */
+.grid-line-major.vertical {
+    width: 1px;
+    height: 100%;
+}
+
+.grid-line-major.horizontal {
+    width: 100%;
+    height: 1px;
+}
+
+.grid-line-minor {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.grid-line-minor.vertical {
+    width: 1px;
+    height: 100%;
+}
+
+.grid-line-minor.horizontal {
+    width: 100%;
+    height: 1px;
+}
+
+.grid-label {
+    position: absolute;
+    font-size: 10px;
+    color: #666;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2px 4px;
+    border-radius: 2px;
+}
+
+.grid-label.x {
+    top: 2px;
+}
+
+.grid-label.y {
+    left: 2px;
+}
+
+/* マウス座標表示 */
+.mouse-coords {
+    position: fixed;
+    top: 200px;
+    right: 20px;
+    background: #333;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 2000;
+}
+
+.mouse-coords div {
+    margin: 5px 0;
+}
+
+/* 段のガイド */
+.stage-guide {
+    position: absolute;
+    width: 150px;
+    background: #fff3cd;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ffc107;
+    font-size: 11px;
+    line-height: 1.6;
+    pointer-events: none;
+    left: 10px;
+    z-index: 100;
+}
+
+.stage-guide div {
+    margin: 3px 0;
+    padding: 4px;
+    background: white;
+    border-radius: 3px;
+}
+
+/* ページ全体の横スクロール防止 */
+body {
+    overflow-x: hidden;
+}
+
+.app-main {
+    overflow-x: hidden;
+}
+
+/* ローディング */
 .loading {
     text-align: center;
     padding: 60px 20px;
@@ -300,14 +470,23 @@
 /* ============================================================
    レスポンシブ対応
    ============================================================ */
-@media (max-width: 768px) {
-    #tournamentContainer {
-        padding: 10px;
-        min-height: 400px;
-    }
 
+@media (max-width: 768px) {
+    .zoom-control {
+        display: block;
+    }
+    
+    .tournament-wrapper {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        margin: 0 10px;
+        overflow-y: hidden;
+    }
+    
     .champion-banner {
         padding: 20px 15px;
+        margin-left: 15px;
+        margin-right: 15px;
     }
 
     .champion-trophy {
@@ -318,17 +497,21 @@
         font-size: 1.5em;
     }
 
-    /* グリッドを非表示 */
-    .grid {
+    .info-panel {
+        font-size: 0.85em;
+        padding: 12px;
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+
+    .mouse-coords {
         display: none;
     }
 
-    /* タッチ操作のためのスペース確保 */
-    .tournament-svg {
-        padding: 10px;
+    .stage-guide {
+        display: none;
     }
 
-    /* チームカードを少し小さく */
     .team-icon {
         font-size: 20px;
     }
@@ -337,7 +520,6 @@
         font-size: 12px;
     }
 
-    /* 試合ブロックのテキストを調整 */
     .match-label {
         font-size: 11px;
     }
@@ -354,58 +536,19 @@
         font-size: 9px;
     }
 
-    /* ★★★ 追加: スマホではタップ反応をより明確に ★★★ */
     .match-block:active {
-        transform: scale(0.96);
+        transform: translate(-50%, -50%) scale(0.96);
     }
 }
 
-/* タブレット以上 */
-@media (min-width: 769px) {
-    #tournamentContainer {
-        padding: 30px;
-    }
-
-    .tournament-svg {
-        max-width: 1200px;
-        margin: 0 auto;
+@media (min-width: 769px) and (max-width: 1024px) {
+    .stage-guide {
+        font-size: 10px;
+        width: 130px;
     }
 }
 
-/* ============================================================
-   開発モード（?dev=true時のみ表示）
-   ============================================================ */
-@media (max-width: 768px) {
-    .grid {
-        display: none !important;
-    }
-}
-
-/* 座標表示（開発用） */
-.coord-display {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-family: monospace;
-    font-size: 12px;
-    z-index: 9999;
-    pointer-events: none;
-}
-
-/* ============================================================
-   SVGグラデーション定義用
-   ============================================================ */
-.tournament-svg defs {
-    /* 必要に応じてグラデーション定義を追加 */
-}
-
-/* ============================================================
-   アクセシビリティ
-   ============================================================ */
+/* アクセシビリティ */
 .team-card:focus,
 .match-block:focus {
     outline: 3px solid #1976d2;
@@ -414,26 +557,19 @@
 
 /* ハイコントラストモード対応 */
 @media (prefers-contrast: high) {
-    .team-card-bg,
-    .match-block-bg {
-        stroke-width: 3;
+    .team-card,
+    .match-block {
+        border-width: 3px;
     }
 
     .connector-line {
-        stroke-width: 3;
+        width: 3px;
     }
 }
 
-/* ダークモード対応（将来的な拡張用） */
-@media (prefers-color-scheme: dark) {
-    /* 必要に応じてダークモードスタイルを追加 */
-}
-
-/* ============================================================
-   印刷対応
-   ============================================================ */
+/* 印刷対応 */
 @media print {
-    #tournamentContainer {
+    .tournament-wrapper {
         box-shadow: none;
         border: 1px solid #ddd;
     }
@@ -443,19 +579,17 @@
         border: 2px solid #ffd700;
     }
 
-    .grid {
-        display: none !important;
-    }
-
-    .coord-display {
+    .grid-overlay,
+    .mouse-coords,
+    .stage-guide,
+    .zoom-control,
+    .info-panel {
         display: none !important;
     }
 }
 
-/* ============================================================
-   パフォーマンス最適化
-   ============================================================ */
-.tournament-svg {
+/* パフォーマンス最適化 */
+.tournament-area {
     will-change: transform;
 }
 
@@ -464,10 +598,9 @@
     will-change: transform;
 }
 
-/* GPU加速 */
 @media (min-width: 769px) {
     .team-card,
     .match-block {
-        transform: translateZ(0);
+        transform: translate(-50%, -50%) translateZ(0);
     }
 }

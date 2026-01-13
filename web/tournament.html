@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>トーナメント表 | 2026年千葉県郵便局長ソフトボール大会</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/tournament.css">
 </head>
+
 <body>
     <header class="app-header">
         <div class="header-top">
             <div class="header-container">
                 <a href="index.html" class="header-logo">
-                    <!-- ★★★ 修正: Google DriveのURLからローカルパスに変更 ★★★ -->
                     <img src="img/logo.png" alt="全国郵便局長会">
                 </a>
                 <div class="header-info">
@@ -45,7 +46,7 @@
             </div>
         </section>
 
-        <section class="app-container">
+        <section class="app-container tournament-page">
             <!-- 優勝チーム表示 -->
             <div id="championSection" style="display: none;">
                 <div class="champion-banner">
@@ -55,11 +56,24 @@
                 </div>
             </div>
 
-            <!-- トーナメント本体 -->
-            <div id="tournamentContainer">
-                <div class="loading">
-                    <div class="loading-spinner"></div>
-                    <div>データを読み込んでいます...</div>
+            <!-- ズームコントロール（モバイル専用） -->
+            <div class="zoom-control" id="zoomControl">
+                <div class="zoom-label">表示サイズ</div>
+                <div class="zoom-buttons">
+                    <button class="zoom-btn" data-zoom="0.6" id="zoom60">60%</button>
+                    <button class="zoom-btn" data-zoom="0.8" id="zoom80">80%</button>
+                    <button class="zoom-btn active" data-zoom="1.0" id="zoom100">100%</button>
+                    <button class="zoom-btn" data-zoom="1.2" id="zoom120">120%</button>
+                </div>
+            </div>
+
+            <!-- トーナメント表本体 -->
+            <div class="tournament-wrapper" id="tournamentWrapper">
+                <div class="tournament-area" id="tournamentArea">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <div>データを読み込んでいます...</div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -76,4 +90,5 @@
     <script src="js/config.js"></script>
     <script src="js/tournament-main.js"></script>
 </body>
+
 </html>
