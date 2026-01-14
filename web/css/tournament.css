@@ -200,8 +200,8 @@
 /* 試合ブロック */
 .match-block {
     position: absolute;
-    width: 160px;
-    height: 100px;
+    width: 180px;
+    height: 80px;
     background: white;
     border: 2px solid #e0e0e0;
     border-radius: 8px;
@@ -210,6 +210,9 @@
     transition: all 0.2s ease;
     transform: translate(-50%, -50%);
     padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .match-block:hover {
@@ -273,67 +276,76 @@
 }
 
 .match-label {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: bold;
     color: #666;
     text-align: center;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
 
 .match-block.final .match-label {
     color: #ffa000;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .match-block.third-place .match-label {
     color: #ff9800;
 }
 
-.match-teams {
+.match-score-line {
     display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.match-team-row {
-    display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    line-height: 1.4;
 }
 
-.match-team {
-    font-size: 14px;
+.match-team-name {
+    font-size: 13px;
     font-weight: 600;
     color: #333;
 }
 
-.match-team.placeholder {
+.match-team-name.placeholder {
     color: #999;
     font-style: italic;
+    font-size: 12px;
 }
 
-.match-team.winner {
+.match-team-name.winner {
     color: #003366;
     font-weight: bold;
-    font-size: 15px;
+    font-size: 14px;
 }
 
-.match-score {
-    font-size: 18px;
+.match-team-score {
+    font-size: 16px;
     font-weight: bold;
     color: #003366;
+    min-width: 20px;
+    text-align: center;
 }
 
-.match-score.winner {
+.match-team-score.winner {
     color: #d32f2f;
-    font-size: 20px;
+    font-size: 18px;
+}
+
+.match-score-separator {
+    color: #999;
+    font-size: 14px;
+    font-weight: normal;
 }
 
 .match-time {
     font-size: 10px;
     color: #999;
     text-align: center;
-    margin-top: 5px;
+    margin-top: 8px;
 }
 
 /* 接続線 */
@@ -545,15 +557,15 @@ body {
     }
 
     .match-label {
+        font-size: 10px;
+    }
+
+    .match-team-name {
         font-size: 11px;
     }
 
-    .match-team {
-        font-size: 12px;
-    }
-
-    .match-score {
-        font-size: 16px;
+    .match-team-score {
+        font-size: 14px;
     }
 
     .match-time {

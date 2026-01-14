@@ -299,19 +299,61 @@ const TournamentApp = (() => {
         label.className = 'match-label';
         label.textContent = coords.label;
 
-        const teams = document.createElement('div');
-        teams.className = 'match-teams';
+        const scoreLine = document.createElement('div');
+        scoreLine.className = 'match-score-line';
 
         const winner = getWinner(matchData);
 
-        const team1Row = createTeamRow(matchData.team1, winner === 1);
-        const team2Row = createTeamRow(matchData.team2, winner === 2);
+        // チーム1
+        const team1Name = document.createElement('span');
+        team1Name.className = 'match-team-name';
+        if (CONFIG.isPlaceholder(matchData.team1.name)) {
+            team1Name.classList.add('placeholder');
+        }
+        if (winner === 1) {
+            team1Name.classList.add('winner');
+        }
+        team1Name.textContent = matchData.team1.name;
+        scoreLine.appendChild(team1Name);
 
-        teams.appendChild(team1Row);
-        teams.appendChild(team2Row);
+        // スコア表示（得点がある場合のみ）
+        if (matchData.team1.score !== null && matchData.team2.score !== null) {
+            const score1 = document.createElement('span');
+            score1.className = 'match-team-score';
+            if (winner === 1) {
+                score1.classList.add('winner');
+            }
+            score1.textContent = matchData.team1.score;
+            scoreLine.appendChild(score1);
+
+            const separator = document.createElement('span');
+            separator.className = 'match-score-separator';
+            separator.textContent = '-';
+            scoreLine.appendChild(separator);
+
+            const score2 = document.createElement('span');
+            score2.className = 'match-team-score';
+            if (winner === 2) {
+                score2.classList.add('winner');
+            }
+            score2.textContent = matchData.team2.score;
+            scoreLine.appendChild(score2);
+        }
+
+        // チーム2
+        const team2Name = document.createElement('span');
+        team2Name.className = 'match-team-name';
+        if (CONFIG.isPlaceholder(matchData.team2.name)) {
+            team2Name.classList.add('placeholder');
+        }
+        if (winner === 2) {
+            team2Name.classList.add('winner');
+        }
+        team2Name.textContent = matchData.team2.name;
+        scoreLine.appendChild(team2Name);
 
         block.appendChild(label);
-        block.appendChild(teams);
+        block.appendChild(scoreLine);
 
         if (matchData.time) {
             const time = document.createElement('div');
@@ -328,6 +370,7 @@ const TournamentApp = (() => {
     }
 
     function createTeamRow(team, isWinner) {
+        // この関数は使用しなくなったため削除可能
         const row = document.createElement('div');
         row.className = 'match-team-row';
 
