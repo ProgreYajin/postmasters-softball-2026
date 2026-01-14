@@ -250,7 +250,8 @@ const TournamentApp = (() => {
             card.classList.add('seed');
         }
 
-        card.style.left = coords.x + 'px';
+        // 50px右にオフセット
+        card.style.left = (coords.x + 50) + 'px';
         card.style.top = coords.y + 'px';
 
         const icon = document.createElement('div');
@@ -290,7 +291,8 @@ const TournamentApp = (() => {
             block.classList.add('third-place');
         }
 
-        block.style.left = coords.x + 'px';
+        // 50px右にオフセット
+        block.style.left = (coords.x + 50) + 'px';
         block.style.top = coords.y + 'px';
 
         const label = document.createElement('div');
@@ -363,17 +365,21 @@ const TournamentApp = (() => {
             );
 
             teams.forEach(([teamName, teamCoords]) => {
+                // 50px右にオフセット
+                const teamX = teamCoords.x + 50;
+                const matchX = matchCoords.x + 50;
+
                 const vLine = document.createElement('div');
                 vLine.className = 'connector-line vertical';
-                vLine.style.left = teamCoords.x + 'px';
+                vLine.style.left = teamX + 'px';
                 vLine.style.top = (teamCoords.y - CONFIG.CARD_SIZE.height / 2) + 'px';
                 vLine.style.height = (matchCoords.y + 50 - (teamCoords.y - CONFIG.CARD_SIZE.height / 2)) + 'px';
                 container.appendChild(vLine);
 
                 const hLine = document.createElement('div');
                 hLine.className = 'connector-line horizontal';
-                const startX = Math.min(teamCoords.x, matchCoords.x);
-                const endX = Math.max(teamCoords.x, matchCoords.x);
+                const startX = Math.min(teamX, matchX);
+                const endX = Math.max(teamX, matchX);
                 hLine.style.left = startX + 'px';
                 hLine.style.top = (matchCoords.y + 50) + 'px';
                 hLine.style.width = (endX - startX) + 'px';
