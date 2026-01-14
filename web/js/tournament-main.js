@@ -389,7 +389,7 @@ const TournamentApp = (() => {
         gridOverlay.className = 'grid-overlay';
 
         const width = 1600;
-        const height = 800;
+        const height = 1000;
 
         for (let x = 0; x <= width; x += 100) {
             const line = document.createElement('div');
@@ -490,7 +490,7 @@ const TournamentApp = (() => {
             { top: 120, text: '<div><strong>決勝戦</strong> Y: 100-200px</div>' },
             { top: 280, text: '<div><strong>準決勝</strong> Y: 250-350px</div>' },
             { top: 480, text: '<div><strong>1回戦</strong> Y: 500-600px</div>' },
-            { top: 680, text: '<div><strong>チーム名</strong> Y: 700-750px</div>' }
+            { top: 880, text: '<div><strong>チーム名</strong> Y: 900-950px</div>' }
         ];
 
         stages.forEach(stage => {
@@ -538,7 +538,7 @@ const TournamentApp = (() => {
                 tournamentArea.style.transform = `scale(${zoom})`;
                 tournamentArea.style.transformOrigin = 'top left';
 
-                const newHeight = 800 * zoom;
+                const newHeight = 1000 * zoom;
                 tournamentWrapper.style.height = `${newHeight}px`;
 
                 zoomButtons.forEach(b => b.classList.remove('active'));
