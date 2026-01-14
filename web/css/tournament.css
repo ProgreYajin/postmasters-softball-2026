@@ -50,7 +50,7 @@
     display: none;
     background: white;
     padding: 15px;
-    margin: 15px 0 0 0;
+    margin: 15px 20px 0 20px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border: 2px solid #003366;
@@ -496,9 +496,10 @@ body {
     }
 
     .tournament-wrapper {
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        margin: 0 10px;
+        /* ボーダーとマージンを削除して画面幅いっぱいに */
+        border: none;
+        border-radius: 0;
+        margin: 0;
         overflow-y: hidden;
     }
 
