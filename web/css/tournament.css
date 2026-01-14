@@ -111,7 +111,7 @@
 
 /* トーナメント全体のラッパー */
 .tournament-wrapper {
-    background: white;
+    background: #f5f5f5;
     padding: 0;
     margin: 0;
     box-shadow: none;
@@ -129,11 +129,15 @@
     position: relative;
     width: 1600px;
     height: 1000px;
-    background: white;
+    background: #f5f5f5;
     border: 2px solid #333;
     margin: 0;
     transition: transform 0.3s ease;
     touch-action: inherit;
+    background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 49px, #ddd 49px, #ddd 50px),
+        repeating-linear-gradient(90deg, transparent, transparent 49px, #ddd 49px, #ddd 50px);
+    background-size: 50px 50px;
 }
 
 /* チームカード */
