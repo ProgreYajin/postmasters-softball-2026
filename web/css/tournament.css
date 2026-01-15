@@ -156,6 +156,7 @@
     cursor: default;
     transition: transform 0.2s ease;
     transform: translate(-50%, -50%);
+    z-index: 10;
 }
 
 .team-card:hover {
@@ -213,6 +214,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    z-index: 10;
 }
 
 .match-block:hover {
@@ -352,6 +354,7 @@
 .connector-line {
     position: absolute;
     background: #003366;
+    z-index: 1;
 }
 
 .connector-line.vertical {
