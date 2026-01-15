@@ -407,17 +407,32 @@ const TournamentApp = (() => {
                 ([_, coords]) => coords.gameNum === gameNum
             );
 
+            console.log(`接続線描画: 試合${gameNum}`, { matchCoords, teams });
+
             teams.forEach(([teamName, teamCoords]) => {
                 // 50px右にオフセット
                 const teamX = teamCoords.x + 50;
-                const matchX = matchCoords.x + 50;
                 
-                // チームカードの中央からマッチカードの上部まで縦線を引く
+                // チームカードの下端から試合カードの下端まで縦線を引く
+                const startY = teamCoords.y + CONFIG.CARD_SIZE.height / 2;
+                const endY = matchCoords.y + 40; // 試合カードの下部（高さ80pxの半分=40px）
+                const lineHeight = endY - startY;
+                
+                console.log(`${teamName}の接続線:`, {
+                    teamX,
+                    teamY: teamCoords.y,
+                    startY,
+                    endY,
+                    lineHeight,
+                    cardHeight: CONFIG.CARD_SIZE.height
+                });
+                
                 const vLine = document.createElement('div');
                 vLine.className = 'connector-line vertical';
                 vLine.style.left = teamX + 'px';
-                vLine.style.top = (teamCoords.y + CONFIG.CARD_SIZE.height / 2) + 'px';
-                vLine.style.height = (matchCoords.y - CONFIG.CARD_SIZE.height / 2 - (teamCoords.y + CONFIG.CARD_SIZE.height / 2)) + 'px';
+                vLine.style.top = startY + 'px';
+                vLine.style.height = lineHeight + 'px';
+                vLine.style.backgroundColor = '#003366'; // デバッグ用に明示的に色を指定
                 container.appendChild(vLine);
             });
         }
