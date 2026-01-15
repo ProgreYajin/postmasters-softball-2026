@@ -36,14 +36,14 @@ const TournamentApp = (() => {
 
     function formatTime(timestamp) {
         if (!timestamp) return '';
-
+        
         if (typeof timestamp === 'number') {
             const totalMinutes = Math.round(timestamp * 24 * 60);
             const hours = Math.floor(totalMinutes / 60);
             const minutes = totalMinutes % 60;
             return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
         }
-
+        
         if (typeof timestamp === 'string') {
             if (timestamp.includes('T')) {
                 try {
@@ -59,7 +59,7 @@ const TournamentApp = (() => {
             }
             return timestamp;
         }
-
+        
         return '';
     }
 
@@ -73,9 +73,9 @@ const TournamentApp = (() => {
 
         try {
             const timestamp = new Date().getTime();
-
+            
             console.log('📄 データ取得開始（並列処理）...');
-
+            
             const [tournamentResponse, scoreResponse, scheduleResponse] = await Promise.all([
                 fetch(`${CONFIG.STAFF_API_URL}?type=tournament&t=${timestamp}`, {
                     method: 'GET',
@@ -96,7 +96,7 @@ const TournamentApp = (() => {
 
             if (tournamentResponse.ok) {
                 tournamentData = await tournamentResponse.json();
-
+                
                 if (tournamentData.teams && tournamentData.teams.length > 0) {
                     CONFIG.updateTeamCoordinates(tournamentData.teams);
                     console.log('✅ トーナメント表データ取得成功:', tournamentData.teams.length + 'チーム');
@@ -106,12 +106,12 @@ const TournamentApp = (() => {
             } else {
                 console.error('⚠️ トーナメント表データ取得失敗。デフォルト値を使用します。');
             }
-
+            
             if (!scoreResponse.ok) {
                 throw new Error(`HTTP Error ${scoreResponse.status}`);
             }
             gamesData = await scoreResponse.json();
-
+            
             if (scheduleResponse.ok) {
                 const scheduleJson = await scheduleResponse.json();
                 if (scheduleJson.schedule && Array.isArray(scheduleJson.schedule)) {
@@ -121,7 +121,7 @@ const TournamentApp = (() => {
                     }, {});
                 }
             }
-
+            
             console.log('✅ 全データ取得完了（並列処理）');
             renderTournament();
 
@@ -154,7 +154,7 @@ const TournamentApp = (() => {
             return null;
         }
 
-        const games = gamesData.games.filter(g =>
+        const games = gamesData.games.filter(g => 
             getSafeValue(g, 'gameNum', 'gameNumber', 'game_num') === gameNum
         );
 
@@ -205,14 +205,14 @@ const TournamentApp = (() => {
 
     function renderTournament() {
         const container = document.getElementById('tournamentArea');
-
+        
         if (!CONFIG.TEAM_COORDINATES || Object.keys(CONFIG.TEAM_COORDINATES).length === 0) {
             showError('トーナメント表データが見つかりません');
             return;
         }
-
+        
         container.innerHTML = '';
-
+        
         if (isDevelopmentMode) {
             container.appendChild(renderGrid());
             container.appendChild(renderMouseCoords());
@@ -280,9 +280,9 @@ const TournamentApp = (() => {
     function renderMatchBlock(matchData, coords) {
         const block = document.createElement('div');
         block.className = 'match-block';
-
-        const statusClass = matchData.status === '試合中' ? 'playing' :
-            matchData.status === '終了' ? 'finished' : 'waiting';
+        
+        const statusClass = matchData.status === '試合中' ? 'playing' : 
+                           matchData.status === '終了' ? 'finished' : 'waiting';
         block.classList.add(statusClass);
 
         if (coords.special === 'final') {
@@ -411,22 +411,14 @@ const TournamentApp = (() => {
                 // 50px右にオフセット
                 const teamX = teamCoords.x + 50;
                 const matchX = matchCoords.x + 50;
-
+                
+                // チームカードの中央からマッチカードの上部まで縦線を引く
                 const vLine = document.createElement('div');
                 vLine.className = 'connector-line vertical';
                 vLine.style.left = teamX + 'px';
-                vLine.style.top = (teamCoords.y - CONFIG.CARD_SIZE.height / 2) + 'px';
-                vLine.style.height = (matchCoords.y + 50 - (teamCoords.y - CONFIG.CARD_SIZE.height / 2)) + 'px';
+                vLine.style.top = (teamCoords.y + CONFIG.CARD_SIZE.height / 2) + 'px';
+                vLine.style.height = (matchCoords.y - CONFIG.CARD_SIZE.height / 2 - (teamCoords.y + CONFIG.CARD_SIZE.height / 2)) + 'px';
                 container.appendChild(vLine);
-
-                const hLine = document.createElement('div');
-                hLine.className = 'connector-line horizontal';
-                const startX = Math.min(teamX, matchX);
-                const endX = Math.max(teamX, matchX);
-                hLine.style.left = startX + 'px';
-                hLine.style.top = (matchCoords.y + 50) + 'px';
-                hLine.style.width = (endX - startX) + 'px';
-                container.appendChild(hLine);
             });
         }
     }
@@ -436,7 +428,7 @@ const TournamentApp = (() => {
     function renderGrid() {
         const gridOverlay = document.createElement('div');
         gridOverlay.className = 'grid-overlay';
-
+        
         const width = 1600;
         const height = 1000;
 
@@ -499,12 +491,12 @@ const TournamentApp = (() => {
         `;
 
         const tournamentArea = document.getElementById('tournamentArea');
-
+        
         tournamentArea.addEventListener('mousemove', (e) => {
             const rect = tournamentArea.getBoundingClientRect();
             const x = Math.round(e.clientX - rect.left);
             const y = Math.round(e.clientY - rect.top);
-
+            
             document.getElementById('coordX').textContent = x;
             document.getElementById('coordY').textContent = y;
         });
@@ -518,7 +510,7 @@ const TournamentApp = (() => {
             const rect = tournamentArea.getBoundingClientRect();
             const x = Math.round(e.clientX - rect.left);
             const y = Math.round(e.clientY - rect.top);
-
+            
             const coordText = `X: ${x}px, Y: ${y}px`;
             navigator.clipboard.writeText(coordText).then(() => {
                 coords.style.background = '#4CAF50';
@@ -533,7 +525,7 @@ const TournamentApp = (() => {
 
     function renderStageGuides() {
         const wrapper = document.createElement('div');
-
+        
         const stages = [
             { top: 10, text: '<div><strong>優勝</strong> Y: 0-50px</div>' },
             { top: 120, text: '<div><strong>決勝戦</strong> Y: 100-200px</div>' },
@@ -578,21 +570,21 @@ const TournamentApp = (() => {
         const zoomButtons = document.querySelectorAll('.zoom-btn');
         const tournamentWrapper = document.getElementById('tournamentWrapper');
         const tournamentArea = document.getElementById('tournamentArea');
-
+        
         zoomButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 const zoom = parseFloat(btn.dataset.zoom);
                 currentZoom = zoom;
-
+                
                 tournamentArea.style.transform = `scale(${zoom})`;
                 tournamentArea.style.transformOrigin = 'top left';
-
+                
                 const newHeight = 1000 * zoom;
                 tournamentWrapper.style.height = `${newHeight}px`;
-
+                
                 zoomButtons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-
+                
                 tournamentWrapper.scrollLeft = 0;
                 window.scrollTo(0, tournamentWrapper.offsetTop - 100);
             });
@@ -674,7 +666,7 @@ const TournamentApp = (() => {
 
         startAutoRefresh() {
             if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-
+            
             const interval = CONFIG?.AUTO_REFRESH_INTERVAL || 60000;
             autoRefreshInterval = setInterval(() => fetchTournamentData(), interval);
         },
