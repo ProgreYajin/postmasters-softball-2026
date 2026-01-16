@@ -211,6 +211,17 @@ const TournamentApp = (() => {
             return;
         }
         
+        // 試合座標を上書き（間隔調整 + 150px上に移動）
+        CONFIG.MATCH_COORDINATES = {
+            1: { x: 275, y: 600, round: 1, label: '第1試合' },
+            2: { x: 575, y: 600, round: 1, label: '第2試合' },
+            3: { x: 875, y: 600, round: 1, label: '第3試合' },
+            4: { x: 200, y: 500, round: 2, label: '第4試合（準決勝）' },
+            5: { x: 725, y: 500, round: 2, label: '第5試合（準決勝）' },
+            6: { x: 650, y: 400, round: 3, label: '第6試合（3位決定戦）', special: 'third' },
+            7: { x: 275, y: 400, round: 3, label: '第7試合（決勝）', special: 'final' }
+        };
+        
         container.innerHTML = '';
         
         if (isDevelopmentMode) {
