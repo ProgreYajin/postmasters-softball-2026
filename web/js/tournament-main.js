@@ -476,8 +476,8 @@ const TournamentApp = (() => {
             const match1Coords = CONFIG.MATCH_COORDINATES[1];
             if (match1Coords) {
                 const match1X = match1Coords.x + 50;
-                const match1TopY = match1Coords.y + 50 - 40; // 第1試合の上端
-                const match4BottomY = matchCoords.y + 50 + 40; // 第4試合の下端
+                const match1TopY = match1Coords.y - 40; // 第1試合の上端（中心-40px）
+                const match4BottomY = matchCoords.y + 40; // 第4試合の下端（中心+40px）
 
                 // 上下を正しく計算（小さい方が上）
                 const startY = Math.min(match1TopY, match4BottomY);
