@@ -219,6 +219,12 @@ const TournamentApp = (() => {
             container.appendChild(renderStageGuides());
         }
 
+        // 優勝カードを追加
+        const championCard = renderChampionCard();
+        if (championCard) {
+            container.appendChild(championCard);
+        }
+
         Object.entries(CONFIG.MATCH_COORDINATES).forEach(([gameNum, coords]) => {
             const matchData = getMatchData(parseInt(gameNum));
             if (matchData) {
@@ -271,6 +277,34 @@ const TournamentApp = (() => {
             seedMark.textContent = '⭐';
             card.appendChild(seedMark);
         }
+
+        return card;
+    }
+
+    // ==================== 優勝カード描画 ====================
+
+    function renderChampionCard() {
+        const finalMatch = CONFIG.MATCH_COORDINATES[7];
+        if (!finalMatch) return null;
+
+        const card = document.createElement('div');
+        card.className = 'team-card champion-card';
+        card.style.left = (finalMatch.x + 50) + 'px';
+        card.style.top = (finalMatch.y - 200) + 'px'; // 決勝戦の200px上
+
+        const icon = document.createElement('div');
+        icon.className = 'team-icon';
+        icon.textContent = '🏆';
+        icon.style.fontSize = '32px';
+
+        const name = document.createElement('div');
+        name.className = 'team-name';
+        name.textContent = '優勝';
+        name.style.fontSize = '18px';
+        name.style.fontWeight = 'bold';
+
+        card.appendChild(icon);
+        card.appendChild(name);
 
         return card;
     }

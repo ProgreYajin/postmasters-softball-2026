@@ -64,13 +64,13 @@ const CONFIG = {
      * トーナメント表：試合ブロック座標
      */
     MATCH_COORDINATES: {
-        1: { x: 275, y: 500, round: 1, label: '第1試合' },
-        2: { x: 575, y: 500, round: 1, label: '第2試合' },
-        3: { x: 875, y: 500, round: 1, label: '第3試合' },
-        4: { x: 200, y: 300, round: 2, label: '第4試合（準決勝）' },
-        5: { x: 725, y: 300, round: 2, label: '第5試合（準決勝）' },
-        6: { x: 725, y: 100, round: 3, label: '第6試合（3位決定戦）', special: 'third' },
-        7: { x: 425, y: 100, round: 3, label: '第7試合（決勝）', special: 'final' }
+        1: { x: 275, y: 700, round: 1, label: '第1試合' },      // 500 + 200
+        2: { x: 575, y: 700, round: 1, label: '第2試合' },      // 500 + 200
+        3: { x: 875, y: 700, round: 1, label: '第3試合' },      // 500 + 200
+        4: { x: 200, y: 500, round: 2, label: '第4試合（準決勝）' },  // 300 + 200
+        5: { x: 725, y: 500, round: 2, label: '第5試合（準決勝）' },  // 300 + 200
+        6: { x: 725, y: 300, round: 3, label: '第6試合（3位決定戦）', special: 'third' },  // 100 + 200
+        7: { x: 425, y: 300, round: 3, label: '第7試合（決勝）', special: 'final' }        // 100 + 200
     },
 
     /**
@@ -109,16 +109,16 @@ const CONFIG = {
      * スタッフAPIが設定されているか確認
      */
     isStaffApiConfigured() {
-        return this.STAFF_API_URL && 
-               !this.STAFF_API_URL.includes('YOUR_STAFF_SCRIPT_ID');
+        return this.STAFF_API_URL &&
+            !this.STAFF_API_URL.includes('YOUR_STAFF_SCRIPT_ID');
     },
 
     /**
      * 観客APIが設定されているか確認
      */
     isAudienceApiConfigured() {
-        return this.AUDIENCE_API_URL && 
-               !this.AUDIENCE_API_URL.includes('YOUR_AUDIENCE_SCRIPT_ID');
+        return this.AUDIENCE_API_URL &&
+            !this.AUDIENCE_API_URL.includes('YOUR_AUDIENCE_SCRIPT_ID');
     },
 
     /**
@@ -183,7 +183,7 @@ const CONFIG = {
             console.warn('⚠️ トーナメント表データが空です。デフォルト値を使用します。');
             return;
         }
-        
+
         const newCoordinates = {};
         apiTeams.forEach(team => {
             newCoordinates[team.name] = {
@@ -194,7 +194,7 @@ const CONFIG = {
                 position: team.position
             };
         });
-        
+
         this.TEAM_COORDINATES = newCoordinates;
         console.log('✅ トーナメント表座標を更新しました:', Object.keys(newCoordinates));
     }
