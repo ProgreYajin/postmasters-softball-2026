@@ -36,14 +36,14 @@ const TournamentApp = (() => {
 
     function formatTime(timestamp) {
         if (!timestamp) return '';
-        
+
         if (typeof timestamp === 'number') {
             const totalMinutes = Math.round(timestamp * 24 * 60);
             const hours = Math.floor(totalMinutes / 60);
             const minutes = totalMinutes % 60;
             return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
         }
-        
+
         if (typeof timestamp === 'string') {
             if (timestamp.includes('T')) {
                 try {
@@ -59,7 +59,7 @@ const TournamentApp = (() => {
             }
             return timestamp;
         }
-        
+
         return '';
     }
 
@@ -73,9 +73,9 @@ const TournamentApp = (() => {
 
         try {
             const timestamp = new Date().getTime();
-            
+
             console.log('📄 データ取得開始（並列処理）...');
-            
+
             const [tournamentResponse, scoreResponse, scheduleResponse] = await Promise.all([
                 fetch(`${CONFIG.STAFF_API_URL}?type=tournament&t=${timestamp}`, {
                     method: 'GET',
@@ -96,7 +96,7 @@ const TournamentApp = (() => {
 
             if (tournamentResponse.ok) {
                 tournamentData = await tournamentResponse.json();
-                
+
                 if (tournamentData.teams && tournamentData.teams.length > 0) {
                     CONFIG.updateTeamCoordinates(tournamentData.teams);
                     console.log('✅ トーナメント表データ取得成功:', tournamentData.teams.length + 'チーム');
@@ -106,12 +106,12 @@ const TournamentApp = (() => {
             } else {
                 console.error('⚠️ トーナメント表データ取得失敗。デフォルト値を使用します。');
             }
-            
+
             if (!scoreResponse.ok) {
                 throw new Error(`HTTP Error ${scoreResponse.status}`);
             }
             gamesData = await scoreResponse.json();
-            
+
             if (scheduleResponse.ok) {
                 const scheduleJson = await scheduleResponse.json();
                 if (scheduleJson.schedule && Array.isArray(scheduleJson.schedule)) {
@@ -121,7 +121,7 @@ const TournamentApp = (() => {
                     }, {});
                 }
             }
-            
+
             console.log('✅ 全データ取得完了（並列処理）');
             renderTournament();
 
@@ -154,7 +154,7 @@ const TournamentApp = (() => {
             return null;
         }
 
-        const games = gamesData.games.filter(g => 
+        const games = gamesData.games.filter(g =>
             getSafeValue(g, 'gameNum', 'gameNumber', 'game_num') === gameNum
         );
 
@@ -205,14 +205,14 @@ const TournamentApp = (() => {
 
     function renderTournament() {
         const container = document.getElementById('tournamentArea');
-        
+
         if (!CONFIG.TEAM_COORDINATES || Object.keys(CONFIG.TEAM_COORDINATES).length === 0) {
             showError('トーナメント表データが見つかりません');
             return;
         }
-        
+
         container.innerHTML = '';
-        
+
         if (isDevelopmentMode) {
             container.appendChild(renderGrid());
             container.appendChild(renderMouseCoords());
@@ -280,9 +280,9 @@ const TournamentApp = (() => {
     function renderMatchBlock(matchData, coords) {
         const block = document.createElement('div');
         block.className = 'match-block';
-        
-        const statusClass = matchData.status === '試合中' ? 'playing' : 
-                           matchData.status === '終了' ? 'finished' : 'waiting';
+
+        const statusClass = matchData.status === '試合中' ? 'playing' :
+            matchData.status === '終了' ? 'finished' : 'waiting';
         block.classList.add(statusClass);
 
         if (coords.special === 'final') {
@@ -413,12 +413,12 @@ const TournamentApp = (() => {
             teams.forEach(([teamName, teamCoords]) => {
                 // 50px右にオフセット
                 const teamX = teamCoords.x + 50;
-                
+
                 // チームカードの上端から試合カードの下端まで縦線を引く（上向き）
                 const teamTopY = teamCoords.y - CONFIG.CARD_SIZE.height / 2;
                 const matchBottomY = matchCoords.y + 40; // 試合カードの下部（高さ80pxの半分=40px）
                 const lineHeight = teamTopY - matchBottomY;
-                
+
                 console.log(`${teamName}の接続線:`, {
                     teamX,
                     teamY: teamCoords.y,
@@ -427,7 +427,7 @@ const TournamentApp = (() => {
                     lineHeight,
                     cardHeight: CONFIG.CARD_SIZE.height
                 });
-                
+
                 const vLine = document.createElement('div');
                 vLine.className = 'connector-line vertical';
                 vLine.style.left = teamX + 'px';
@@ -437,22 +437,22 @@ const TournamentApp = (() => {
                 container.appendChild(vLine);
             });
         }
-        
+
         // シードチーム（南部）→ 第4試合
         if (gameNum === 4) {
             const seedTeam = Object.entries(CONFIG.TEAM_COORDINATES).find(
                 ([name, coords]) => coords.isSeed
             );
-            
+
             if (seedTeam) {
                 const [teamName, teamCoords] = seedTeam;
                 const teamX = teamCoords.x + 50;
                 const teamTopY = teamCoords.y - CONFIG.CARD_SIZE.height / 2;
                 const matchLeftX = matchCoords.x + 50 - 90; // 試合カードの左端（幅180pxの半分=90px）
                 const matchY = matchCoords.y + 50 - 50; // 50px上に変更
-                
+
                 console.log('シードチーム接続線:', { teamX, teamTopY, matchLeftX, matchY, lineHeight: teamTopY - matchY });
-                
+
                 // 縦線：シードチームの上端 → 第4試合の高さまで
                 const vLine = document.createElement('div');
                 vLine.className = 'connector-line vertical';
@@ -460,7 +460,7 @@ const TournamentApp = (() => {
                 vLine.style.top = matchY + 'px';
                 vLine.style.height = (teamTopY - matchY) + 'px';
                 container.appendChild(vLine);
-                
+
                 // 横線：シードチームのX座標 → 第4試合の左端
                 const hLine = document.createElement('div');
                 hLine.className = 'connector-line horizontal';
@@ -470,7 +470,7 @@ const TournamentApp = (() => {
                 container.appendChild(hLine);
             }
         }
-        
+
         // 第1試合 → 第4試合
         if (gameNum === 4) {
             const match1Coords = CONFIG.MATCH_COORDINATES[1];
@@ -478,26 +478,32 @@ const TournamentApp = (() => {
                 const match1X = match1Coords.x + 50;
                 const match1TopY = match1Coords.y + 50 - 40; // 第1試合の上端
                 const match4BottomY = matchCoords.y + 50 + 40; // 第4試合の下端
-                const lineHeight = match4BottomY - match1TopY;
-                
-                console.log('第1試合→第4試合接続線:', { 
-                    match1X, 
-                    match1TopY, 
-                    match4BottomY, 
+
+                // 上下を正しく計算（小さい方が上）
+                const startY = Math.min(match1TopY, match4BottomY);
+                const endY = Math.max(match1TopY, match4BottomY);
+                const lineHeight = endY - startY;
+
+                console.log('第1試合→第4試合接続線:', {
+                    match1X,
+                    match1TopY,
+                    match4BottomY,
+                    startY,
+                    endY,
                     lineHeight,
                     match1Y: match1Coords.y,
                     match4Y: matchCoords.y
                 });
-                
-                // 縦線：第1試合の中央から上に伸ばし、第4試合の下まで
+
+                // 縦線：第4試合の下端から第1試合の上端まで
                 const vLine = document.createElement('div');
                 vLine.className = 'connector-line vertical';
                 vLine.style.left = match1X + 'px';
-                vLine.style.top = match1TopY + 'px';
+                vLine.style.top = startY + 'px'; // 小さい方（上）から開始
                 vLine.style.height = lineHeight + 'px';
                 vLine.style.backgroundColor = '#ff0000'; // デバッグ用に赤色
                 container.appendChild(vLine);
-                
+
                 console.log('第1試合→第4試合 縦線作成完了');
             } else {
                 console.error('第1試合の座標が見つかりません');
@@ -510,7 +516,7 @@ const TournamentApp = (() => {
     function renderGrid() {
         const gridOverlay = document.createElement('div');
         gridOverlay.className = 'grid-overlay';
-        
+
         const width = 1600;
         const height = 1000;
 
@@ -573,12 +579,12 @@ const TournamentApp = (() => {
         `;
 
         const tournamentArea = document.getElementById('tournamentArea');
-        
+
         tournamentArea.addEventListener('mousemove', (e) => {
             const rect = tournamentArea.getBoundingClientRect();
             const x = Math.round(e.clientX - rect.left);
             const y = Math.round(e.clientY - rect.top);
-            
+
             document.getElementById('coordX').textContent = x;
             document.getElementById('coordY').textContent = y;
         });
@@ -592,7 +598,7 @@ const TournamentApp = (() => {
             const rect = tournamentArea.getBoundingClientRect();
             const x = Math.round(e.clientX - rect.left);
             const y = Math.round(e.clientY - rect.top);
-            
+
             const coordText = `X: ${x}px, Y: ${y}px`;
             navigator.clipboard.writeText(coordText).then(() => {
                 coords.style.background = '#4CAF50';
@@ -607,7 +613,7 @@ const TournamentApp = (() => {
 
     function renderStageGuides() {
         const wrapper = document.createElement('div');
-        
+
         const stages = [
             { top: 10, text: '<div><strong>優勝</strong> Y: 0-50px</div>' },
             { top: 120, text: '<div><strong>決勝戦</strong> Y: 100-200px</div>' },
@@ -652,21 +658,21 @@ const TournamentApp = (() => {
         const zoomButtons = document.querySelectorAll('.zoom-btn');
         const tournamentWrapper = document.getElementById('tournamentWrapper');
         const tournamentArea = document.getElementById('tournamentArea');
-        
+
         zoomButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 const zoom = parseFloat(btn.dataset.zoom);
                 currentZoom = zoom;
-                
+
                 tournamentArea.style.transform = `scale(${zoom})`;
                 tournamentArea.style.transformOrigin = 'top left';
-                
+
                 const newHeight = 1000 * zoom;
                 tournamentWrapper.style.height = `${newHeight}px`;
-                
+
                 zoomButtons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                
+
                 tournamentWrapper.scrollLeft = 0;
                 window.scrollTo(0, tournamentWrapper.offsetTop - 100);
             });
@@ -748,7 +754,7 @@ const TournamentApp = (() => {
 
         startAutoRefresh() {
             if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-            
+
             const interval = CONFIG?.AUTO_REFRESH_INTERVAL || 60000;
             autoRefreshInterval = setInterval(() => fetchTournamentData(), interval);
         },
