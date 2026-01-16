@@ -402,6 +402,7 @@ const TournamentApp = (() => {
     // ==================== 接続線描画 ====================
 
     function renderConnectorLines(container, gameNum, matchCoords) {
+        // 1回戦（チームカード → 第1～3試合）
         if (matchCoords.round === 1) {
             const teams = Object.entries(CONFIG.TEAM_COORDINATES).filter(
                 ([_, coords]) => coords.gameNum === gameNum
@@ -435,6 +436,55 @@ const TournamentApp = (() => {
                 vLine.style.backgroundColor = '#003366';
                 container.appendChild(vLine);
             });
+        }
+        
+        // シードチーム（南部）→ 第4試合
+        if (gameNum === 4) {
+            const seedTeam = Object.entries(CONFIG.TEAM_COORDINATES).find(
+                ([name, coords]) => coords.isSeed
+            );
+            
+            if (seedTeam) {
+                const [teamName, teamCoords] = seedTeam;
+                const teamX = teamCoords.x + 50;
+                const teamTopY = teamCoords.y - CONFIG.CARD_SIZE.height / 2;
+                const matchLeftX = matchCoords.x + 50 - 90; // 試合カードの左端（幅180pxの半分=90px）
+                const matchY = matchCoords.y + 50;
+                
+                // 縦線：シードチームの上端 → 第4試合の高さまで
+                const vLine = document.createElement('div');
+                vLine.className = 'connector-line vertical';
+                vLine.style.left = teamX + 'px';
+                vLine.style.top = matchY + 'px';
+                vLine.style.height = (teamTopY - matchY) + 'px';
+                container.appendChild(vLine);
+                
+                // 横線：シードチームのX座標 → 第4試合の左端
+                const hLine = document.createElement('div');
+                hLine.className = 'connector-line horizontal';
+                hLine.style.left = teamX + 'px';
+                hLine.style.top = matchY + 'px';
+                hLine.style.width = (matchLeftX - teamX) + 'px';
+                container.appendChild(hLine);
+            }
+        }
+        
+        // 第1試合 → 第4試合
+        if (gameNum === 4) {
+            const match1Coords = CONFIG.MATCH_COORDINATES[1];
+            if (match1Coords) {
+                const match1X = match1Coords.x + 50;
+                const match1TopY = match1Coords.y + 50 - 40; // 第1試合の上端
+                const match4BottomY = matchCoords.y + 50 + 40; // 第4試合の下端
+                
+                // 縦線：第1試合の中央から上に伸ばし、第4試合の下まで
+                const vLine = document.createElement('div');
+                vLine.className = 'connector-line vertical';
+                vLine.style.left = match1X + 'px';
+                vLine.style.top = match1TopY + 'px';
+                vLine.style.height = (match4BottomY - match1TopY) + 'px';
+                container.appendChild(vLine);
+            }
         }
     }
 
