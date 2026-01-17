@@ -640,25 +640,45 @@ const TournamentApp = (() => {
             }
         }
 
-        // 【新規追加】第5試合 → 第6試合（3位決定戦）
-        if (gameNum === 6) {
+        // 【新規追加】第5試合 → 第7試合（決勝）- L字型・左折れ
+        if (gameNum === 7) {
             const match5Coords = CONFIG.MATCH_COORDINATES[5];
             if (match5Coords) {
-                const match5X = match5Coords.x + 50;
+                const match5X = match5Coords.x + 50; // 第5試合の中央X座標
                 const match5TopY = match5Coords.y - 40; // 第5試合の上端
-                const match6BottomY = matchCoords.y + 40; // 第6試合の下端
+                const match7X = matchCoords.x + 50; // 第7試合の中央X座標
+                const match7Y = matchCoords.y; // 第7試合の中央Y座標
+                const match7RightX = matchCoords.x + 50 + 90; // 第7試合の右端（幅180pxの半分=90px）
 
-                const lineHeight = match5TopY - match6BottomY;
-
+                // 縦線：第5試合の上端 → 第7試合の中央の高さまで
+                const vLineHeight = match5TopY - match7Y;
                 const vLine = document.createElement('div');
                 vLine.className = 'connector-line vertical';
                 vLine.style.left = match5X + 'px';
-                vLine.style.top = match6BottomY + 'px';
-                vLine.style.height = lineHeight + 'px';
+                vLine.style.top = match7Y + 'px';
+                vLine.style.height = vLineHeight + 'px';
                 vLine.style.backgroundColor = '#003366';
                 container.appendChild(vLine);
 
-                console.log('第5試合→第6試合 接続線作成:', { match5X, match5TopY, match6BottomY, lineHeight });
+                // 横線：第7試合の右端 → 第5試合のX座標（左に折れる）
+                const hLineWidth = match5X - match7RightX;
+                const hLine = document.createElement('div');
+                hLine.className = 'connector-line horizontal';
+                hLine.style.left = match7RightX + 'px';
+                hLine.style.top = match7Y + 'px';
+                hLine.style.width = hLineWidth + 'px';
+                hLine.style.backgroundColor = '#003366';
+                container.appendChild(hLine);
+
+                console.log('第5試合→第7試合 L字型接続線作成（左折れ）:', {
+                    match5X,
+                    match5TopY,
+                    match7X,
+                    match7Y,
+                    match7RightX,
+                    vLineHeight,
+                    hLineWidth
+                });
             }
         }
 
