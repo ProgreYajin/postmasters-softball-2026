@@ -133,63 +133,71 @@ const TournamentApp = (() => {
 
     // ==================== 試合データ取得 ====================
 
+    /**
+     * 試合データを取得（スコアボードとスケジュールの両方から）
+     * スコアボードのチーム名を優先し、なければスケジュールから取得
+     */
     function getMatchData(gameNum) {
-        if (!gamesData || !gamesData.games) {
-            if (scheduleData[gameNum]) {
-                return {
-                    gameNum: gameNum,
-                    court: scheduleData[gameNum].court || '',
-                    time: formatTime(getSafeValue(scheduleData[gameNum], 'time', 'startTime')),
-                    status: '待機',
-                    team1: {
-                        name: scheduleData[gameNum].team1 || '未定',
-                        score: null
-                    },
-                    team2: {
-                        name: scheduleData[gameNum].team2 || '未定',
-                        score: null
-                    }
-                };
+        let team1Name = null;
+        let team2Name = null;
+        let team1Score = null;
+        let team2Score = null;
+        let status = '待機';
+        let court = '';
+        let time = '';
+
+        // 1. スコアボードからデータを取得（チーム名と得点）
+        if (gamesData && gamesData.games) {
+            const games = gamesData.games.filter(g =>
+                getSafeValue(g, 'gameNum', 'gameNumber', 'game_num') === gameNum
+            );
+
+            if (games.length >= 2) {
+                team1Name = getSafeValue(games[0], 'team', 'homeTeam', 'topTeam');
+                team2Name = getSafeValue(games[1], 'team', 'awayTeam', 'bottomTeam');
+                team1Score = getSafeValue(games[0], 'total', 'homeTotal', 'topTotal') || 0;
+                team2Score = getSafeValue(games[1], 'total', 'awayTotal', 'bottomTotal') || 0;
+                status = getSafeValue(games[0], 'status', 'Status', 'STATUS') || '待機';
+                court = getSafeValue(games[0], 'court', 'Court', 'COURT') || '';
             }
+        }
+
+        // 2. スケジュールからコート・時間を取得
+        if (scheduleData[gameNum]) {
+            court = court || scheduleData[gameNum].court || '';
+            time = formatTime(getSafeValue(scheduleData[gameNum], 'time', 'startTime'));
+
+            // スコアボードにチーム名がない場合のみスケジュールから取得
+            if (!team1Name) {
+                team1Name = scheduleData[gameNum].team1;
+            }
+            if (!team2Name) {
+                team2Name = scheduleData[gameNum].team2;
+            }
+        }
+
+        // 3. データが何もない場合はnullを返す
+        if (!team1Name && !team2Name) {
             return null;
         }
 
-        const games = gamesData.games.filter(g =>
-            getSafeValue(g, 'gameNum', 'gameNumber', 'game_num') === gameNum
-        );
-
-        if (games.length < 2) {
-            if (scheduleData[gameNum]) {
-                return {
-                    gameNum: gameNum,
-                    court: scheduleData[gameNum].court || '',
-                    time: formatTime(getSafeValue(scheduleData[gameNum], 'time', 'startTime')),
-                    status: '待機',
-                    team1: {
-                        name: scheduleData[gameNum].team1 || '未定',
-                        score: null
-                    },
-                    team2: {
-                        name: scheduleData[gameNum].team2 || '未定',
-                        score: null
-                    }
-                };
-            }
-            return null;
-        }
+        // 4. プレースホルダーの判定と表示
+        // 重要: プレースホルダーでも実際のチーム名が入っていればそれを表示
+        const displayTeam1 = team1Name || '未定';
+        const displayTeam2 = team2Name || '未定';
 
         return {
             gameNum: gameNum,
-            court: getSafeValue(games[0], 'court', 'Court', 'COURT') || '',
-            time: formatTime(getSafeValue(scheduleData[gameNum], 'time', 'startTime')),
-            status: getSafeValue(games[0], 'status', 'Status', 'STATUS') || '待機',
+            court: court,
+            time: time,
+            status: status,
             team1: {
-                name: getSafeValue(games[0], 'team', 'homeTeam', 'topTeam') || '未定',
-                score: getSafeValue(games[0], 'total', 'homeTotal', 'topTotal') || 0
+                name: displayTeam1,
+                score: team1Score
             },
             team2: {
-                name: getSafeValue(games[1], 'team', 'awayTeam', 'bottomTeam') || '未定',
-                score: getSafeValue(games[1], 'total', 'awayTotal', 'bottomTotal') || 0
+                name: displayTeam2,
+                score: team2Score
             }
         };
     }
