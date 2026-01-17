@@ -514,47 +514,87 @@ const TournamentApp = (() => {
             }
         }
 
-        // 【新規追加】第2試合 → 第5試合
+        // 【修正】第2試合 → 第5試合（L字型・右折れ）
         if (gameNum === 5) {
             const match2Coords = CONFIG.MATCH_COORDINATES[2];
             if (match2Coords) {
-                const match2X = match2Coords.x + 50;
+                const match2X = match2Coords.x + 50; // 第2試合の中央X座標
                 const match2TopY = match2Coords.y - 40; // 第2試合の上端
-                const match5BottomY = matchCoords.y + 40; // 第5試合の下端
+                const match5X = matchCoords.x + 50; // 第5試合の中央X座標
+                const match5Y = matchCoords.y; // 第5試合の中央Y座標
+                const match5RightX = matchCoords.x + 50 + 90; // 第5試合の右端（幅180pxの半分=90px）
 
-                const lineHeight = match2TopY - match5BottomY;
-
+                // 縦線：第2試合の上端 → 第5試合の中央の高さまで
+                const vLineHeight = match2TopY - match5Y;
                 const vLine = document.createElement('div');
                 vLine.className = 'connector-line vertical';
                 vLine.style.left = match2X + 'px';
-                vLine.style.top = match5BottomY + 'px';
-                vLine.style.height = lineHeight + 'px';
+                vLine.style.top = match5Y + 'px';
+                vLine.style.height = vLineHeight + 'px';
                 vLine.style.backgroundColor = '#003366';
                 container.appendChild(vLine);
 
-                console.log('第2試合→第5試合 接続線作成:', { match2X, match2TopY, match5BottomY, lineHeight });
+                // 横線：第2試合のX座標 → 第5試合の右端（右に折れる）
+                const hLineWidth = match5RightX - match2X;
+                const hLine = document.createElement('div');
+                hLine.className = 'connector-line horizontal';
+                hLine.style.left = match2X + 'px';
+                hLine.style.top = match5Y + 'px';
+                hLine.style.width = hLineWidth + 'px';
+                hLine.style.backgroundColor = '#003366';
+                container.appendChild(hLine);
+
+                console.log('第2試合→第5試合 L字型接続線作成（右折れ）:', {
+                    match2X,
+                    match2TopY,
+                    match5X,
+                    match5Y,
+                    match5RightX,
+                    vLineHeight,
+                    hLineWidth
+                });
             }
         }
 
-        // 【新規追加】第3試合 → 第5試合
+        // 【修正】第3試合 → 第5試合（L字型・左折れ）
         if (gameNum === 5) {
             const match3Coords = CONFIG.MATCH_COORDINATES[3];
             if (match3Coords) {
-                const match3X = match3Coords.x + 50;
+                const match3X = match3Coords.x + 50; // 第3試合の中央X座標
                 const match3TopY = match3Coords.y - 40; // 第3試合の上端
-                const match5BottomY = matchCoords.y + 40; // 第5試合の下端
+                const match5X = matchCoords.x + 50; // 第5試合の中央X座標
+                const match5Y = matchCoords.y; // 第5試合の中央Y座標
+                const match5LeftX = matchCoords.x + 50 - 90; // 第5試合の左端（幅180pxの半分=90px）
 
-                const lineHeight = match3TopY - match5BottomY;
-
+                // 縦線：第3試合の上端 → 第5試合の中央の高さまで
+                const vLineHeight = match3TopY - match5Y;
                 const vLine = document.createElement('div');
                 vLine.className = 'connector-line vertical';
                 vLine.style.left = match3X + 'px';
-                vLine.style.top = match5BottomY + 'px';
-                vLine.style.height = lineHeight + 'px';
+                vLine.style.top = match5Y + 'px';
+                vLine.style.height = vLineHeight + 'px';
                 vLine.style.backgroundColor = '#003366';
                 container.appendChild(vLine);
 
-                console.log('第3試合→第5試合 接続線作成:', { match3X, match3TopY, match5BottomY, lineHeight });
+                // 横線：第5試合の左端 → 第3試合のX座標（左に折れる）
+                const hLineWidth = match3X - match5LeftX;
+                const hLine = document.createElement('div');
+                hLine.className = 'connector-line horizontal';
+                hLine.style.left = match5LeftX + 'px';
+                hLine.style.top = match5Y + 'px';
+                hLine.style.width = hLineWidth + 'px';
+                hLine.style.backgroundColor = '#003366';
+                container.appendChild(hLine);
+
+                console.log('第3試合→第5試合 L字型接続線作成（左折れ）:', {
+                    match3X,
+                    match3TopY,
+                    match5X,
+                    match5Y,
+                    match5LeftX,
+                    vLineHeight,
+                    hLineWidth
+                });
             }
         }
 
