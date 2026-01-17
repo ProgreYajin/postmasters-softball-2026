@@ -558,25 +558,45 @@ const TournamentApp = (() => {
             }
         }
 
-        // 【新規追加】第4試合 → 第7試合（決勝）
+        // 【修正】第4試合 → 第7試合（決勝）- L字型
         if (gameNum === 7) {
             const match4Coords = CONFIG.MATCH_COORDINATES[4];
             if (match4Coords) {
                 const match4X = match4Coords.x + 50;
                 const match4TopY = match4Coords.y - 40; // 第4試合の上端
-                const match7BottomY = matchCoords.y + 40; // 第7試合の下端
+                const match7X = matchCoords.x + 50; // 第7試合の中央
+                const match7Y = matchCoords.y; // 第7試合の中央Y座標
+                const match7LeftX = matchCoords.x + 50 - 90; // 第7試合の左端（幅180pxの半分=90px）
 
-                const lineHeight = match4TopY - match7BottomY;
-
+                // 縦線：第4試合の上端 → 第7試合の中央の高さまで
+                const vLineHeight = match4TopY - match7Y;
                 const vLine = document.createElement('div');
                 vLine.className = 'connector-line vertical';
                 vLine.style.left = match4X + 'px';
-                vLine.style.top = match7BottomY + 'px';
-                vLine.style.height = lineHeight + 'px';
+                vLine.style.top = match7Y + 'px';
+                vLine.style.height = vLineHeight + 'px';
                 vLine.style.backgroundColor = '#003366';
                 container.appendChild(vLine);
 
-                console.log('第4試合→第7試合 接続線作成:', { match4X, match4TopY, match7BottomY, lineHeight });
+                // 横線：第4試合のX座標 → 第7試合の左端
+                const hLineWidth = match7LeftX - match4X;
+                const hLine = document.createElement('div');
+                hLine.className = 'connector-line horizontal';
+                hLine.style.left = match4X + 'px';
+                hLine.style.top = match7Y + 'px';
+                hLine.style.width = hLineWidth + 'px';
+                hLine.style.backgroundColor = '#003366';
+                container.appendChild(hLine);
+
+                console.log('第4試合→第7試合 L字型接続線作成:', {
+                    match4X,
+                    match4TopY,
+                    match7X,
+                    match7Y,
+                    match7LeftX,
+                    vLineHeight,
+                    hLineWidth
+                });
             }
         }
 
