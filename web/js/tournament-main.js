@@ -318,7 +318,6 @@ const TournamentApp = (() => {
     }
 
     // ==================== 試合ブロック描画 ====================
-
     function renderMatchBlock(matchData, coords) {
         const block = document.createElement('div');
         block.className = 'match-block';
@@ -397,12 +396,27 @@ const TournamentApp = (() => {
         block.appendChild(label);
         block.appendChild(scoreLine);
 
-        if (matchData.time) {
-            const time = document.createElement('div');
-            time.className = 'match-time';
-            time.textContent = `${matchData.time} ${matchData.court}コート`;
-            block.appendChild(time);
+        // 【修正】状態に応じた表示
+        const statusInfo = document.createElement('div');
+        statusInfo.className = 'match-time';
+
+        if (matchData.status === '試合中') {
+            statusInfo.textContent = '⚾ 試合中';
+            statusInfo.classList.add('status-playing');
+        } else if (matchData.status === '終了') {
+            statusInfo.textContent = '✓ 試合終了';
+            statusInfo.classList.add('status-finished');
+        } else {
+            // 待機中は時間とコートを表示
+            if (matchData.time || matchData.court) {
+                statusInfo.textContent = `${matchData.time} ${matchData.court}コート`;
+            } else {
+                statusInfo.textContent = '待機中';
+            }
+            statusInfo.classList.add('status-waiting');
         }
+
+        block.appendChild(statusInfo);
 
         block.addEventListener('click', () => {
             openMatch(matchData.court, matchData.gameNum);
