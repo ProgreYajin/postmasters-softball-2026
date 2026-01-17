@@ -70,7 +70,7 @@ const CONFIG = {
         4: { x: 200, y: 500, round: 2, label: '第4試合（準決勝）' },  // 300 + 200
         5: { x: 725, y: 500, round: 2, label: '第5試合（準決勝）' },  // 300 + 200
         6: { x: 725, y: 300, round: 3, label: '第6試合（3位決定戦）', special: 'third' },  // 100 + 200
-        7: { x: 425, y: 300, round: 3, label: '第7試合（決勝）', special: 'final' }        // 100 + 200
+        7: { x: 825, y: 300, round: 3, label: '第7試合（決勝）', special: 'final' }        // 100 + 200
     },
 
     /**
