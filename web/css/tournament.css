@@ -140,7 +140,9 @@
     background-size: 50px 50px;
 }
 
-/* チームカード */
+/* ============================================================
+   チームカード（課題1対応：シードチームを通常表示に）
+   ============================================================ */
 .team-card {
     position: absolute;
     width: 120px;
@@ -163,10 +165,11 @@
     transform: translate(-50%, -50%) scale(1.05);
 }
 
+/* シードチームも通常表示（金色背景を削除） */
 .team-card.seed {
-    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-    border: 3px solid #ffa000;
-    box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
+    background: white;
+    border: 2px solid #003366;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* 優勝カード */
@@ -194,8 +197,9 @@
     margin-bottom: 5px;
 }
 
+/* シードチームのアイコンも通常色に */
 .team-card.seed .team-icon {
-    color: #856404;
+    color: inherit;
 }
 
 .team-name {
@@ -205,20 +209,20 @@
     text-align: center;
 }
 
+/* シードチームの名前も通常色に */
 .team-card.seed .team-name {
-    color: #856404;
-    font-size: 15px;
+    color: #003366;
+    font-size: 14px;
 }
 
+/* 星マークを非表示 */
 .seed-mark {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    font-size: 20px;
-    color: #ffa000;
+    display: none;
 }
 
-/* 試合ブロック */
+/* ============================================================
+   試合ブロック
+   ============================================================ */
 .match-block {
     position: absolute;
     width: 180px;
@@ -338,10 +342,18 @@
     font-size: 12px;
 }
 
+/* ============================================================
+   課題2対応：勝者チーム名の強調表示
+   ============================================================ */
 .match-team-name.winner {
-    color: #003366;
+    color: #d32f2f;
     font-weight: bold;
     font-size: 14px;
+}
+
+.match-team-name.winner::before {
+    content: '👑 ';
+    font-size: 12px;
 }
 
 .match-team-score {
@@ -363,6 +375,9 @@
     font-weight: normal;
 }
 
+/* ============================================================
+   試合ステータス表示
+   ============================================================ */
 .match-time {
     font-size: 10px;
     color: #999;
@@ -370,7 +385,29 @@
     margin-top: 8px;
 }
 
-/* 接続線 */
+/* 試合中の表示 */
+.match-time.status-playing {
+    color: #ff6b6b;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+/* 試合終了の表示 */
+.match-time.status-finished {
+    color: #388e3c;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+/* 待機中の表示 */
+.match-time.status-waiting {
+    color: #999;
+    font-size: 10px;
+}
+
+/* ============================================================
+   接続線
+   ============================================================ */
 .connector-line {
     position: absolute;
     background: #003366;
@@ -389,7 +426,15 @@
     width: 3px;
 }
 
-/* グリッド線 */
+/* 優勝への線（金色・太め） */
+.connector-line.champion-line {
+    background: #ffa000;
+    width: 3px;
+}
+
+/* ============================================================
+   グリッド線（開発用）
+   ============================================================ */
 .grid-overlay {
     position: absolute;
     top: 0;
@@ -595,6 +640,11 @@ body {
         font-size: 9px;
     }
 
+    .match-time.status-playing,
+    .match-time.status-finished {
+        font-size: 10px;
+    }
+
     .match-block:active {
         transform: translate(-50%, -50%) scale(0.96);
     }
@@ -663,47 +713,5 @@ body {
     .team-card,
     .match-block {
         transform: translate(-50%, -50%) translateZ(0);
-    }
-}
-
-/* ==================== 試合ステータス表示スタイル ==================== */
-
-/* 基本スタイル（既存） */
-.match-time {
-    font-size: 10px;
-    color: #999;
-    text-align: center;
-    margin-top: 8px;
-}
-
-/* 試合中の表示 */
-.match-time.status-playing {
-    color: #ff6b6b;
-    font-weight: bold;
-    font-size: 11px;
-}
-
-/* 試合終了の表示 */
-.match-time.status-finished {
-    color: #388e3c;
-    font-weight: bold;
-    font-size: 11px;
-}
-
-/* 待機中の表示 */
-.match-time.status-waiting {
-    color: #999;
-    font-size: 10px;
-}
-
-/* レスポンシブ対応 */
-@media (max-width: 768px) {
-    .match-time {
-        font-size: 9px;
-    }
-
-    .match-time.status-playing,
-    .match-time.status-finished {
-        font-size: 10px;
     }
 }
