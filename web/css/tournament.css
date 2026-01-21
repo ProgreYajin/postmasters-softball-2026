@@ -708,6 +708,91 @@ body {
     will-change: transform;
 }
 
+/* ============================================================
+   3位決定戦関連スタイル（tournament.cssに追加）
+   ============================================================ */
+
+/* 3位カード */
+.team-card.third-place-card {
+    background: linear-gradient(135deg, #ffecb3 0%, #ffb74d 100%);
+    border: 4px solid #cd7f32; /* 銅色 */
+    box-shadow: 0 8px 16px rgba(205, 127, 50, 0.5);
+    animation: third-place-glow 2s ease-in-out infinite;
+}
+
+@keyframes third-place-glow {
+    0%, 100% {
+        box-shadow: 0 8px 16px rgba(205, 127, 50, 0.5);
+    }
+    50% {
+        box-shadow: 0 12px 24px rgba(205, 127, 50, 0.8);
+    }
+}
+
+/* 3位への接続線（銅色） */
+.connector-line.third-place-line {
+    background: #cd7f32;
+    width: 3px;
+}
+
+/* 3位決定戦エリアの視覚的分離（オプション） */
+.third-place-area {
+    position: absolute;
+    left: 1050px;
+    top: 250px;
+    width: 400px;
+    height: 500px;
+    border: 2px dashed #cd7f32;
+    border-radius: 12px;
+    background: rgba(205, 127, 50, 0.05);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.third-place-area::before {
+    content: '3位決定戦';
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #cd7f32;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* 3位バナー（tournament.htmlに追加する場合） */
+.third-place-banner {
+    background: linear-gradient(135deg, #ffecb3 0%, #ffb74d 100%);
+    border-radius: 12px;
+    padding: 20px 15px;
+    margin-bottom: 15px;
+    margin-left: 0;
+    margin-right: 0;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(205, 127, 50, 0.3);
+}
+
+.third-place-medal {
+    font-size: 3em;
+    margin-bottom: 8px;
+}
+
+.third-place-label {
+    font-size: 1.1em;
+    color: #8d6e63;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.third-place-name {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+}
+
 @media (min-width: 769px) {
 
     .team-card,

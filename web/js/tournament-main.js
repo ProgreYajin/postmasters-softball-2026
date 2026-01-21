@@ -252,6 +252,7 @@ const TournamentApp = (() => {
         });
 
         updateChampion();
+        updateThirdPlace();
         initZoomControl();
     }
 
@@ -315,6 +316,62 @@ const TournamentApp = (() => {
         card.appendChild(name);
 
         return card;
+    }
+
+    // ==================== 3位カード描画（tournament-main.js に追加） ====================
+    /**
+     * 3位カードを描画
+     * renderTournament()内で呼び出す
+     */
+    function renderThirdPlaceCard() {
+        const thirdPlaceMatch = CONFIG.MATCH_COORDINATES[6];
+        if (!thirdPlaceMatch) return null;
+    
+        const card = document.createElement('div');
+        card.className = 'team-card third-place-card';
+        card.style.left = (thirdPlaceMatch.x + 50) + 'px';
+        card.style.top = (thirdPlaceMatch.y - 200) + 'px'; // 第6試合の200px上
+    
+        const icon = document.createElement('div');
+        icon.className = 'team-icon';
+        icon.textContent = '🥉'; // 銅メダル
+        icon.style.fontSize = '32px';
+    
+        const name = document.createElement('div');
+        name.className = 'team-name';
+        name.textContent = '3位';
+        name.style.fontSize = '18px';
+        name.style.fontWeight = 'bold';
+    
+        card.appendChild(icon);
+        card.appendChild(name);
+    
+        return card;
+    }
+
+    // ==================== 3位表示の更新 ====================
+    
+    /**
+     * 3位決定戦が終了したら3位チーム名を表示
+     */
+    function updateThirdPlace() {
+        const thirdPlaceMatch = getMatchData(6);
+        const thirdPlaceSection = document.getElementById('thirdPlaceSection');
+        const thirdPlaceName = document.getElementById('thirdPlaceName');
+    
+        // HTML側にセクションがない場合は作成しない
+        if (!thirdPlaceSection || !thirdPlaceName) return;
+    
+        if (thirdPlaceMatch && thirdPlaceMatch.status === '終了') {
+            const winner = getWinner(thirdPlaceMatch);
+            if (winner) {
+                const thirdPlaceTeam = winner === 1 ? thirdPlaceMatch.team1.name : thirdPlaceMatch.team2.name;
+                thirdPlaceName.textContent = thirdPlaceTeam;
+                thirdPlaceSection.style.display = 'block';
+            }
+        } else {
+            thirdPlaceSection.style.display = 'none';
+        }
     }
 
     // ==================== 試合ブロック描画 ====================
@@ -722,6 +779,45 @@ const TournamentApp = (() => {
             container.appendChild(vLine);
 
             console.log('第7試合→優勝カード 接続線作成:', { match7X, match7TopY, championBottomY, lineHeight });
+        }
+
+        // 1. 3位決定戦のチームカード → 第6試合
+        if (gameNum === 6) {
+            const teams = Object.entries(CONFIG.TEAM_COORDINATES).filter(
+                ([_, coords]) => coords.gameNum === 6
+            );
+            
+            teams.forEach(([teamName, teamCoords]) => {
+                const teamX = teamCoords.x + 50;
+                const teamTopY = teamCoords.y - CONFIG.CARD_SIZE.height / 2;
+                const matchBottomY = matchCoords.y + 40;
+                const lineHeight = teamTopY - matchBottomY;
+                
+                const vLine = document.createElement('div');
+                vLine.className = 'connector-line vertical';
+                vLine.style.left = teamX + 'px';
+                vLine.style.top = matchBottomY + 'px';
+                vLine.style.height = lineHeight + 'px';
+                vLine.style.backgroundColor = '#003366';
+                container.appendChild(vLine);
+            });
+        }
+        
+        // 2. 第6試合 → 3位カード
+        if (gameNum === 6) {
+            const match6X = matchCoords.x + 50;
+            const match6TopY = matchCoords.y - 40;
+            const thirdPlaceBottomY = matchCoords.y - 200 + 40;
+            const lineHeight = match6TopY - thirdPlaceBottomY;
+            
+            const vLine = document.createElement('div');
+            vLine.className = 'connector-line vertical third-place-line';
+            vLine.style.left = match6X + 'px';
+            vLine.style.top = thirdPlaceBottomY + 'px';
+            vLine.style.height = lineHeight + 'px';
+            vLine.style.backgroundColor = '#cd7f32'; // 銅色
+            vLine.style.width = '3px';
+            container.appendChild(vLine);
         }
     }
 
