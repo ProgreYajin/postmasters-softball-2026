@@ -233,6 +233,12 @@ const TournamentApp = (() => {
             container.appendChild(championCard);
         }
 
+        // 3位カードを追加
+        const thirdPlaceCard = renderThirdPlaceCard();
+        if (thirdPlaceCard) {
+            container.appendChild(thirdPlaceCard);
+        }
+
         Object.entries(CONFIG.MATCH_COORDINATES).forEach(([gameNum, coords]) => {
             const matchData = getMatchData(parseInt(gameNum));
             if (matchData) {
@@ -326,31 +332,31 @@ const TournamentApp = (() => {
     function renderThirdPlaceCard() {
         const thirdPlaceMatch = CONFIG.MATCH_COORDINATES[6];
         if (!thirdPlaceMatch) return null;
-    
+
         const card = document.createElement('div');
         card.className = 'team-card third-place-card';
         card.style.left = (thirdPlaceMatch.x + 50) + 'px';
         card.style.top = (thirdPlaceMatch.y - 200) + 'px'; // 第6試合の200px上
-    
+
         const icon = document.createElement('div');
         icon.className = 'team-icon';
         icon.textContent = '🥉'; // 銅メダル
         icon.style.fontSize = '32px';
-    
+
         const name = document.createElement('div');
         name.className = 'team-name';
         name.textContent = '3位';
         name.style.fontSize = '18px';
         name.style.fontWeight = 'bold';
-    
+
         card.appendChild(icon);
         card.appendChild(name);
-    
+
         return card;
     }
 
     // ==================== 3位表示の更新 ====================
-    
+
     /**
      * 3位決定戦が終了したら3位チーム名を表示
      */
@@ -358,10 +364,10 @@ const TournamentApp = (() => {
         const thirdPlaceMatch = getMatchData(6);
         const thirdPlaceSection = document.getElementById('thirdPlaceSection');
         const thirdPlaceName = document.getElementById('thirdPlaceName');
-    
+
         // HTML側にセクションがない場合は作成しない
         if (!thirdPlaceSection || !thirdPlaceName) return;
-    
+
         if (thirdPlaceMatch && thirdPlaceMatch.status === '終了') {
             const winner = getWinner(thirdPlaceMatch);
             if (winner) {
@@ -786,13 +792,13 @@ const TournamentApp = (() => {
             const teams = Object.entries(CONFIG.TEAM_COORDINATES).filter(
                 ([_, coords]) => coords.gameNum === 6
             );
-            
+
             teams.forEach(([teamName, teamCoords]) => {
                 const teamX = teamCoords.x + 50;
                 const teamTopY = teamCoords.y - CONFIG.CARD_SIZE.height / 2;
                 const matchBottomY = matchCoords.y + 40;
                 const lineHeight = teamTopY - matchBottomY;
-                
+
                 const vLine = document.createElement('div');
                 vLine.className = 'connector-line vertical';
                 vLine.style.left = teamX + 'px';
@@ -802,14 +808,14 @@ const TournamentApp = (() => {
                 container.appendChild(vLine);
             });
         }
-        
+
         // 2. 第6試合 → 3位カード
         if (gameNum === 6) {
             const match6X = matchCoords.x + 50;
             const match6TopY = matchCoords.y - 40;
             const thirdPlaceBottomY = matchCoords.y - 200 + 40;
             const lineHeight = match6TopY - thirdPlaceBottomY;
-            
+
             const vLine = document.createElement('div');
             vLine.className = 'connector-line vertical third-place-line';
             vLine.style.left = match6X + 'px';
