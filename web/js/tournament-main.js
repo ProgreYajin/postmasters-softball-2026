@@ -1065,7 +1065,7 @@ const TournamentApp = (() => {
         startAutoRefresh() {
             if (autoRefreshInterval) clearInterval(autoRefreshInterval);
 
-            const interval = CONFIG?.AUTO_REFRESH_INTERVAL || 60000;
+            const interval = CONFIG.AUTO_REFRESH_INTERVAL || 60000;
             autoRefreshInterval = setInterval(() => fetchTournamentData(), interval);
         },
 
