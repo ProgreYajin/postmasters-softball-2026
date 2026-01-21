@@ -1,11 +1,5 @@
 /**
- * アプリケーション設定ファイル - 座標調整版
- * 
- * 変更点:
- * 1. 全体を1段上に移動（Y座標を-200）
- * 2. 敗者のチームカードを第4試合の行に配置（Y: 500 → 300）
- * 3. 第6試合を第7試合と同じ行に配置（Y: 500 → 100）
- * 4. 敗者のチームカードを真ん中に少し寄せる（X: 1100/1300 → 1150/1250）
+ * アプリケーション設定ファイル
  */
 
 const CONFIG = {
@@ -25,49 +19,38 @@ const CONFIG = {
 
     /**
      * チーム座標マッピング
-     * 
-     * 調整内容:
-     * - メインのチームカード: Y: 900 → 700（200px上）
-     * - 3位決定戦の敗者カード: Y: 700 → 500（準決勝と同じ行）
-     * - 3位決定戦の敗者カードX座標: 真ん中に50pxずつ寄せる
      */
     TEAM_COORDINATES: {
         // メイントーナメントのチーム（Y: 700）
-        '南部': { x: 50, y: 700, isSeed: true, gameNum: null },
-        '東南': { x: 200, y: 700, isSeed: false, gameNum: 1 },
-        '中部': { x: 350, y: 700, isSeed: false, gameNum: 1 },
-        '印旛': { x: 500, y: 700, isSeed: false, gameNum: 2 },
-        '西部': { x: 650, y: 700, isSeed: false, gameNum: 2 },
-        '東部': { x: 800, y: 700, isSeed: false, gameNum: 3 },
-        '北部': { x: 950, y: 700, isSeed: false, gameNum: 3 },
+        '南部': { x: 50, y: 900, isSeed: true, gameNum: null },
+        '東南': { x: 200, y: 900, isSeed: false, gameNum: 1 },
+        '中部': { x: 350, y: 900, isSeed: false, gameNum: 1 },
+        '印旛': { x: 500, y: 900, isSeed: false, gameNum: 2 },
+        '西部': { x: 650, y: 900, isSeed: false, gameNum: 2 },
+        '東部': { x: 800, y: 900, isSeed: false, gameNum: 3 },
+        '北部': { x: 950, y: 900, isSeed: false, gameNum: 3 },
 
         // 3位決定戦用チームカード（Y: 500 = 準決勝と同じ行、真ん中に寄せる）
-        '第4試合敗者': { x: 1150, y: 500, isSeed: false, gameNum: 6, position: 'team1' },
-        '第5試合敗者': { x: 1250, y: 500, isSeed: false, gameNum: 6, position: 'team2' }
+        '第4試合敗者': { x: 1050, y: 700, isSeed: false, gameNum: 6, position: 'team1' },
+        '第5試合敗者': { x: 1300, y: 700, isSeed: false, gameNum: 6, position: 'team2' }
     },
 
     /**
      * 試合ブロック座標
-     * 
-     * 調整内容:
-     * - 1回戦: Y: 700 → 500（200px上）
-     * - 準決勝: Y: 500 → 300（200px上）
-     * - 決勝戦: Y: 300 → 100（200px上）
-     * - 3位決定戦: Y: 500 → 100（決勝戦と同じ行）
      */
     MATCH_COORDINATES: {
         // 1回戦（Y: 500）
-        1: { x: 275, y: 500, round: 1, label: '第1試合' },
-        2: { x: 575, y: 500, round: 1, label: '第2試合' },
-        3: { x: 875, y: 500, round: 1, label: '第3試合' },
+        1: { x: 275, y: 700, round: 1, label: '第1試合' },
+        2: { x: 575, y: 700, round: 1, label: '第2試合' },
+        3: { x: 875, y: 700, round: 1, label: '第3試合' },
 
         // 準決勝（Y: 300）
-        4: { x: 200, y: 300, round: 2, label: '第4試合（準決勝）' },
-        5: { x: 725, y: 300, round: 2, label: '第5試合（準決勝）' },
+        4: { x: 200, y: 500, round: 2, label: '第4試合（準決勝）' },
+        5: { x: 725, y: 500, round: 2, label: '第5試合（準決勝）' },
 
         // 決勝戦と3位決定戦（Y: 100 = 同じ行）
-        6: { x: 1200, y: 100, round: 3, label: '第6試合（3位決定戦）', special: 'third' },
-        7: { x: 425, y: 100, round: 3, label: '第7試合（決勝）', special: 'final' }
+        6: { x: 1175, y: 300, round: 3, label: '第6試合（3位決定戦）', special: 'third' },
+        7: { x: 425, y: 300, round: 3, label: '第7試合（決勝）', special: 'final' }
     },
 
     /**
@@ -76,7 +59,7 @@ const CONFIG = {
      */
     THIRD_PLACE_CARD: {
         x: 1200,
-        y: -100,  // 第6試合(Y:100)の200px上
+        y: 100,  // 第6試合(Y:100)の200px上
         label: '3位'
     },
 
