@@ -1,98 +1,96 @@
 /**
- * アプリケーション設定ファイル
- * APIエンドポイント、定数などを一元管理
+ * アプリケーション設定ファイル - 座標調整版
+ * 
+ * 変更点:
+ * 1. 全体を1段上に移動（Y座標を-200）
+ * 2. 敗者のチームカードを第4試合の行に配置（Y: 500 → 300）
+ * 3. 第6試合を第7試合と同じ行に配置（Y: 500 → 100）
+ * 4. 敗者のチームカードを真ん中に少し寄せる（X: 1100/1300 → 1150/1250）
  */
 
 const CONFIG = {
     // ==================== APIエンドポイント ====================
 
-    /**
-     * スタッフ用BOTのAPI URL
-     * スコアボード、試合予定、チーム名簿データを取得
-     */
     STAFF_API_URL: 'https://script.google.com/macros/s/AKfycby17_LC3yqT-_t16_nBkoXyZ7ZL8ku1cD__kCP5oF3VhVUaN3khClsffH70IaMt058/exec',
-
-    /**
-     * 観客用BOTのAPI URL
-     * 写真ギャラリーデータを取得
-     */
     AUDIENCE_API_URL: 'https://script.google.com/macros/s/AKfycbyuzbb9txRNAsHRbVcmmB17tROBnOii87QtP13KcfoTMk4tSLeJ9tmT5IwHUHa1omS6uw/exec',
 
     // ==================== 定数 ====================
 
-    /**
-     * 自動更新の間隔（ミリ秒）
-     * デフォルト: 60000ms = 60秒
-     */
     AUTO_REFRESH_INTERVAL: 60000,
-
-    /**
-     * 手動更新後の待機時間（ミリ秒）
-     * デフォルト: 2000ms = 2秒
-     */
     REFRESH_TIMEOUT: 2000,
-
-    /**
-     * 表示するイニング数
-     * デフォルト: 6イニング
-     */
     MAX_INNINGS: 6,
-
-    /**
-     * プレースホルダー判定の正規表現パターン
-     * チーム名が未確定かどうかを判定
-     */
     PLACEHOLDER_PATTERNS: /第\d+試合(勝者|敗者)|TBD|未定|待機中/,
 
-    // ==================== トーナメント表設定 ====================
+    // ==================== トーナメント表設定（座標調整版） ====================
 
     /**
-     * トーナメント表：チーム座標マッピング
-     * ※ デフォルト値（APIが取得できない場合のバックアップ）
+     * チーム座標マッピング
+     * 
+     * 調整内容:
+     * - メインのチームカード: Y: 900 → 700（200px上）
+     * - 3位決定戦の敗者カード: Y: 700 → 500（準決勝と同じ行）
+     * - 3位決定戦の敗者カードX座標: 真ん中に50pxずつ寄せる
      */
     TEAM_COORDINATES: {
-        '南部': { x: 50, y: 900, isSeed: true, gameNum: null },
-        '東南': { x: 200, y: 900, isSeed: false, gameNum: 1 },
-        '中部': { x: 350, y: 900, isSeed: false, gameNum: 1 },
-        '印旛': { x: 500, y: 900, isSeed: false, gameNum: 2 },
-        '西部': { x: 650, y: 900, isSeed: false, gameNum: 2 },
-        '東部': { x: 800, y: 900, isSeed: false, gameNum: 3 },
-        '北部': { x: 950, y: 900, isSeed: false, gameNum: 3 }
+        // メイントーナメントのチーム（Y: 700）
+        '南部': { x: 50, y: 700, isSeed: true, gameNum: null },
+        '東南': { x: 200, y: 700, isSeed: false, gameNum: 1 },
+        '中部': { x: 350, y: 700, isSeed: false, gameNum: 1 },
+        '印旛': { x: 500, y: 700, isSeed: false, gameNum: 2 },
+        '西部': { x: 650, y: 700, isSeed: false, gameNum: 2 },
+        '東部': { x: 800, y: 700, isSeed: false, gameNum: 3 },
+        '北部': { x: 950, y: 700, isSeed: false, gameNum: 3 },
+
+        // 3位決定戦用チームカード（Y: 500 = 準決勝と同じ行、真ん中に寄せる）
+        '第4試合敗者': { x: 1150, y: 500, isSeed: false, gameNum: 6, position: 'team1' },
+        '第5試合敗者': { x: 1250, y: 500, isSeed: false, gameNum: 6, position: 'team2' }
     },
 
     /**
-     * トーナメント表：試合ブロック座標
+     * 試合ブロック座標
+     * 
+     * 調整内容:
+     * - 1回戦: Y: 700 → 500（200px上）
+     * - 準決勝: Y: 500 → 300（200px上）
+     * - 決勝戦: Y: 300 → 100（200px上）
+     * - 3位決定戦: Y: 500 → 100（決勝戦と同じ行）
      */
     MATCH_COORDINATES: {
-        1: { x: 275, y: 700, round: 1, label: '第1試合' },      // 500 + 200
-        2: { x: 575, y: 700, round: 1, label: '第2試合' },      // 500 + 200
-        3: { x: 875, y: 700, round: 1, label: '第3試合' },      // 500 + 200
-        4: { x: 200, y: 500, round: 2, label: '第4試合（準決勝）' },  // 300 + 200
-        5: { x: 725, y: 500, round: 2, label: '第5試合（準決勝）' },  // 300 + 200
-        6: { x: 875, y: 300, round: 3, label: '第6試合（3位決定戦）', special: 'third' },  // 100 + 200
-        7: { x: 425, y: 300, round: 3, label: '第7試合（決勝）', special: 'final' }        // 100 + 200
+        // 1回戦（Y: 500）
+        1: { x: 275, y: 500, round: 1, label: '第1試合' },
+        2: { x: 575, y: 500, round: 1, label: '第2試合' },
+        3: { x: 875, y: 500, round: 1, label: '第3試合' },
+
+        // 準決勝（Y: 300）
+        4: { x: 200, y: 300, round: 2, label: '第4試合（準決勝）' },
+        5: { x: 725, y: 300, round: 2, label: '第5試合（準決勝）' },
+
+        // 決勝戦と3位決定戦（Y: 100 = 同じ行）
+        6: { x: 1200, y: 100, round: 3, label: '第6試合（3位決定戦）', special: 'third' },
+        7: { x: 425, y: 100, round: 3, label: '第7試合（決勝）', special: 'final' }
     },
 
     /**
-     * トーナメント表：SVGキャンバスサイズ
+     * 3位カード座標
+     * 第6試合の200px上（優勝カードと対称）
      */
+    THIRD_PLACE_CARD: {
+        x: 1200,
+        y: -100,  // 第6試合(Y:100)の200px上
+        label: '3位'
+    },
+
     TOURNAMENT_CANVAS: {
         width: 1000,
         height: 1000,
         viewBox: '0 0 1000 1000'
     },
 
-    /**
-     * トーナメント表：カードサイズ
-     */
     CARD_SIZE: {
         width: 120,
         height: 80
     },
 
-    /**
-     * トーナメント表：チームアイコン
-     */
     TEAM_ICONS: {
         '南部': '🏆',
         '東南': '⚾',
@@ -100,44 +98,31 @@ const CONFIG = {
         '印旛': '⭐',
         '西部': '⚡',
         '東部': '🎯',
-        '北部': '🔥'
+        '北部': '🔥',
+        '第4試合敗者': '📍',
+        '第5試合敗者': '📍'
     },
 
     // ==================== ヘルパーメソッド ====================
 
-    /**
-     * スタッフAPIが設定されているか確認
-     */
     isStaffApiConfigured() {
         return this.STAFF_API_URL &&
             !this.STAFF_API_URL.includes('YOUR_STAFF_SCRIPT_ID');
     },
 
-    /**
-     * 観客APIが設定されているか確認
-     */
     isAudienceApiConfigured() {
         return this.AUDIENCE_API_URL &&
             !this.AUDIENCE_API_URL.includes('YOUR_AUDIENCE_SCRIPT_ID');
     },
 
-    /**
-     * 旧コードとの互換性のためのエイリアス
-     */
     isApiConfigured() {
         return this.isStaffApiConfigured();
     },
 
-    /**
-     * 旧コードとの互換性のためのエイリアス
-     */
     get API_URL() {
         return this.STAFF_API_URL;
     },
 
-    /**
-     * JSONキーの値を安全に取得（大文字小文字対応）
-     */
     getSafeValue(obj, ...keyVariants) {
         if (!obj || typeof obj !== 'object') return undefined;
         for (const key of keyVariants) {
@@ -148,9 +133,6 @@ const CONFIG = {
         return undefined;
     },
 
-    /**
-     * HTMLエスケープ（XSS対策）
-     */
     escapeHtml(str) {
         if (!str) return '';
         const div = document.createElement('div');
@@ -158,26 +140,16 @@ const CONFIG = {
         return div.innerHTML;
     },
 
-    /**
-     * プレースホルダーかどうか判定
-     */
     isPlaceholder(teamName) {
         if (!teamName) return true;
         return this.PLACEHOLDER_PATTERNS.test(teamName);
     },
 
-    /**
-     * チームアイコンを取得
-     */
     getTeamIcon(teamName) {
         if (!teamName) return '📍';
         return this.TEAM_ICONS[teamName] || '📍';
     },
 
-    /**
-     * 【重要】APIから取得したチーム座標でTEAM_COORDINATESを更新
-     * この関数はtournament-main.jsから呼び出されます
-     */
     updateTeamCoordinates(apiTeams) {
         if (!Array.isArray(apiTeams) || apiTeams.length === 0) {
             console.warn('⚠️ トーナメント表データが空です。デフォルト値を使用します。');
