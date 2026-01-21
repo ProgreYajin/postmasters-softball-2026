@@ -30,36 +30,35 @@ const CONFIG = {
         '東部': { x: 800, y: 900, isSeed: false, gameNum: 3 },
         '北部': { x: 950, y: 900, isSeed: false, gameNum: 3 },
 
-        // 3位決定戦用チームカード（Y: 500 = 準決勝と同じ行、真ん中に寄せる）
-        '第4試合敗者': { x: 1050, y: 700, isSeed: false, gameNum: 6, position: 'team1' },
-        '第5試合敗者': { x: 1300, y: 700, isSeed: false, gameNum: 6, position: 'team2' }
+        // 3位決定戦用チームカード
+        '第4試合敗者': { x: 1050, y: 500, isSeed: false, gameNum: 6, position: 'team1' },
+        '第5試合敗者': { x: 1300, y: 500, isSeed: false, gameNum: 6, position: 'team2' }
     },
 
     /**
      * 試合ブロック座標
      */
     MATCH_COORDINATES: {
-        // 1回戦（Y: 500）
+        // 1回戦
         1: { x: 275, y: 700, round: 1, label: '第1試合' },
         2: { x: 575, y: 700, round: 1, label: '第2試合' },
         3: { x: 875, y: 700, round: 1, label: '第3試合' },
 
-        // 準決勝（Y: 300）
+        // 準決勝
         4: { x: 200, y: 500, round: 2, label: '第4試合（準決勝）' },
         5: { x: 725, y: 500, round: 2, label: '第5試合（準決勝）' },
 
-        // 決勝戦と3位決定戦（Y: 100 = 同じ行）
+        // 決勝戦と3位決定戦
         6: { x: 1175, y: 300, round: 3, label: '第6試合（3位決定戦）', special: 'third' },
         7: { x: 425, y: 300, round: 3, label: '第7試合（決勝）', special: 'final' }
     },
 
     /**
      * 3位カード座標
-     * 第6試合の200px上（優勝カードと対称）
      */
     THIRD_PLACE_CARD: {
         x: 1200,
-        y: 100,  // 第6試合(Y:100)の200px上
+        y: 100,
         label: '3位'
     },
 
