@@ -3,21 +3,6 @@
 ============================================================ */
 
 /* ============================================================
-ページヘッダー
-============================================================ */
-.schedule-page-header {
-background: white;
-border-bottom: 3px solid #003366;
-padding: 40px 20px;
-margin-bottom: 40px;
-}
-
-.schedule-page-header .page-header-content {
-max-width: 800px;
-margin: 0 auto;
-}
-
-/* ============================================================
 コンテナ
 ============================================================ */
 .schedule-container {
@@ -170,11 +155,6 @@ padding: 0 15px 20px;
 
 .section {
     padding: 20px;
-}
-
-.schedule-page-header {
-    padding: 20px 15px;
-    margin-bottom: 20px;
 }
 
 .schedule-item {
