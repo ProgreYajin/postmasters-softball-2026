@@ -1,0 +1,200 @@
+/* ============================================================
+スケジュールページ専用スタイル
+============================================================ */
+
+/* ============================================================
+ページヘッダー
+============================================================ */
+.schedule-page-header {
+background: white;
+border-bottom: 3px solid #003366;
+padding: 40px 20px;
+margin-bottom: 40px;
+}
+
+.schedule-page-header .page-header-content {
+max-width: 800px;
+margin: 0 auto;
+}
+
+/* ============================================================
+コンテナ
+============================================================ */
+.schedule-container {
+padding: 0 20px 40px;
+max-width: 800px;
+margin: 0 auto;
+}
+
+/* ============================================================
+セクション
+============================================================ */
+.section {
+background: white;
+border-radius: 8px;
+padding: 30px;
+margin-bottom: 25px;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+font-size: 1.4em;
+font-weight: bold;
+color: #003366;
+margin-bottom: 20px;
+padding-bottom: 12px;
+border-bottom: 2px solid #003366;
+}
+
+/* ============================================================
+ハイライトボックス
+============================================================ */
+.highlight {
+background: #e7f3ff;
+padding: 20px;
+border-radius: 8px;
+margin-bottom: 20px;
+border-left: 4px solid #003366;
+}
+
+.highlight-title {
+font-weight: bold;
+color: #003366;
+margin-bottom: 8px;
+font-size: 1.1em;
+}
+
+/* ============================================================
+スケジュールアイテム
+============================================================ */
+.schedule-item {
+padding: 15px 0;
+border-bottom: 1px solid #e0e0e0;
+display: flex;
+gap: 20px;
+}
+
+.schedule-item:last-child {
+border-bottom: none;
+}
+
+.time {
+font-weight: bold;
+color: #003366;
+min-width: 80px;
+font-size: 1.1em;
+flex-shrink: 0;
+}
+
+.event {
+flex: 1;
+color: #333;
+font-size: 1em;
+line-height: 1.6;
+}
+
+.schedule-note {
+font-size: 0.9em;
+color: #666;
+display: block;
+margin-top: 5px;
+}
+
+.schedule-warning {
+font-size: 0.9em;
+color: #ff6b6b;
+display: block;
+margin-top: 5px;
+}
+
+.venue-list {
+font-size: 0.9em;
+color: #666;
+display: block;
+margin-top: 5px;
+line-height: 1.8;
+}
+
+/* ============================================================
+インフォボックス
+============================================================ */
+.info-box {
+background: #f8f9fa;
+padding: 20px;
+border-radius: 8px;
+margin-top: 20px;
+}
+
+.info-box-title {
+font-weight: bold;
+color: #495057;
+margin-bottom: 10px;
+}
+
+.info-box-content {
+color: #666;
+line-height: 1.8;
+}
+
+.info-box-content strong {
+display: block;
+margin-top: 10px;
+color: #333;
+}
+
+.info-box-content strong:first-child {
+margin-top: 0;
+}
+
+.program-detail {
+margin-left: 20px;
+display: block;
+margin-top: 3px;
+}
+
+.program-item {
+margin-bottom: 15px;
+}
+
+.program-item:last-child {
+margin-bottom: 0;
+}
+
+/* ============================================================
+レスポンシブ対応
+============================================================ */
+@media (max-width: 768px) {
+.schedule-container {
+padding: 0 15px 20px;
+}
+
+.section {
+    padding: 20px;
+}
+
+.schedule-page-header {
+    padding: 20px 15px;
+    margin-bottom: 20px;
+}
+
+.schedule-item {
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 0;
+}
+
+.time {
+    min-width: auto;
+    font-size: 1em;
+}
+
+.event {
+    font-size: 0.95em;
+}
+
+.program-detail {
+    margin-left: 15px;
+    font-size: 0.9em;
+}
+
+}
