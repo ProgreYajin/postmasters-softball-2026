@@ -123,6 +123,8 @@
     touch-action: pan-x pan-y;
     overscroll-behavior-x: contain;
     overscroll-behavior-y: none;
+    height: 600px;
+    /* 1000px × 0.6 = 600px */
 }
 
 .tournament-area {
@@ -138,6 +140,8 @@
         repeating-linear-gradient(0deg, transparent, transparent 49px, #ddd 49px, #ddd 50px),
         repeating-linear-gradient(90deg, transparent, transparent 49px, #ddd 49px, #ddd 50px);
     background-size: 50px 50px;
+    transform: scale(0.6);
+    transform-origin: top left;
 }
 
 /* ============================================================
@@ -715,15 +719,19 @@ body {
 /* 3位カード */
 .team-card.third-place-card {
     background: linear-gradient(135deg, #ffecb3 0%, #ffb74d 100%);
-    border: 4px solid #cd7f32; /* 銅色 */
+    border: 4px solid #cd7f32;
+    /* 銅色 */
     box-shadow: 0 8px 16px rgba(205, 127, 50, 0.5);
     animation: third-place-glow 2s ease-in-out infinite;
 }
 
 @keyframes third-place-glow {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0 8px 16px rgba(205, 127, 50, 0.5);
     }
+
     50% {
         box-shadow: 0 12px 24px rgba(205, 127, 50, 0.8);
     }

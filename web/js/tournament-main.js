@@ -13,7 +13,7 @@ const TournamentApp = (() => {
     let autoRefreshInterval = null;
     let isRefreshing = false;
     let isDevelopmentMode = window.location.search.includes('dev=true');
-    let currentZoom = 1.0;
+    let currentZoom = 0.6;
 
     // ==================== ユーティリティ関数 ====================
 
@@ -974,6 +974,19 @@ const TournamentApp = (() => {
         const zoomButtons = document.querySelectorAll('.zoom-btn');
         const tournamentWrapper = document.getElementById('tournamentWrapper');
         const tournamentArea = document.getElementById('tournamentArea');
+
+        // ページ読み込み時に60%を適用
+        const initialZoom = 0.6;
+        tournamentArea.style.transform = `scale(${initialZoom})`;
+        tournamentArea.style.transformOrigin = 'top left';
+        const initialHeight = 1000 * initialZoom;
+        tournamentWrapper.style.height = `${initialHeight}px`;
+
+        // 60%ボタンをアクティブに
+        const zoom60Btn = document.querySelector('[data-zoom="0.6"]');
+        if (zoom60Btn) {
+            zoom60Btn.classList.add('active');
+        }
 
         zoomButtons.forEach(btn => {
             btn.addEventListener('click', () => {
