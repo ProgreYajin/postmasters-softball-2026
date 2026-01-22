@@ -1,9 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="2026年千葉県郵便局長ソフトボール大会のトーナメント表">
     <title>トーナメント表 | 2026年千葉県郵便局長ソフトボール大会</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/tournament.css">
@@ -38,57 +40,57 @@
         </div>
     </header>
 
-    <main class="app-main">
-        <section class="page-header">
-            <div class="page-header-content">
-                <h1 class="page-title">トーナメント表</h1>
-                <p class="page-subtitle">Tournament Bracket</p>
-            </div>
-        </section>
-
-        <section class="app-container tournament-page">
-            <!-- 優勝チーム表示 -->
-            <div id="championSection" style="display: none;">
-                <div class="champion-banner">
-                    <div class="champion-trophy">🏆</div>
-                    <div class="champion-label">優勝</div>
-                    <div class="champion-name" id="championName"></div>
-                </div>
-            </div>
-
-            <!-- トーナメント表本体 -->
-            <div class="tournament-wrapper" id="tournamentWrapper">
-                <div class="tournament-area" id="tournamentArea">
-                    <div class="loading">
-                        <div class="loading-spinner"></div>
-                        <div>データを読み込んでいます...</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ズームコントロール（モバイル専用） -->
-            <div class="zoom-control" id="zoomControl">
-                <div class="zoom-label">表示サイズ</div>
-                <div class="zoom-buttons">
-                    <button class="zoom-btn active" data-zoom="0.6" id="zoom60">60%</button>
-                    <button class="zoom-btn" data-zoom="0.8" id="zoom80">80%</button>
-                    <button class="zoom-btn" data-zoom="1.0" id="zoom100">100%</button>
-                    <button class="zoom-btn" data-zoom="1.2" id="zoom120">120%</button>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <button class="refresh-btn" id="refreshBtn" title="更新">🔄</button>
-
-    <footer class="app-footer">
-        <div class="footer-content">
-            <p class="copyright">© 2026 千葉県印旛地区郵便局長会</p>
+<main class="app-main">
+    <section class="page-header tournament-page-header">
+        <div class="page-header-content">
+            <h1 class="page-title">🏆 トーナメント表</h1>
         </div>
-    </footer>
+    </section>
 
-    <script src="js/config.js"></script>
-    <script src="js/tournament-main.js"></script>
+    <section class="app-container tournament-page">
+        <!-- 優勝チーム表示 -->
+        <div id="championSection" style="display: none;">
+            <div class="champion-banner">
+                <div class="champion-trophy">🏆</div>
+                <div class="champion-label">優勝</div>
+                <div class="champion-name" id="championName"></div>
+            </div>
+        </div>
+
+        <!-- トーナメント表本体 -->
+        <div class="tournament-wrapper" id="tournamentWrapper">
+            <div class="tournament-area" id="tournamentArea">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <div>データを読み込んでいます...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ズームコントロール（モバイル専用） -->
+        <div class="zoom-control" id="zoomControl">
+            <div class="zoom-label">表示サイズ</div>
+            <div class="zoom-buttons">
+                <button class="zoom-btn active" data-zoom="0.6" id="zoom60">60%</button>
+                <button class="zoom-btn" data-zoom="0.8" id="zoom80">80%</button>
+                <button class="zoom-btn" data-zoom="1.0" id="zoom100">100%</button>
+                <button class="zoom-btn" data-zoom="1.2" id="zoom120">120%</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<button class="refresh-btn" id="refreshBtn" title="更新">🔄</button>
+
+<footer class="app-footer">
+    <div class="footer-content">
+        <p class="copyright">© 2026 千葉県印旛地区郵便局長会</p>
+    </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/tournament-main.js"></script>
+
 </body>
 
 </html>
