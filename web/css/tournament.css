@@ -797,6 +797,10 @@ body {
     color: #333;
 }
 
+.grid-overlay {
+    display: none !important;
+}
+
 @media (min-width: 769px) {
 
     .team-card,
