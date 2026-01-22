@@ -1,345 +1,52 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="2026年千葉県郵便局長ソフトボール大会のスケジュール">
     <title>大会スケジュール | 2026年度千葉県郵便局長ソフトボール大会</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-        }
-        
-        /* ヘッダー（トップページと統一） */
-        header {
-            background: #003366;
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .header-top {
-            background: #002244;
-            padding: 12px 0;
-            font-size: 0.85em;
-        }
-        
-        .header-top-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .header-logo {
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
-        
-        .header-logo:hover {
-            opacity: 0.8;
-        }
-        
-        .header-logo img {
-            height: 35px;
-            width: auto;
-            display: block;
-        }
-        
-        .header-info {
-            color: #aaa;
-            font-size: 0.9em;
-        }
-        
-        .header-main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 15px 20px;
-            position: relative;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 25px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            padding-bottom: 5px;
-        }
-        
-        .nav-links::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 0.95em;
-            transition: opacity 0.3s;
-            white-space: nowrap;
-        }
-        
-        .nav-links a:hover {
-            opacity: 0.7;
-        }
-        
-        .nav-links a.active {
-            font-weight: bold;
-            border-bottom: 2px solid white;
-            padding-bottom: 2px;
-        }
-        
-        /* コンテンツ */
-        .container {
-            padding: 40px 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .page-title {
-            font-size: 2em;
-            font-weight: 300;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #003366;
-            letter-spacing: 1px;
-            color: #003366;
-        }
-        
-        .section {
-            background: white;
-            border-radius: 8px;
-            padding: 30px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        
-        .section-title {
-            font-size: 1.4em;
-            font-weight: bold;
-            color: #003366;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #003366;
-        }
-        
-        .schedule-item {
-            padding: 15px 0;
-            border-bottom: 1px solid #e0e0e0;
-            display: flex;
-            gap: 20px;
-        }
-        
-        .schedule-item:last-child {
-            border-bottom: none;
-        }
-        
-        .time {
-            font-weight: bold;
-            color: #003366;
-            min-width: 80px;
-            font-size: 1.1em;
-        }
-        
-        .event {
-            flex: 1;
-            color: #333;
-            font-size: 1em;
-            line-height: 1.6;
-        }
-        
-        .schedule-note {
-            font-size: 0.9em;
-            color: #666;
-            display: block;
-        }
-        
-        .schedule-warning {
-            font-size: 0.9em;
-            color: #ff6b6b;
-            display: block;
-        }
-        
-        .venue-list {
-            font-size: 0.9em;
-            color: #666;
-        }
-        
-        .highlight {
-            background: #e7f3ff;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #003366;
-        }
-        
-        .highlight-title {
-            font-weight: bold;
-            color: #003366;
-            margin-bottom: 8px;
-            font-size: 1.1em;
-        }
-        
-        .info-box {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        
-        .info-box-title {
-            font-weight: bold;
-            color: #495057;
-            margin-bottom: 10px;
-        }
-        
-        .info-box-content {
-            color: #666;
-            line-height: 1.8;
-        }
-        
-        .info-box-content strong {
-            display: block;
-            margin-top: 10px;
-        }
-        
-        .info-box-content strong:first-child {
-            margin-top: 0;
-        }
-        
-        .program-detail {
-            margin-left: 20px;
-            display: block;
-        }
-        
-        .program-item {
-            margin-bottom: 15px;
-        }
-        
-        .program-item:last-child {
-            margin-bottom: 0;
-        }
-        
-        /* フッター（トップページと統一） */
-        footer {
-            background: #002244;
-            color: white;
-            padding: 20px;
-            margin-top: 60px;
-            text-align: center;
-        }
-        
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .copyright {
-            font-size: 0.85em;
-            opacity: 0.6;
-        }
-        
-        /* スクロールインジケーター */
-        .scroll-indicator {
-            display: none;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 47px;
-            width: 30px;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2em;
-            color: white;
-            background-color: #003366;
-            cursor: pointer;
-            z-index: 10;
-        }
-        
-        .scroll-indicator.left {
-            left: 0;
-        }
-        
-        .scroll-indicator.right {
-            right: 0;
-        }
-        
-        /* レスポンシブ */
-        @media (max-width: 768px) {
-            .header-main {
-                overflow: hidden;
-            }
-            
-            .nav-links {
-                width: 100%;
-                justify-content: flex-start;
-                padding-bottom: 5px;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                flex-wrap: nowrap;
-            }
-            
-            .nav-links a {
-                flex-shrink: 0;
-            }
-            
-            .scroll-indicator.visible {
-                display: flex;
-            }
-            
-            .container {
-                padding: 20px 15px;
-            }
-            
-            .section {
-                padding: 20px;
-            }
-            
-            .page-title {
-                font-size: 1.5em;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/schedule.css">
 </head>
 <body>
-    <header>
+    <header class="app-header">
         <div class="header-top">
-            <div class="header-top-content">
-                <a href="#" onclick="goToTop(); return false;" class="header-logo">
-                    <img src="https://drive.google.com/thumbnail?id=1i01jLSCnme9KdDuBwL8MufLNGdeo_d0x" alt="全国郵便局長会">
+            <div class="header-container">
+                <a href="index.html" class="header-logo">
+                    <img src="img/logo.png" alt="全国郵便局長会" class="header-logo-img">
                 </a>
-                <p class="header-info">2026年郵便局長ソフトボール大会 | 2026.6.6</p>
+                <div class="header-info">
+                    <span>2026年千葉県郵便局長ソフトボール大会 | 2026.6.6</span>
+                </div>
             </div>
         </div>
         <div class="header-main">
-            <nav class="nav-links" id="navLinks">
-                <a href="#" onclick="openPage('scoreboard.html'); return false;">試合速報 / 試合結果</a>
-                <a href="#" onclick="openPage('schedule.html'); return false;" class="active">大会スケジュール</a>
-                <a href="#" onclick="openPage('tournament.html'); return false;">トーナメント表</a>
-                <a href="#" onclick="openPage('teams.html'); return false;">チーム・選手一覧</a>
-                <a href="#" onclick="openPage('venue.html'); return false;">会場案内・アクセス</a>
-                <a href="#" onclick="openPage('rules.html'); return false;">大会ルール・規約</a>
-                <a href="#" onclick="openPage('history.html'); return false;">優勝記録・歴史</a>
-            </nav>
-            <div class="scroll-indicator left" id="scrollIndicatorLeft">◀︎</div>
-            <div class="scroll-indicator right" id="scrollIndicatorRight">▶︎</div>
+            <div class="nav-wrapper">
+                <nav class="nav-links" id="navLinks">
+                    <a href="index.html" class="nav-link">ホーム</a>
+                    <a href="scoreboard.html" class="nav-link">試合速報 / 試合結果</a>
+                    <a href="gallery.html" class="nav-link">写真ギャラリー</a>
+                    <a href="schedule.html" class="nav-link">大会スケジュール</a>
+                    <a href="tournament.html" class="nav-link">トーナメント表</a>
+                    <a href="teams.html" class="nav-link">チーム・選手一覧</a>
+                    <a href="venue.html" class="nav-link">会場案内・アクセス</a>
+                    <a href="rules.html" class="nav-link">大会ルール・規約</a>
+                    <a href="history.html" class="nav-link">優勝記録・歴史</a>
+                </nav>
+            </div>
         </div>
     </header>
-    
-    <div class="container">
+
+```
+<div class="schedule-page-header">
+    <div class="page-header-content">
         <h1 class="page-title">📅 大会スケジュール</h1>
-        
+    </div>
+</div>
+
+<main class="app-main">
+    <div class="schedule-container">
         <div class="section">
             <div class="highlight">
                 <div class="highlight-title">📍 開催日時</div>
@@ -362,12 +69,18 @@
             
             <div class="schedule-item">
                 <div class="time">8:15</div>
-                <div class="event">受付開始<br><span class="schedule-note">場所：体育館入り口</span></div>
+                <div class="event">
+                    受付開始
+                    <span class="schedule-note">場所：体育館入り口</span>
+                </div>
             </div>
             
             <div class="schedule-item">
                 <div class="time">8:30</div>
-                <div class="event">監督会議（審判打ち合わせ）<br><span class="schedule-note">場所：体育館2F</span></div>
+                <div class="event">
+                    監督会議（審判打ち合わせ）
+                    <span class="schedule-note">場所：体育館2F</span>
+                </div>
             </div>
             
             <div class="schedule-item">
@@ -377,12 +90,18 @@
             
             <div class="schedule-item">
                 <div class="time">9:00</div>
-                <div class="event">開会式<br><span class="schedule-note">場所：体育館（室内練習場）</span></div>
+                <div class="event">
+                    開会式
+                    <span class="schedule-note">場所：体育館（室内練習場）</span>
+                </div>
             </div>
             
             <div class="schedule-item">
                 <div class="time">9:30</div>
-                <div class="event">開会式終了<br><span class="schedule-warning">※スパイク（捕指底＆金具ともに）不可<br>トレーニングシューズは可</span></div>
+                <div class="event">
+                    開会式終了
+                    <span class="schedule-warning">※スパイク（捕指底＆金具ともに）不可<br>トレーニングシューズは可</span>
+                </div>
             </div>
             
             <div class="schedule-item">
@@ -392,16 +111,24 @@
             
             <div class="schedule-item">
                 <div class="time">10:00</div>
-                <div class="event"><strong>始球式 & 第1回戦 開始</strong><br>
-                <span class="venue-list">・長嶋茂雄記念岩名球場<br>
-                #1 東南地区会 vs 中部地区会<br>
-                ・第二球場<br>
-                #2 印旛地区会 vs 西部地区会</span></div>
+                <div class="event">
+                    <strong>始球式 & 第1回戦 開始</strong>
+                    <span class="venue-list">
+                        ・長嶋茂雄記念岩名球場<br>
+                        #1 東南地区会 vs 中部地区会<br>
+                        ・第二球場<br>
+                        #2 印旛地区会 vs 西部地区会
+                    </span>
+                </div>
             </div>
             
             <div class="schedule-item">
                 <div class="time">11:00</div>
-                <div class="event">お弁当配布<br><span class="schedule-warning">※お金令の購入権が前途することができますので、ご了承ください。</span><span class="schedule-note">場所：体育館</span></div>
+                <div class="event">
+                    お弁当配布
+                    <span class="schedule-warning">※お金令の購入権が前途することができますので、ご了承ください。</span>
+                    <span class="schedule-note">場所：体育館</span>
+                </div>
             </div>
             
             <div class="schedule-item">
@@ -411,9 +138,13 @@
             
             <div class="schedule-item">
                 <div class="time">11:30</div>
-                <div class="event"><strong>第2回戦 開始</strong><br>
-                <span class="venue-list">・長嶋茂雄記念岩名球場<br>
-                #3 東部地区会 vs 北部地区会</span></div>
+                <div class="event">
+                    <strong>第2回戦 開始</strong>
+                    <span class="venue-list">
+                        ・長嶋茂雄記念岩名球場<br>
+                        #3 東部地区会 vs 北部地区会
+                    </span>
+                </div>
             </div>
             
             <div class="schedule-item">
@@ -423,30 +154,44 @@
             
             <div class="schedule-item">
                 <div class="time">13:00</div>
-                <div class="event"><strong>準決勝 開始</strong><br>
-                <span class="venue-list">・長嶋茂雄記念岩名球場<br>
-                #4 南部地区会 vs #1勝者<br>
-                ・第二球場<br>
-                #5 #2勝者 vs #3勝者</span></div>
+                <div class="event">
+                    <strong>準決勝 開始</strong>
+                    <span class="venue-list">
+                        ・長嶋茂雄記念岩名球場<br>
+                        #4 南部地区会 vs #1勝者<br>
+                        ・第二球場<br>
+                        #5 #2勝者 vs #3勝者
+                    </span>
+                </div>
             </div>
             
             <div class="schedule-item">
                 <div class="time">14:45</div>
-                <div class="event">決勝戦メンバー表提出<br>3位決定戦メンバー表提出</div>
+                <div class="event">
+                    決勝戦メンバー表提出<br>
+                    3位決定戦メンバー表提出
+                </div>
             </div>
             
             <div class="schedule-item">
                 <div class="time">15:00</div>
-                <div class="event"><strong>決勝戦開始 & 3位決定戦開始</strong><br>
-                <span class="venue-list">・長嶋茂雄記念岩名球場<br>
-                #6 #4勝者 vs #5勝者<br>
-                ・第二球場<br>
-                #7 #4敗者 vs #5敗者</span></div>
+                <div class="event">
+                    <strong>決勝戦開始 & 3位決定戦開始</strong>
+                    <span class="venue-list">
+                        ・長嶋茂雄記念岩名球場<br>
+                        #6 #4勝者 vs #5勝者<br>
+                        ・第二球場<br>
+                        #7 #4敗者 vs #5敗者
+                    </span>
+                </div>
             </div>
             
             <div class="schedule-item">
                 <div class="time">16:15</div>
-                <div class="event">閉会式<br><span class="schedule-note">場所：長嶋茂雄記念岩名球場</span></div>
+                <div class="event">
+                    閉会式
+                    <span class="schedule-note">場所：長嶋茂雄記念岩名球場</span>
+                </div>
             </div>
             
             <div class="schedule-item">
@@ -554,82 +299,16 @@
             </div>
         </div>
     </div>
+</main>
 
-    <footer>
-        <div class="footer-content">
-            <div class="copyright">
-                © 2025 Softball Tournament. All rights reserved.
-            </div>
-        </div>
-    </footer>
+<footer class="app-footer">
+    <div class="footer-content">
+        <p class="copyright">© 2026 千葉県印旛地区郵便局長会</p>
+    </div>
+</footer>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const API_URL = urlParams.get('api') || localStorage.getItem('STAFF_BOT_API_URL') || '';
-        
-        function goToTop() {
-            const params = new URLSearchParams();
-            if (API_URL) params.set('staff_api', API_URL);
-            window.location.href = `index.html?${params.toString()}`;
-        }
-        
-        function openPage(page) {
-            const params = new URLSearchParams();
-            if (API_URL) params.set('api', API_URL);
-            window.location.href = `${page}?${params.toString()}`;
-        }
-        
-        // スクロールインジケーターの制御
-        const navLinks = document.getElementById('navLinks');
-        const scrollIndicatorLeft = document.getElementById('scrollIndicatorLeft');
-        const scrollIndicatorRight = document.getElementById('scrollIndicatorRight');
-        
-        function updateScrollIndicator() {
-            if (!navLinks || !scrollIndicatorLeft || !scrollIndicatorRight) return;
+<script src="js/schedule.js"></script>
+```
 
-            const maxScroll = navLinks.scrollWidth - navLinks.clientWidth;
-            const currentScroll = navLinks.scrollLeft;
-            const threshold = 5;
-
-            // スクロールが必要ない場合は両方非表示
-            if (maxScroll <= threshold) {
-                scrollIndicatorLeft.classList.remove('visible');
-                scrollIndicatorRight.classList.remove('visible');
-                return;
-            }
-
-            // 左矢印の制御
-            if (currentScroll > threshold) {
-                scrollIndicatorLeft.classList.add('visible');
-            } else {
-                scrollIndicatorLeft.classList.remove('visible');
-            }
-
-            // 右矢印の制御
-            if (currentScroll < maxScroll - threshold) {
-                scrollIndicatorRight.classList.add('visible');
-            } else {
-                scrollIndicatorRight.classList.remove('visible');
-            }
-        }
-        
-        if (navLinks) {
-            navLinks.addEventListener('scroll', updateScrollIndicator);
-            window.addEventListener('resize', updateScrollIndicator);
-            updateScrollIndicator();
-        }
-        
-        if (scrollIndicatorLeft) {
-            scrollIndicatorLeft.addEventListener('click', () => {
-                navLinks.scrollBy({ left: -200, behavior: 'smooth' });
-            });
-        }
-        
-        if (scrollIndicatorRight) {
-            scrollIndicatorRight.addEventListener('click', () => {
-                navLinks.scrollBy({ left: 200, behavior: 'smooth' });
-            });
-        }
-    </script>
 </body>
 </html>
