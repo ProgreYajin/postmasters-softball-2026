@@ -14,29 +14,6 @@ const IndexApp = (() => {
     // ==================== ユーティリティ関数 ====================
 
     /**
-     * JSONキーの値を安全に取得
-     */
-    function getSafeValue(obj, ...keyVariants) {
-        if (!obj || typeof obj !== 'object') return undefined;
-        for (const key of keyVariants) {
-            if (key in obj && obj[key] !== null && obj[key] !== undefined) {
-                return obj[key];
-            }
-        }
-        return undefined;
-    }
-
-    /**
-     * HTMLエスケープ
-     */
-    function escapeHtml(str) {
-        if (!str) return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    }
-
-    /**
      * ステータスのクラスを取得
      */
     function getStatusClass(status) {
@@ -269,7 +246,6 @@ const IndexApp = (() => {
      */
     async function fetchGalleryPhotos() {
         if (!CONFIG || !CONFIG.isAudienceApiConfigured || !CONFIG.isAudienceApiConfigured()) {
-            // 観客APIが設定されていない場合はスキップ
             return;
         }
 
@@ -293,7 +269,6 @@ const IndexApp = (() => {
 
         } catch (error) {
             console.error('ギャラリー写真取得エラー:', error);
-            // エラーは無視（スライダーはプレースホルダーで表示）
         }
     }
 
@@ -340,7 +315,6 @@ const IndexApp = (() => {
         let contentHtml = '';
 
         if (liveGames.length === 0) {
-            // 試合中がない場合は次の試合のみ表示
             showNextGameInfo(gameGroups, scheduleData);
             return;
         }
@@ -356,8 +330,7 @@ const IndexApp = (() => {
             contentHtml += nextGameHtml;
         }
 
-        document.getElementById('content').innerHTML = contentHtml || 
-            `<div class="loading">試合データを処理中...</div>`;
+        document.getElementById('content').innerHTML = contentHtml || createLoadingHTML('試合データを処理中...');
     }
 
     /**
@@ -380,21 +353,17 @@ const IndexApp = (() => {
         const innings2 = getSafeValue(game2, 'innings') || [];
         let currentInning = '';
         
-        // 最後に得点が入ったイニングを探す
         for (let i = innings1.length - 1; i >= 0; i--) {
             const score1 = innings1[i];
             const score2 = innings2[i];
             if ((score1 !== null && score1 !== undefined && score1 !== '') || 
                 (score2 !== null && score2 !== undefined && score2 !== '')) {
-                // 表裏を判定：先攻チーム(game1)に得点があれば表、後攻チーム(game2)に得点があれば裏
-                // 両方に得点がある場合は裏とする（イニングが進んでいるため）
                 const topBottom = (score2 !== null && score2 !== undefined && score2 !== '') ? '裏' : '表';
                 currentInning = `${i + 1}回${topBottom}`;
                 break;
             }
         }
         
-        // イニング情報が取得できない場合、lastUpdateやcurrentInningキーから取得を試みる
         if (!currentInning) {
             const inningInfo = getSafeValue(game1, 'currentInning', 'current_inning', 'inning');
             const topBottomInfo = getSafeValue(game1, 'topBottom', 'top_bottom', 'half');
@@ -429,7 +398,6 @@ const IndexApp = (() => {
      * 次の試合カードをレンダリング（インライン表示用）
      */
     function renderNextGameCard(gameGroups, scheduleData = {}) {
-        // 待機中の試合を探す
         const waitingGames = Object.entries(gameGroups)
             .filter(([gameNum, gameList]) => {
                 if (gameList.length === 0) return false;
@@ -439,7 +407,6 @@ const IndexApp = (() => {
             .sort(([a], [b]) => parseInt(a) - parseInt(b));
 
         if (waitingGames.length === 0) {
-            // 待機中の試合がない = 全試合終了
             return `
                 <div class="next-game-card">
                     <div class="next-game-icon">🏁</div>
@@ -449,28 +416,22 @@ const IndexApp = (() => {
             `;
         }
 
-        // 次の試合（最初の待機中の試合）
         const [nextGameNum, nextGameList] = waitingGames[0];
         if (nextGameList.length >= 2) {
             const team1 = getTeamInfo(nextGameList[0], 'home');
             const team2 = getTeamInfo(nextGameList[1], 'away');
             const court = getSafeValue(nextGameList[0], 'court', 'Court', 'COURT');
             
-            // 試合予定データから開始時刻を取得
             let timeText = '';
             const scheduleGame = scheduleData[nextGameNum];
             if (scheduleGame) {
                 const startTime = getSafeValue(scheduleGame, 'time', 'startTime', 'StartTime', 'start_time');
                 
                 if (startTime) {
-                    // 文字列の場合
                     if (typeof startTime === 'string') {
-                        // すでに HH:MM 形式の場合
                         if (/^\d{1,2}:\d{2}$/.test(startTime)) {
                             timeText = `${startTime}開始予定`;
-                        }
-                        // ISO形式の日付文字列の場合
-                        else if (startTime.includes('T') || startTime.includes('-')) {
+                        } else if (startTime.includes('T') || startTime.includes('-')) {
                             try {
                                 const date = new Date(startTime);
                                 if (!isNaN(date.getTime())) {
@@ -478,21 +439,14 @@ const IndexApp = (() => {
                                     const minutes = String(date.getMinutes()).padStart(2, '0');
                                     timeText = `${hours}:${minutes}開始予定`;
                                 }
-                            } catch (e) {
-                                // パース失敗時は何もしない
-                            }
+                            } catch (e) {}
                         }
-                    }
-                    // 数値（Unix timestamp、Excel serial）の場合
-                    else if (typeof startTime === 'number') {
+                    } else if (typeof startTime === 'number') {
                         try {
-                            // Excelシリアル値の判定（1900年1月1日からの日数）
                             let date;
                             if (startTime > 40000 && startTime < 50000) {
-                                // Excelシリアル値 (例: 44000 = 2020年代)
                                 date = new Date((startTime - 25569) * 86400 * 1000);
                             } else {
-                                // Unix timestamp
                                 date = new Date(startTime);
                             }
                             
@@ -501,9 +455,7 @@ const IndexApp = (() => {
                                 const minutes = String(date.getMinutes()).padStart(2, '0');
                                 timeText = `${hours}:${minutes}開始予定`;
                             }
-                        } catch (e) {
-                            // パース失敗時は何もしない
-                        }
+                        } catch (e) {}
                     }
                 }
             }
@@ -537,7 +489,6 @@ const IndexApp = (() => {
             return;
         }
 
-        // 次の試合カードを表示
         const nextGameHtml = renderNextGameCard(gameGroups, scheduleData);
         document.getElementById('content').innerHTML = nextGameHtml || `
             <div class="next-game-card">
@@ -554,12 +505,7 @@ const IndexApp = (() => {
     function showEmptyContent(message) {
         const contentDiv = document.getElementById('content');
         if (!contentDiv) return;
-        
-        contentDiv.innerHTML = `
-            <div class="loading">
-                ${message}
-            </div>
-        `;
+        contentDiv.innerHTML = createEmptyContentHTML(message);
     }
 
     // ==================== パブリックAPI ====================
@@ -569,11 +515,8 @@ const IndexApp = (() => {
          * 初期化
          */
         init() {
-            // 初回データ取得
             fetchScores();
             fetchGalleryPhotos();
-
-            // 自動更新開始
             this.startAutoRefresh();
         },
 
@@ -610,53 +553,9 @@ const IndexApp = (() => {
 // ==================== 初期化 ====================
 document.addEventListener('DOMContentLoaded', () => {
     IndexApp.init();
-    
-    // ナビゲーションスクロール状態の監視
-    initNavScrollIndicator();
 });
 
 // ページを離れるときに自動更新を停止
 window.addEventListener('beforeunload', () => {
     IndexApp.stopAutoRefresh();
 });
-
-/**
- * ナビゲーションのスクロールインジケーターを初期化
- */
-function initNavScrollIndicator() {
-    const navLinks = document.getElementById('navLinks');
-    const navWrapper = document.getElementById('navWrapper');
-    
-    if (!navLinks || !navWrapper) return;
-    
-    function updateScrollIndicator() {
-        const scrollLeft = navLinks.scrollLeft;
-        const scrollWidth = navLinks.scrollWidth;
-        const clientWidth = navLinks.clientWidth;
-        const maxScroll = scrollWidth - clientWidth;
-        
-        // スクロール位置に応じてクラスを変更
-        if (scrollLeft <= 5) {
-            // 左端
-            navWrapper.classList.add('scroll-start');
-            navWrapper.classList.remove('scroll-middle', 'scroll-end');
-        } else if (scrollLeft >= maxScroll - 5) {
-            // 右端
-            navWrapper.classList.add('scroll-end');
-            navWrapper.classList.remove('scroll-start', 'scroll-middle');
-        } else {
-            // 中間
-            navWrapper.classList.add('scroll-middle');
-            navWrapper.classList.remove('scroll-start', 'scroll-end');
-        }
-    }
-    
-    // 初期状態を設定
-    updateScrollIndicator();
-    
-    // スクロールイベントを監視
-    navLinks.addEventListener('scroll', updateScrollIndicator);
-    
-    // ウィンドウリサイズ時も更新
-    window.addEventListener('resize', updateScrollIndicator);
-}

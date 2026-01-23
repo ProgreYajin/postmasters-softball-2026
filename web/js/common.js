@@ -71,6 +71,55 @@ function initNavigation(currentPage) {
 }
 
 /**
+ * ローディング表示を作成
+ * @returns {string} ローディングHTML
+ */
+function createLoadingHTML(message = 'データを読み込んでいます...') {
+    return `
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <div>${message}</div>
+        </div>
+    `;
+}
+
+/**
+ * 空コンテンツメッセージを作成
+ * @param {string} message - 表示メッセージ
+ * @returns {string} メッセージHTML
+ */
+function createEmptyContentHTML(message) {
+    return `
+        <div class="loading">
+            ${message}
+        </div>
+    `;
+}
+
+/**
+ * ユーティリティ: JSONキーの値を安全に取得
+ */
+function getSafeValue(obj, ...keyVariants) {
+    if (!obj || typeof obj !== 'object') return undefined;
+    for (const key of keyVariants) {
+        if (key in obj && obj[key] !== null && obj[key] !== undefined) {
+            return obj[key];
+        }
+    }
+    return undefined;
+}
+
+/**
+ * ユーティリティ: HTMLエスケープ
+ */
+function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+/**
  * ページ読み込み完了時の共通初期化処理
  */
 document.addEventListener('DOMContentLoaded', function() {
