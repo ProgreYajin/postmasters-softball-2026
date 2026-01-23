@@ -1,0 +1,215 @@
+/* ============================================================
+   試合速報ページ専用スタイル
+   ============================================================ */
+
+/* ============================================================
+   試合セクション
+   ============================================================ */
+.game-section {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s;
+}
+
+.game-section:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.game-section-header {
+    background: #003366;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.game-title {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+/* ============================================================
+   ステータスバッジ
+   ============================================================ */
+.status-badge {
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.status-badge.playing {
+    background: #ff6b6b;
+    color: white;
+    animation: pulse 2s infinite;
+}
+
+.status-badge.waiting {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.status-badge.finished {
+    background: #2ecc71;
+    color: white;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* ============================================================
+   スコアボード
+   ============================================================ */
+.scoreboard-wrapper {
+    padding: 20px;
+    overflow-x: auto;
+}
+
+.scoreboard table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 600px;
+}
+
+.scoreboard th,
+.scoreboard td {
+    padding: 12px 8px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-left: none;
+}
+
+.scoreboard th:first-child,
+.scoreboard td:first-child {
+    border-left: 1px solid #ddd;
+}
+
+.scoreboard th {
+    background: #f8f8f8;
+    color: #333;
+    font-weight: bold;
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+
+.scoreboard td {
+    background: white;
+    font-size: 1.1em;
+}
+
+.team-name {
+    text-align: left;
+    font-weight: bold;
+    color: #333;
+    width: 120px;
+    min-width: 120px;
+    padding: 12px 15px;
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    background-color: white !important;
+    border-right: 2px solid #ddd !important;
+}
+
+.team-name.placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+.scoreboard th.team-header {
+    position: sticky;
+    left: 0;
+    z-index: 11;
+    background-color: #f8f8f8 !important;
+    border-right: 2px solid #ddd !important;
+}
+
+.score-zero {
+    color: #999;
+}
+
+.score-positive {
+    color: #003366;
+    font-weight: bold;
+}
+
+.score-empty {
+    color: #ddd;
+}
+
+.total {
+    background: #fff3cd !important;
+    font-weight: bold;
+    font-size: 1.4em;
+    color: #856404;
+}
+
+/* ============================================================
+   ステータスメッセージ
+   ============================================================ */
+.status-message {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.status-message-icon {
+    font-size: 4em;
+    margin-bottom: 20px;
+}
+
+.status-message-text {
+    font-size: 1.3em;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.status-message-subtext {
+    font-size: 1em;
+    color: #999;
+}
+
+.status-message-subtext.placeholder {
+    font-style: italic;
+}
+
+/* ============================================================
+   レスポンシブ対応
+   ============================================================ */
+@media (max-width: 768px) {
+    .game-section-header {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .game-title {
+        font-size: 1.1em;
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .status-badge {
+        flex-shrink: 0;
+    }
+
+    .scoreboard table {
+        font-size: 0.9em;
+    }
+
+    .scoreboard th,
+    .scoreboard td {
+        padding: 8px 5px;
+    }
+}

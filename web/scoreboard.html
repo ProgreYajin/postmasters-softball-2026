@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -7,14 +6,14 @@
     <meta name="description" content="2026年千葉県郵便局長ソフトボール大会の試合速報ページです">
     <title>試合速報 | 2026年千葉県郵便局長ソフトボール大会</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/scoreboard.css">
 </head>
 <body>
     <header class="app-header">
         <div class="header-top">
             <div class="header-container">
                 <a href="index.html" class="header-logo">
-                    <img src="img/logo.png" alt="全国郵便局長会">
+                    <img src="img/logo.png" alt="全国郵便局長会" class="header-logo-img">
                 </a>
                 <div class="header-info">
                     <span>2026年千葉県郵便局長ソフトボール大会 | 2026.6.6</span>
@@ -38,35 +37,34 @@
         </div>
     </header>
     
-<main class="app-main">
-    <section class="page-header">
-        <div class="page-header-content">
-            <h1 class="page-title">試合速報 / 試合結果</h1>
-            <p class="page-subtitle">Live Score & Results</p>
-        </div>
-    </section>
-
-    <section class="app-container">
-        <div id="tabs"></div>
-        <div class="content" id="content">
-            <div class="loading">
-                <div class="loading-spinner"></div>
-                <div>データを読み込んでいます...</div>
+    <main class="app-main">
+        <section class="page-header">
+            <div class="page-header-content">
+                <h1 class="page-title">⚡ 試合速報 / 試合結果</h1>
             </div>
+        </section>
+
+        <section class="app-container">
+            <div id="tabs"></div>
+            <div class="content" id="content">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <div>データを読み込んでいます...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <button class="refresh-btn" id="refreshBtn" title="更新">🔄</button>
+
+    <footer class="app-footer">
+        <div class="footer-content">
+            <p class="copyright">© 2026 千葉県印旛地区郵便局長会</p>
         </div>
-    </section>
-</main>
+    </footer>
 
-<button class="refresh-btn" id="refreshBtn" title="更新">🔄</button>
-
-<footer class="app-footer">
-    <div class="footer-content">
-        <p class="copyright">© 2026 千葉県印旛地区郵便局長会</p>
-    </div>
-</footer>
-
-<script src="js/config.js"></script>
-<script src="js/scoreboard-app.js"></script>
-
+    <script src="js/config.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/scoreboard-app.js"></script>
 </body>
 </html>
