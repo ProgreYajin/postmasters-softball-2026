@@ -10,7 +10,7 @@ const CONFIG = {
 
     // ==================== 定数 ====================
 
-    AUTO_REFRESH_INTERVAL: 60000,
+    AUTO_REFRESH_INTERVAL: 0,
     REFRESH_TIMEOUT: 2000,
     MAX_INNINGS: 6,
     PLACEHOLDER_PATTERNS: /第\d+試合(勝者|敗者)|TBD|未定|待機中/,
