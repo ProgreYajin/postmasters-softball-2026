@@ -1,0 +1,176 @@
+/* ============================================================
+   大会ルール・規約ページ専用スタイル
+   ============================================================ */
+
+/* ============================================================
+   コンテナ
+   ============================================================ */
+.rules-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* ============================================================
+   セクション
+   ============================================================ */
+.section {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.section-header {
+    background: #f8f8f8;
+    padding: 20px;
+    border-bottom: 2px solid #003366;
+}
+
+.section-title {
+    font-size: 1.5em;
+    font-weight: 500;
+    color: #003366;
+    margin: 0;
+}
+
+.section-content {
+    padding: 30px;
+}
+
+/* ============================================================
+   ルールアイテム
+   ============================================================ */
+.rule-item {
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+.rule-item:last-child {
+    border-bottom: none;
+}
+
+.rule-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #003366;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 0.95em;
+    flex-shrink: 0;
+}
+
+.rule-text {
+    flex: 1;
+    color: #333;
+    line-height: 1.8;
+    font-size: 1.05em;
+}
+
+.rule-text strong {
+    color: #003366;
+    font-weight: 600;
+}
+
+/* ============================================================
+   警告ボックス
+   ============================================================ */
+.warning-box {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 20px;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+.warning-title {
+    font-weight: 600;
+    color: #856404;
+    margin-bottom: 10px;
+    font-size: 1.15em;
+}
+
+.warning-text {
+    color: #856404;
+    line-height: 1.8;
+}
+
+/* ============================================================
+   情報ボックス
+   ============================================================ */
+.info-box {
+    background: #e7f3ff;
+    border-left: 4px solid #2196F3;
+    padding: 20px;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+.info-title {
+    font-weight: 600;
+    color: #0d47a1;
+    margin-bottom: 10px;
+    font-size: 1.15em;
+}
+
+.info-text {
+    color: #0d47a1;
+    line-height: 1.8;
+}
+
+/* ============================================================
+   詳細リスト
+   ============================================================ */
+.detail-list {
+    background: #f8f9fa;
+    padding: 20px 25px;
+    border-radius: 4px;
+    margin: 15px 0;
+}
+
+.detail-list h3 {
+    font-size: 1.1em;
+    color: #003366;
+    margin-bottom: 15px;
+}
+
+.detail-list p {
+    line-height: 1.8;
+    color: #555;
+}
+
+/* ============================================================
+   レスポンシブ対応
+   ============================================================ */
+@media (max-width: 768px) {
+    .rules-container {
+        padding: 20px 15px;
+    }
+    
+    .section-content {
+        padding: 20px;
+    }
+    
+    .rule-item {
+        gap: 10px;
+    }
+    
+    .rule-number {
+        width: 28px;
+        height: 28px;
+        font-size: 0.85em;
+    }
+    
+    .rule-text {
+        font-size: 1em;
+    }
+}

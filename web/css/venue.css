@@ -1,0 +1,225 @@
+/* ============================================================
+   会場案内・アクセスページ専用スタイル
+   ============================================================ */
+
+/* ============================================================
+   コンテナ
+   ============================================================ */
+.venue-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* ============================================================
+   セクション
+   ============================================================ */
+.section {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.section-header {
+    background: #003366;
+    color: white;
+    padding: 15px 20px;
+}
+
+.section-title {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.section-content {
+    padding: 30px;
+}
+
+/* ============================================================
+   地図エリア
+   ============================================================ */
+.map-container {
+    width: 100%;
+    height: 400px;
+    background: #f0f0f0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.map-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* ============================================================
+   住所ボックス
+   ============================================================ */
+.address-box {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #003366;
+    margin-bottom: 20px;
+}
+
+.address-label {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.address-text {
+    font-size: 1.1em;
+    color: #333;
+    line-height: 1.8;
+}
+
+/* ============================================================
+   情報アイテム
+   ============================================================ */
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-icon {
+    width: 50px;
+    height: 50px;
+    background: #003366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    flex-shrink: 0;
+}
+
+.info-content {
+    flex: 1;
+}
+
+.info-title {
+    font-weight: bold;
+    color: #003366;
+    margin-bottom: 8px;
+    font-size: 1.1em;
+}
+
+.info-text {
+    color: #666;
+    line-height: 1.8;
+}
+
+/* ============================================================
+   施設グリッド
+   ============================================================ */
+.facility-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.facility-item {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s;
+}
+
+.facility-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.facility-icon {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.facility-name {
+    font-size: 0.95em;
+    color: #333;
+    font-weight: 500;
+}
+
+/* ============================================================
+   ボタン
+   ============================================================ */
+.btn-map {
+    width: 100%;
+    background: #003366;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-map:hover {
+    background: #004080;
+    transform: translateY(-2px);
+}
+
+/* ============================================================
+   注意事項リスト
+   ============================================================ */
+.notice-list {
+    list-style: none;
+    padding: 0;
+}
+
+.notice-list li {
+    padding: 12px 0;
+    padding-left: 30px;
+    position: relative;
+    line-height: 1.8;
+}
+
+.notice-list li:before {
+    content: "⚠️";
+    position: absolute;
+    left: 0;
+}
+
+/* ============================================================
+   レスポンシブ対応
+   ============================================================ */
+@media (max-width: 768px) {
+    .venue-container {
+        padding: 20px 15px;
+    }
+    
+    .section-content {
+        padding: 20px;
+    }
+    
+    .map-container {
+        height: 300px;
+    }
+    
+    .info-item {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .facility-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
