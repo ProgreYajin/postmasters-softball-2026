@@ -1,457 +1,342 @@
 // ============================================
-// 観客用BOT - Cloudflare R2対応版（改善版）
+// 観客用BOT - Cloudflare R2対応 (Refactored)
 // ============================================
 
-// プロパティを一度だけ読み込み（パフォーマンス改善）
 const PROPS = PropertiesService.getScriptProperties();
 const CONFIG = {
-LINE_ACCESS_TOKEN: PROPS.getProperty(‘LINE_ACCESS_TOKEN’),
-R2_UPLOAD_WORKER_URL: PROPS.getProperty(‘R2_UPLOAD_WORKER_URL’),
-WORKER_AUTH_TOKEN: PROPS.getProperty(‘WORKER_AUTH_TOKEN’),
-R2_PUBLIC_URL: PROPS.getProperty(‘R2_PUBLIC_URL’),
-MAX_IMAGE_SIZE_MB: 10 // 画像サイズ上限（MB）
+  LINE_ACCESS_TOKEN: PROPS.getProperty('LINE_ACCESS_TOKEN'),
+  CHANNEL_SECRET: PROPS.getProperty('CHANNEL_SECRET'), // ★追加: 署名検証用
+  R2_UPLOAD_WORKER_URL: PROPS.getProperty('R2_UPLOAD_WORKER_URL'),
+  WORKER_AUTH_TOKEN: PROPS.getProperty('WORKER_AUTH_TOKEN'),
+  MAX_IMAGE_SIZE_MB: 10
 };
 
-// 定数
-const SHEET_NAME = ‘写真投稿’;
+const SHEETS = {
+  PHOTOS: '写真投稿',
+  USERS: 'ユーザー一覧'
+};
+
 const MAX_IMAGE_SIZE_BYTES = CONFIG.MAX_IMAGE_SIZE_MB * 1024 * 1024;
 
 // ============================================
 // LINE Webhook受信
 // ============================================
 function doPost(e) {
-try {
-if (!e || !e.postData) {
-return ContentService.createTextOutput(JSON.stringify({status: ‘ok’}));
+  // 1. 署名検証 (セキュリティ)
+  if (!validateSignature(e)) {
+    return ContentService.createTextOutput('Invalid Signature')
+      .setMimeType(ContentService.MimeType.TEXT);
+  }
+
+  try {
+    if (!e || !e.postData) return ContentService.createTextOutput(JSON.stringify({ status: 'ok' }));
+
+    const json = JSON.parse(e.postData.contents);
+    const events = json.events;
+    if (!events) return ContentService.createTextOutput('ok');
+
+    events.forEach(event => {
+      const userId = event.source.userId;
+      const replyToken = event.replyToken;
+
+      // ★追加: ユーザー情報の保存・更新（ブロードキャスト用）
+      if (userId) saveUserIfNew(userId);
+
+      // ★追加: イベント重複チェック (キャッシュロック)
+      if (isEventProcessed(event.webhookEventId)) return;
+
+      if (event.type === 'message') {
+        if (event.message.type === 'image') {
+          // 画像処理実行
+          handleImageMessage(event.message.id, userId, replyToken);
+        } else if (event.message.type === 'text' && event.message.text.startsWith('[BROADCAST]')) {
+          // ブロードキャスト (管理者機能として実装すべきだが、今回は既存ロジックを踏襲)
+          const message = event.message.text.replace('[BROADCAST]', '').trim();
+          broadcastToAllUsers(message);
+        }
+      }
+    });
+
+    return ContentService.createTextOutput(JSON.stringify({ status: 'ok' }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    console.error('doPost Error:', error); // Loggerよりconsole.error推奨
+    // エラーでもLINE側には200を返して再送を防ぐのが定石
+    return ContentService.createTextOutput(JSON.stringify({ status: 'error' }));
+  }
 }
 
-```
-const json = JSON.parse(e.postData.contents);
-const events = json.events;
-
-if (!events) return ContentService.createTextOutput('ok');
-
-events.forEach(event => {
-  if (event.type === 'message') {
-    const userId = event.source.userId;
-    const replyToken = event.replyToken;
-    
-    // 画像メッセージの場合
-    if (event.message.type === 'image') {
-      handleImageMessage(event.message.id, userId, replyToken);
-    }
-  }
-  // スタッフBotからのブロードキャスト指示
-  else if (event.type === 'message' && event.message.type === 'text') {
-    if (event.message.text.startsWith('[BROADCAST]')) {
-      const message = event.message.text.replace('[BROADCAST]', '').trim();
-      broadcastToAllUsers(message);
-    }
-  }
-});
-
-return ContentService.createTextOutput(JSON.stringify({status: 'ok'}))
-  .setMimeType(ContentService.MimeType.JSON);
-```
-
-} catch (error) {
-Logger.log(’doPost エラー: ’ + error);
-return ContentService.createTextOutput(JSON.stringify({
-status: ‘error’,
-message: error.toString()
-})).setMimeType(ContentService.MimeType.JSON);
+// 署名検証ロジック
+function validateSignature(e) {
+  if (!CONFIG.CHANNEL_SECRET) return true; // 設定なければスキップ(開発時用だが本番は必須)
+  const signature = e.requestHeaders['x-line-signature'];
+  if (!signature) return false;
+  const computedSignature = Utilities.computeHmacSha256Signature(e.postData.contents, CONFIG.CHANNEL_SECRET);
+  const computedSignatureBase64 = Utilities.base64Encode(computedSignature);
+  return signature === computedSignatureBase64;
 }
+
+// 重複イベントチェック (LINEの再送対策)
+function isEventProcessed(eventId) {
+  if (!eventId) return false;
+  const cache = CacheService.getScriptCache();
+  if (cache.get(eventId)) return true; // 処理済み
+  cache.put(eventId, 'processed', 60); // 60秒間記憶
+  return false;
 }
 
 // ============================================
 // 画像メッセージ処理
 // ============================================
 function handleImageMessage(messageId, userId, replyToken) {
-try {
-// 設定チェック
-if (!CONFIG.R2_UPLOAD_WORKER_URL || !CONFIG.WORKER_AUTH_TOKEN) {
-Logger.log(‘エラー: R2設定が不完全です’);
-replyMessage(replyToken, ‘⚠️ システム設定エラー\n管理者に連絡してください’);
-return;
-}
+  try {
+    // LINEから画像を取得
+    const imageResult = getImageFromLine(messageId);
+    if (!imageResult.success) {
+      replyMessage(replyToken, '⚠️ 画像の取得に失敗しました。時間をおいて再送してください。');
+      return;
+    }
 
-```
-// LINEから画像を取得
-const imageResult = getImageFromLine(messageId);
+    const { blob, contentType, size } = imageResult;
 
-if (!imageResult.success) {
-  Logger.log('画像取得失敗: ' + imageResult.error);
-  replyMessage(replyToken, '⚠️ 画像の取得に失敗しました\n' + imageResult.error);
-  return;
-}
+    // サイズチェック
+    if (size > MAX_IMAGE_SIZE_BYTES) {
+      const sizeMB = (size / (1024 * 1024)).toFixed(2);
+      replyMessage(replyToken, `⚠️ サイズ超過 (${sizeMB}MB)\n${CONFIG.MAX_IMAGE_SIZE_MB}MB以下にしてください。`);
+      return;
+    }
 
-const { blob, contentType, size } = imageResult;
+    // ユーザー名取得 (APIコール節約のため、必要なら実行する形でもよいがUX優先で取得)
+    const userName = getUserName(userId);
 
-// サイズチェック
-if (size > MAX_IMAGE_SIZE_BYTES) {
-  const sizeMB = (size / (1024 * 1024)).toFixed(2);
-  Logger.log(`画像サイズ超過: ${sizeMB}MB`);
-  replyMessage(replyToken, `⚠️ 画像サイズが大きすぎます\n最大: ${CONFIG.MAX_IMAGE_SIZE_MB}MB / 送信: ${sizeMB}MB`);
-  return;
-}
+    // R2にアップロード
+    const timestamp = new Date().getTime();
+    const extension = getExtensionFromMimeType(contentType);
+    const filename = `photo_${timestamp}_${messageId}${extension}`;
 
-// R2にアップロード
-const timestamp = new Date().getTime();
-const extension = getExtensionFromMimeType(contentType);
-const filename = `photo_${timestamp}_${messageId}${extension}`;
+    const uploadResult = uploadToR2(blob, filename, contentType);
 
-const uploadResult = uploadToR2(blob, filename, contentType);
+    if (!uploadResult.success) {
+      console.error('R2 Upload Failed:', uploadResult.error);
+      replyMessage(replyToken, '⚠️ 保存に失敗しました。もう一度お試しください。');
+      return;
+    }
 
-if (!uploadResult.success) {
-  Logger.log('R2アップロード失敗: ' + uploadResult.error);
-  replyMessage(replyToken, '⚠️ 画像のアップロードに失敗しました\nもう一度お試しください');
-  return;
-}
+    // スプレッドシートに記録
+    savePhotoRecord(uploadResult.url, uploadResult.url, userName, userId, messageId, contentType);
 
-// ユーザー名取得
-const userName = getUserName(userId);
+    // 成功メッセージ
+    const sizeMB = (size / (1024 * 1024)).toFixed(2);
+    replyMessage(replyToken, `📸 保存しました！ (${sizeMB}MB)\nギャラリーに追加されます。`);
 
-// スプレッドシートに記録
-savePhotoRecord(uploadResult.url, uploadResult.url, userName, userId, messageId, contentType);
-
-// 成功メッセージ
-const sizeMB = (size / (1024 * 1024)).toFixed(2);
-replyMessage(replyToken, `📸 写真を受け付けました！\n\nサイズ: ${sizeMB}MB\nギャラリーに表示されます`);
-
-Logger.log(`✓ 写真受信成功: ${userName} (${sizeMB}MB) → ${uploadResult.url}`);
-```
-
-} catch (error) {
-Logger.log(’画像処理エラー: ’ + error.stack || error);
-replyMessage(replyToken, ‘⚠️ 画像の処理中にエラーが発生しました’);
-}
+  } catch (error) {
+    console.error('handleImageMessage Error:', error);
+    replyMessage(replyToken, '⚠️ エラーが発生しました。');
+  }
 }
 
 // ============================================
-// LINEから画像取得（改善版）
+// LINEから画像取得
 // ============================================
 function getImageFromLine(messageId) {
-const url = `https://api-data.line.me/v2/bot/message/${messageId}/content`;
+  const url = `https://api-data.line.me/v2/bot/message/${messageId}/content`;
+  try {
+    const response = UrlFetchApp.fetch(url, {
+      headers: { 'Authorization': 'Bearer ' + CONFIG.LINE_ACCESS_TOKEN },
+      muteHttpExceptions: true
+    });
 
-try {
-const response = UrlFetchApp.fetch(url, {
-headers: {
-‘Authorization’: ’Bearer ’ + CONFIG.LINE_ACCESS_TOKEN
-},
-muteHttpExceptions: true
-});
+    if (response.getResponseCode() !== 200) {
+      return { success: false, error: response.getContentText() };
+    }
 
-```
-const statusCode = response.getResponseCode();
-
-if (statusCode !== 200) {
-  return {
-    success: false,
-    error: `HTTP ${statusCode}: ${response.getContentText()}`
-  };
-}
-
-const blob = response.getBlob();
-const contentType = response.getHeaders()['Content-Type'] || 'image/jpeg';
-const size = blob.getBytes().length;
-
-Logger.log(`画像取得成功: ${contentType}, ${(size / 1024).toFixed(2)}KB`);
-
-return {
-  success: true,
-  blob: blob,
-  contentType: contentType,
-  size: size
-};
-```
-
-} catch (error) {
-return {
-success: false,
-error: error.toString()
-};
-}
-}
-
-// ============================================
-// R2にアップロード（改善版）
-// ============================================
-function uploadToR2(blob, filename, contentType) {
-try {
-Logger.log(`R2アップロード開始: ${filename} (${contentType})`);
-
-```
-const response = UrlFetchApp.fetch(CONFIG.R2_UPLOAD_WORKER_URL, {
-  method: 'post',
-  contentType: 'application/octet-stream',
-  payload: blob.getBytes(),
-  headers: {
-    'X-Filename': filename,
-    'X-Content-Type': contentType,
-    'X-Auth-Token': CONFIG.WORKER_AUTH_TOKEN
-  },
-  muteHttpExceptions: true
-});
-
-const statusCode = response.getResponseCode();
-const responseText = response.getContentText();
-
-Logger.log(`Worker応答: HTTP ${statusCode}`);
-Logger.log(`Worker応答内容: ${responseText}`);
-
-if (statusCode !== 200) {
-  return {
-    success: false,
-    error: `Worker error (${statusCode}): ${responseText}`
-  };
-}
-
-try {
-  const result = JSON.parse(responseText);
-  
-  if (result.success) {
+    const blob = response.getBlob();
     return {
       success: true,
-      url: result.url
+      blob: blob,
+      contentType: response.getHeaders()['Content-Type'] || 'image/jpeg',
+      size: blob.getBytes().length // ここだけはサイズ判定のためにBytes取得が必要
     };
-  } else {
-    return {
-      success: false,
-      error: result.error || 'Unknown error'
-    };
+  } catch (e) {
+    return { success: false, error: e.toString() };
   }
-} catch (parseError) {
-  return {
-    success: false,
-    error: `JSONパースエラー: ${parseError.toString()}`
-  };
-}
-```
-
-} catch (error) {
-Logger.log(’R2アップロード例外: ’ + error.stack || error);
-return {
-success: false,
-error: error.toString()
-};
-}
 }
 
 // ============================================
-// MIMEタイプから拡張子を取得
+// R2にアップロード (メモリ効率化)
+// ============================================
+function uploadToR2(blob, filename, contentType) {
+  try {
+    // blob.getBytes() をやめ、blob自体をpayloadに渡す
+    const response = UrlFetchApp.fetch(CONFIG.R2_UPLOAD_WORKER_URL, {
+      method: 'post',
+      contentType: 'application/octet-stream', // Worker側がこれを受け取る前提
+      payload: blob,
+      headers: {
+        'X-Filename': filename,
+        'X-Content-Type': contentType,
+        'X-Auth-Token': CONFIG.WORKER_AUTH_TOKEN
+      },
+      muteHttpExceptions: true
+    });
+
+    const statusCode = response.getResponseCode();
+    const responseText = response.getContentText();
+
+    if (statusCode !== 200) {
+      return { success: false, error: `Worker Error ${statusCode}: ${responseText}` };
+    }
+
+    const result = JSON.parse(responseText);
+    return result.success ? { success: true, url: result.url } : { success: false, error: result.error };
+
+  } catch (error) {
+    return { success: false, error: error.toString() };
+  }
+}
+
+// ============================================
+// ユーザー管理 (新規追加)
+// ============================================
+function saveUserIfNew(userId) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(SHEETS.USERS);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEETS.USERS);
+    sheet.appendRow(['登録日時', 'ユーザーID', '表示名(初回)']);
+  }
+
+  // テキスト検索で簡易的な重複チェック (ユーザー数が増えると遅くなるため、本来はCacheやMap推奨)
+  // createTextFinderは高速なので数千人規模なら許容範囲
+  const finder = sheet.getRange("B:B").createTextFinder(userId).matchEntireCell(true);
+  if (!finder.findNext()) {
+    const userName = getUserName(userId);
+    const now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm:ss');
+    sheet.appendRow([now, userId, userName]);
+  }
+}
+
+// ============================================
+// ユーティリティ
 // ============================================
 function getExtensionFromMimeType(mimeType) {
-const mimeMap = {
-‘image/jpeg’: ‘.jpg’,
-‘image/jpg’: ‘.jpg’,
-‘image/png’: ‘.png’,
-‘image/gif’: ‘.gif’,
-‘image/webp’: ‘.webp’,
-‘image/bmp’: ‘.bmp’
-};
-
-return mimeMap[mimeType.toLowerCase()] || ‘.jpg’;
+  const mimeMap = {
+    'image/jpeg': '.jpg', 'image/jpg': '.jpg', 'image/png': '.png',
+    'image/gif': '.gif', 'image/webp': '.webp', 'image/bmp': '.bmp'
+  };
+  return mimeMap[mimeType.toLowerCase()] || '.jpg';
 }
 
-// ============================================
-// ユーザー名取得
-// ============================================
 function getUserName(userId) {
-const url = `https://api.line.me/v2/bot/profile/${userId}`;
+  const cache = CacheService.getScriptCache();
+  const cachedName = cache.get(`name_${userId}`);
+  if (cachedName) return cachedName;
 
-try {
-const response = UrlFetchApp.fetch(url, {
-headers: {
-‘Authorization’: ’Bearer ’ + CONFIG.LINE_ACCESS_TOKEN
-},
-muteHttpExceptions: true
-});
-
-```
-if (response.getResponseCode() === 200) {
-  const profile = JSON.parse(response.getContentText());
-  return profile.displayName || '投稿者';
-}
-```
-
-} catch (error) {
-Logger.log(’ユーザー名取得エラー: ’ + error);
-}
-
-return ‘投稿者’;
+  try {
+    const response = UrlFetchApp.fetch(`https://api.line.me/v2/bot/profile/${userId}`, {
+      headers: { 'Authorization': 'Bearer ' + CONFIG.LINE_ACCESS_TOKEN },
+      muteHttpExceptions: true
+    });
+    if (response.getResponseCode() === 200) {
+      const name = JSON.parse(response.getContentText()).displayName || '投稿者';
+      cache.put(`name_${userId}`, name, 21600); // 6時間キャッシュ
+      return name;
+    }
+  } catch (e) {
+    console.warn('UserName fetch failed', e);
+  }
+  return '投稿者';
 }
 
-// ============================================
-// 写真記録を保存
-// ============================================
-function savePhotoRecord(fullImageUrl, thumbnailUrl, userName, userId, messageId, contentType) {
-try {
-const ss = SpreadsheetApp.getActiveSpreadsheet();
-let sheet = ss.getSheetByName(SHEET_NAME);
-
-```
-// シートが存在しない場合は作成
-if (!sheet) {
-  sheet = ss.insertSheet(SHEET_NAME);
-  sheet.appendRow([
-    'タイムスタンプ',
-    'ユーザー名',
-    'ユーザーID',
-    '画像URL（フル）',
-    '画像URL（サムネイル）',
-    'メッセージID',
-    'MIMEタイプ'
-  ]);
-  sheet.getRange(1, 1, 1, 7).setFontWeight('bold');
+function savePhotoRecord(fullUrl, thumbUrl, userName, userId, messageId, contentType) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(SHEETS.PHOTOS);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEETS.PHOTOS);
+    sheet.appendRow(['タイムスタンプ', 'ユーザー名', 'ユーザーID', '画像URL', 'サムネイル', 'MsgID', 'MIME']);
+  }
+  const now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm:ss');
+  sheet.appendRow([now, userName, userId, fullUrl, thumbUrl, messageId, contentType]);
 }
 
-const now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm:ss');
-sheet.appendRow([now, userName, userId, fullImageUrl, thumbnailUrl, messageId, contentType]);
-
-Logger.log(`✓ シート記録完了: ${userName}`);
-```
-
-} catch (error) {
-Logger.log(’シート記録エラー: ’ + error);
-throw error;
-}
-}
-
-// ============================================
-// LINE返信
-// ============================================
 function replyMessage(replyToken, message) {
-const url = ‘https://api.line.me/v2/bot/message/reply’;
-
-try {
-UrlFetchApp.fetch(url, {
-method: ‘post’,
-headers: {
-‘Content-Type’: ‘application/json’,
-‘Authorization’: ’Bearer ’ + CONFIG.LINE_ACCESS_TOKEN
-},
-payload: JSON.stringify({
-replyToken: replyToken,
-messages: [{ type: ‘text’, text: message }]
-}),
-muteHttpExceptions: true
-});
-} catch (error) {
-Logger.log(’LINE返信エラー: ’ + error);
-}
+  UrlFetchApp.fetch('https://api.line.me/v2/bot/message/reply', {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + CONFIG.LINE_ACCESS_TOKEN
+    },
+    payload: JSON.stringify({ replyToken: replyToken, messages: [{ type: 'text', text: message }] }),
+    muteHttpExceptions: true
+  });
 }
 
 // ============================================
-// ブロードキャスト機能
+// ブロードキャスト (修正版)
 // ============================================
 function broadcastToAllUsers(message) {
-try {
-const ss = SpreadsheetApp.getActiveSpreadsheet();
-const userSheet = ss.getSheetByName(‘ユーザー一覧’);
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(SHEETS.USERS);
+  if (!sheet || sheet.getLastRow() <= 1) return;
 
-```
-if (!userSheet || userSheet.getLastRow() <= 1) {
-  Logger.log('ブロードキャスト: 対象ユーザーなし');
-  return;
-}
+  const data = sheet.getDataRange().getValues();
+  const userIds = [];
+  // B列がIDと仮定
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][1]) userIds.push(data[i][1]);
+  }
 
-const userData = userSheet.getDataRange().getValues();
-const userIds = [];
-
-for (let i = 1; i < userData.length; i++) {
-  if (userData[i][1]) {
-    userIds.push(userData[i][1]);
+  // 500人ずつ分割送信
+  const CHUNK_SIZE = 500;
+  for (let i = 0; i < userIds.length; i += CHUNK_SIZE) {
+    const chunk = userIds.slice(i, i + CHUNK_SIZE);
+    try {
+      UrlFetchApp.fetch('https://api.line.me/v2/bot/message/multicast', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + CONFIG.LINE_ACCESS_TOKEN
+        },
+        payload: JSON.stringify({ to: chunk, messages: [{ type: 'text', text: message }] }),
+        muteHttpExceptions: true
+      });
+    } catch (e) {
+      console.error('Broadcast error:', e);
+    }
   }
 }
 
-if (userIds.length === 0) {
-  Logger.log('ブロードキャスト: 有効なユーザーIDなし');
-  return;
-}
-
-// LINE Messaging APIのマルチキャスト
-const url = 'https://api.line.me/v2/bot/message/multicast';
-const payload = {
-  to: userIds.slice(0, 500), // 最大500ユーザー
-  messages: [{ type: 'text', text: message }]
-};
-
-const response = UrlFetchApp.fetch(url, {
-  method: 'post',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + CONFIG.LINE_ACCESS_TOKEN
-  },
-  payload: JSON.stringify(payload),
-  muteHttpExceptions: true
-});
-
-Logger.log(`ブロードキャスト送信: ${userIds.length}人, HTTP ${response.getResponseCode()}`);
-```
-
-} catch (error) {
-Logger.log(’ブロードキャストエラー: ’ + error);
-}
-}
-
 // ============================================
-// Web API: ギャラリーデータ取得
+// API: ギャラリー取得
 // ============================================
 function doGet(e) {
-try {
-const ss = SpreadsheetApp.getActiveSpreadsheet();
-const sheet = ss.getSheetByName(SHEET_NAME);
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(SHEETS.PHOTOS);
 
-```
-if (!sheet || sheet.getLastRow() <= 1) {
-  return ContentService.createTextOutput(JSON.stringify({
-    lastUpdate: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'HH:mm:ss'),
-    photos: []
-  })).setMimeType(ContentService.MimeType.JSON);
-}
-
-const data = sheet.getDataRange().getValues();
-const photos = [];
-
-// ヘッダー行をスキップ（i=1から）
-for (let i = 1; i < data.length; i++) {
-  if (data[i][3]) { // 画像URLが存在する場合のみ
-    photos.push({
-      timestamp: data[i][0],
-      userName: data[i][1],
-      fullImage: data[i][3],
-      thumbnail: data[i][4] || data[i][3], // サムネイルがない場合はフル画像
-      contentType: data[i][6] || 'image/jpeg'
-    });
+  if (!sheet || sheet.getLastRow() <= 1) {
+    return jsonResponse({ photos: [] });
   }
+
+  const data = sheet.getDataRange().getValues();
+  const photos = [];
+  // 最新順にするため後ろからループ
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (data[i][3]) {
+      photos.push({
+        timestamp: data[i][0],
+        userName: data[i][1],
+        fullImage: data[i][3],
+        thumbnail: data[i][4],
+        contentType: data[i][6] || 'image/jpeg'
+      });
+    }
+  }
+
+  return jsonResponse({ photos: photos });
 }
 
-// 新しい順に並び替え
-photos.reverse();
-
-return ContentService.createTextOutput(JSON.stringify({
-  lastUpdate: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'HH:mm:ss'),
-  photos: photos
-})).setMimeType(ContentService.MimeType.JSON);
-```
-
-} catch (error) {
-Logger.log(’doGet エラー: ’ + error);
-return ContentService.createTextOutput(JSON.stringify({
-error: error.toString(),
-photos: []
-})).setMimeType(ContentService.MimeType.JSON);
-}
-}
-
-// ============================================
-// 設定確認用関数（デバッグ用）
-// ============================================
-function checkConfig() {
-Logger.log(’=== 設定確認 ===’);
-Logger.log(’LINE_ACCESS_TOKEN: ’ + (CONFIG.LINE_ACCESS_TOKEN ? ‘✓ 設定済み’ : ‘✗ 未設定’));
-Logger.log(’R2_UPLOAD_WORKER_URL: ’ + (CONFIG.R2_UPLOAD_WORKER_URL || ‘✗ 未設定’));
-Logger.log(’WORKER_AUTH_TOKEN: ’ + (CONFIG.WORKER_AUTH_TOKEN ? ‘✓ 設定済み’ : ‘✗ 未設定’));
-Logger.log(’R2_PUBLIC_URL: ’ + (CONFIG.R2_PUBLIC_URL || ‘✗ 未設定’));
-Logger.log(’MAX_IMAGE_SIZE_MB: ’ + CONFIG.MAX_IMAGE_SIZE_MB);
+function jsonResponse(obj) {
+  obj.lastUpdate = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'HH:mm:ss');
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
