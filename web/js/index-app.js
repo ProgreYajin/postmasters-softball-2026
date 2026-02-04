@@ -614,8 +614,6 @@ const IndexApp = (() => {
 // ==================== 初期化 ====================
 document.addEventListener('DOMContentLoaded', () => {
     IndexApp.init();
-    
-    // ナビゲーションスクロール状態の監視
     initNavScrollIndicator();
 });
 
