@@ -628,6 +628,7 @@ IndexApp.stopAutoRefresh();
 });
 
 /**
+
 - ナビゲーションのスクロールインジケーターを初期化
   */
   function initNavScrollIndicator() {
