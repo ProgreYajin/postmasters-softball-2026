@@ -16,23 +16,7 @@ const TournamentApp = (() => {
     let currentZoom = 0.6;
 
     // ==================== ユーティリティ関数 ====================
-
-    function getSafeValue(obj, ...keyVariants) {
-        if (!obj || typeof obj !== 'object') return undefined;
-        for (const key of keyVariants) {
-            if (key in obj && obj[key] !== null && obj[key] !== undefined) {
-                return obj[key];
-            }
-        }
-        return undefined;
-    }
-
-    function escapeHtml(str) {
-        if (!str) return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    }
+    // getSafeValue, escapeHtml は common.js でグローバル定義済み
 
     function formatTime(timestamp) {
         if (!timestamp) return '';
