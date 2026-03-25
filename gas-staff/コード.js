@@ -276,7 +276,7 @@ function fillPastInningsOptimized(sheet, data, court, gameNum, currentInning, to
 
     // 現在のイニングが裏の場合、表の回のチェックは？（元のロジックを踏襲）
     if (topBottom === INNING_TYPE.BOTTOM) {
-      const curColIdx = COLS.SCOREBOARD.INNING_START + currentInning;
+      const curColIdx = COLS.SCOREBOARD.INNING_START + currentInning - 1;
       const val = target.rowData[curColIdx];
       if (val === '' || val === null || val === undefined) {
         updates.push({ row: target.rowIdx, col: curColIdx + 1, val: 0 });
