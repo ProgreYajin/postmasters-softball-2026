@@ -295,7 +295,7 @@ function broadcastToAllUsers(message) {
   for (let i = 0; i < userIds.length; i += CHUNK_SIZE) {
     const chunk = userIds.slice(i, i + CHUNK_SIZE);
     try {
-      UrlFetchApp.fetch('https://api.line.me/v2/bot/message/multicast', {
+      const res = UrlFetchApp.fetch('https://api.line.me/v2/bot/message/multicast', {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
@@ -304,6 +304,10 @@ function broadcastToAllUsers(message) {
         payload: JSON.stringify({ to: chunk, messages: [{ type: 'text', text: message }] }),
         muteHttpExceptions: true
       });
+      const code = res.getResponseCode();
+      if (code < 200 || code >= 300) {
+        console.error('Broadcast failed chunk ' + (i / CHUNK_SIZE + 1) + ' HTTP ' + code + ': ' + res.getContentText());
+      }
     } catch (e) {
       console.error('Broadcast error:', e);
     }
