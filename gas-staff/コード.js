@@ -285,19 +285,25 @@ function fillPastInningsOptimized(sheet, data, court, gameNum, currentInning, to
     }
   });
 
-  // まとめて書き込み (同じ行への連続書き込みもRangeを使って最適化可能だが、ここでは単純化して個別に書くのを避ける)
-  // ただし、飛び飛びのセルへの書き込みはGASではAPIコールが増える。
-  // 一番速いのは「行ごとデータをメモリで作り直して setValues」だが、既存コード維持のため
-  // 少なくとも「行」単位で Range を取得して書き込む。
+  // 行ごとにグループ化してバッチ書き込み（APIコール削減）
+  if (updates.length === 0) return;
 
-  // 簡易実装: updatesが少なければ個別に書くが、本来は行データを修正して、行全体を上書きすべき。
-  // ここでは安全策として、updatesを処理する。数が少なければループ書き込みでもロック内なら許容範囲だが、
-  // ベストは `sheet.getRange(row, startCol, 1, numCols).setValues([newRowData])`
-
+  const byRow = {};
   updates.forEach(u => {
-    sheet.getRange(u.row, u.col).setValue(u.val);
-    // ※ 注意: 本当に高速化するなら、行全体の配列をJS側で完成させて setValues(Array[][]) を1回呼ぶ形にリファクタリングすべき。
-    // 今回はロジックの複雑さを避けるため、致命的な「全過去イニングループ」の防止に留める。
+    if (!byRow[u.row]) byRow[u.row] = [];
+    byRow[u.row].push(u);
+  });
+
+  Object.entries(byRow).forEach(([row, cells]) => {
+    const rowNum = Number(row);
+    const startCol = COLS.SCOREBOARD.INNING_START + 1 + 1; // 1-based, イニング1列目
+    const range = sheet.getRange(rowNum, startCol, 1, MAX_INNINGS);
+    const vals = range.getValues()[0];
+    cells.forEach(c => {
+      const idx = c.col - startCol;
+      if (idx >= 0 && idx < MAX_INNINGS) vals[idx] = c.val;
+    });
+    range.setValues([vals]);
   });
 
   // Total更新もここで行うべき
