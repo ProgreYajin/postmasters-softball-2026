@@ -23,22 +23,27 @@ const MAX_IMAGE_SIZE_BYTES = CONFIG.MAX_IMAGE_SIZE_MB * 1024 * 1024;
 // LINE Webhook受信
 // ============================================
 function doPost(e) {
-  // 1. 署名検証 (セキュリティ)
-  if (!validateSignature(e)) {
-    return ContentService.createTextOutput('Invalid Signature')
-      .setMimeType(ContentService.MimeType.TEXT);
-  }
-
   try {
     if (!e || !e.postData) return ContentService.createTextOutput(JSON.stringify({ status: 'ok' }));
 
     const json = JSON.parse(e.postData.contents);
 
-    // スタッフbotからの内部ブロードキャストリクエスト
+    // スタッフbotからの内部ブロードキャストリクエスト（LINE署名ではなくトークンで認証）
     if (json.type === 'broadcast' && json.message) {
+      if (!CONFIG.BROADCAST_TOKEN || json.token !== CONFIG.BROADCAST_TOKEN) {
+        console.warn('Invalid broadcast token');
+        return ContentService.createTextOutput('Unauthorized')
+          .setMimeType(ContentService.MimeType.TEXT);
+      }
       broadcastToAllUsers(json.message);
       return ContentService.createTextOutput(JSON.stringify({ status: 'broadcast_sent' }))
         .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // LINE Webhookは署名検証
+    if (!validateSignature(e)) {
+      return ContentService.createTextOutput('Invalid Signature')
+        .setMimeType(ContentService.MimeType.TEXT);
     }
 
     const events = json.events;
