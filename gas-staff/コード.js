@@ -266,8 +266,7 @@ function fillPastInningsOptimized(sheet, data, court, gameNum, currentInning, to
 
     // 空白埋めロジック
     for (let inning = 1; inning <= maxInningToFill; inning++) {
-      const colIdx = COLS.SCOREBOARD.INNING_START + inning; // 0-based index in data
-      // dataは0始まりだが、COLS定義も0始まり。getValues()の結果は列番号と一致するindex
+      const colIdx = COLS.SCOREBOARD.INNING_START + inning - 1; // 0-based index in data
       const val = target.rowData[colIdx];
       if (val === '' || val === null || val === undefined) {
         // セル番地は (Row, Col+1)
