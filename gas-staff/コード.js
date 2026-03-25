@@ -918,12 +918,16 @@ function notifyAudienceBot(message) {
   if (!AUDIENCE_BOT_SCRIPT_URL) return;
 
   try {
-    UrlFetchApp.fetch(AUDIENCE_BOT_SCRIPT_URL, {
+    const res = UrlFetchApp.fetch(AUDIENCE_BOT_SCRIPT_URL, {
       method: 'post',
       contentType: 'application/json',
       payload: JSON.stringify({ type: 'broadcast', message: message }),
       muteHttpExceptions: true
     });
+    const code = res.getResponseCode();
+    if (code < 200 || code >= 300) {
+      console.error('観客Botへの通知失敗 HTTP ' + code + ': ' + res.getContentText());
+    }
   } catch (e) {
     console.error('観客Botへの通知失敗:', e);
   }
