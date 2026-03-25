@@ -505,7 +505,7 @@ function handleGameEnd(sheetsData, parsed, userId, fullTimestamp) {
   }
 
   if (winner.winnerTeam && winner.loserTeam) {
-    updateGameStatus(scheduleSheet, scoreboardSheet, parsed.court, parsed.gameNum, 'end');
+    updateGameStatus(scheduleSheet, scoreboardSheet, parsed.court, parsed.gameNum, 'end', schedule, scoreboard);
     recordSheet.appendRow([fullTimestamp, parsed.court, parsed.gameNum, '-', '-', '-', userId, '終了']);
     advanceTeams(scheduleSheet, schedule, parsed.gameNum, winner.winnerTeam, winner.loserTeam);
 
