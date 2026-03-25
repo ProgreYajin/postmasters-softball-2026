@@ -32,6 +32,14 @@ function doPost(e) {
     if (!e || !e.postData) return ContentService.createTextOutput(JSON.stringify({ status: 'ok' }));
 
     const json = JSON.parse(e.postData.contents);
+
+    // スタッフbotからの内部ブロードキャストリクエスト
+    if (json.type === 'broadcast' && json.message) {
+      broadcastToAllUsers(json.message);
+      return ContentService.createTextOutput(JSON.stringify({ status: 'broadcast_sent' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     const events = json.events;
     if (!events) return ContentService.createTextOutput('ok');
 
