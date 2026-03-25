@@ -8,6 +8,7 @@ const CONFIG = {
   CHANNEL_SECRET: PROPS.getProperty('CHANNEL_SECRET'), // ★追加: 署名検証用
   R2_UPLOAD_WORKER_URL: PROPS.getProperty('R2_UPLOAD_WORKER_URL'),
   WORKER_AUTH_TOKEN: PROPS.getProperty('WORKER_AUTH_TOKEN'),
+  BROADCAST_TOKEN: PROPS.getProperty('BROADCAST_TOKEN'), // スタッフbot→観客bot内部通信用
   MAX_IMAGE_SIZE_MB: 10
 };
 
