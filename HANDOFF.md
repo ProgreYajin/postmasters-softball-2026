@@ -2,44 +2,35 @@
 
 ## 完了した作業
 
-### コード改善（gas-staff/コード.js）
-- `fillPastInningsOptimized` を1セルずつ `setValue()` → 行単位 `setValues()` バッチ書き込みに変更（L288-307）
-- `updateScore` の列番号計算にコメント追加（0-based/1-based混在の意図を明示化、L629-631）
-- `updateGameStatus` に `scheduleData`, `scoreData` オプション引数を追加し、キャッシュデータを渡せるように変更（L690-709）
-- `advanceTeams` の3重ループを1回のループ＋行インデックスマップに統合（L743-779）
-- `notifyAudienceBot` でHTTPレスポンスコードを確認し、失敗時にログ出力を追加（L920-932）
+### GASコードのバグ修正・改善
+- `gas-staff/コード.js`: 配列アクセスのoff-by-oneバグ修正（`getCurrentInningScore` L645, `calculateLiveTotalScore` L671, `fillPastInningsOptimized` L269/L280の3関数で`INNING_START + inning`→`INNING_START + inning - 1`）
+- `gas-staff/コード.js`: `fillPastInningsOptimized`の`startCol`計算修正（L299: `INNING_START + 1 + 1`→`INNING_START + 1`）
+- `gas-staff/コード.js`: 同点時メッセージを「0-0の引き分け」固定から`getFinalScore()`で実際のスコア表示に修正（L499-506）
+- `gas-staff/コード.js`: `notifyAudienceBot`にBROADCAST_TOKEN認証を追加（L921）
+- `gas-staff/コード.js`: 未定義関数`syncScoreboardWithSchedule`のメニュー項目を削除（L53）
+- `gas-staff/コード.js`, `gas-audience/コード.js`: `setupBroadcastToken()`関数を追加（PropertiesService設定用）
+- `gas-audience/コード.js`: ブロードキャスト認証をLINE署名検証の前に移動し、トークンベースの認証に変更（L27-41）
 
-### コード改善（gas-audience/コード.js）
-- `broadcastToAllUsers` でHTTPレスポンスコードを確認し、チャンク番号付きでエラーログを追加（L297-312）
-- R2アップロード失敗時に1秒待って1回リトライするロジックを追加（L121-131）
-
-### Web修正
-- `gallery.html`, `tournament.html`, `schedule.html` に `common.js` の読み込みを追加（ナビゲーション統一）
-- `schedule.html` に `config.js` の読み込みも追加
-
-### テスト
-- `test/unit-test.js` を新規作成（全55件パス）
-  - parseMessage: 正常系13件 + 異常系8件
-  - determineWinner: 8件
-  - formatTime: 13件
-  - validateSignature: 5件（HMAC-SHA256署名検証）
-  - Cloudflare Workerバリデーション: 8件
-- GAS API疎通テスト: 4エンドポイント全て正常（scoreboard, schedule, teams, photos）
-- R2 CDN写真URL: 2枚とも正常（HTTP 200, image/jpeg, 245-281KB）
-- JSファイル構文チェック: 12ファイル全てOK
+### インフラ
+- GitHubへpush完了、clasp pushで両GASプロジェクトにデプロイ完了
+- GitHubのPAT（claude-code）に`workflow`スコープを追加
+- clasp認証トークン再取得（`~/.clasprc.json`生成済み、`~/.local/node_modules/.bin/clasp`にインストール済み）
 
 ## 保留中の作業
-- `web/venue.html:238` の電話番号プレースホルダー（`080-XXXX-XXXX`）→ 実際の番号に差し替え（ユーザーが後で対応予定）
-- スプレッドシート上の「西武」→「西部」のタイポ確認（schedule APIレスポンスで発見、手動修正が必要）
-- ブラウザ実機テスト（モバイル表示・コンソールエラー確認）は権限制約で未実施
+- **GitHub Secrets `CLASSPRC_JSON` の更新が未完了** — `~/.clasprc.json`の内容をGitHub Secretsに登録する必要あり。これをしないとGitHub Actionsでの自動GASデプロイが失敗し続ける
+- **`setupBroadcastToken`の実行が未完了** — 両GASプロジェクトのGASエディタで`setupBroadcastToken`を1回ずつ実行する必要あり。これをしないとスタッフbot→観客botの速報配信が認証エラーになる
+- `web/venue.html:238` の電話番号プレースホルダー（`080-XXXX-XXXX`）→ 実際の番号に差し替え
+- スプレッドシート上の「西武」→「西部」のタイポ確認（前回セッションで発見）
 
 ## 決定事項
-- ユニットテストはNode.js assertで実施（npm依存なし）
-- GAS固有API（Utilities.computeHmacSha256Signature等）はNode.js cryptoで代替してテスト
-- `updateGameStatus` はデータ未取得の呼び出し元もあるため、オプション引数方式（渡されなければ従来通り取得）を採用
+- LINE botのダイアログ/会話型UI化は見送り（7年に1回の大会で実装コストに見合わない）
+- 現状のテキストコマンド方式を維持（スタッフへの事前レクチャーで対応）
+- ブロードキャスト認証は`BROADCAST_TOKEN`（共有シークレット）方式を採用
+- コミット後は自動でgit pushする（ユーザー確認不要）— memoryに記録済み
 
 ## 次回やるべきこと
-- `venue.html` の電話番号を実番号に差し替え
-- スプレッドシートの「西武」タイポを確認・修正
-- 大会前にブラウザで全ページを目視確認（特にモバイル表示）
-- LINE Botからの実際の得点入力 → シート反映 → Web表示のE2Eテスト（手動）
+1. **GitHub Secrets更新**（最優先）: `cat ~/.clasprc.json`の内容を github.com/ProgreYajin/postmasters-softball-2026/settings/secrets/actions の`CLASSPRC_JSON`に設定
+2. **setupBroadcastToken実行**: 両GASエディタ（script.google.com）でスタッフ用・観客用それぞれ`setupBroadcastToken`関数を1回実行
+3. 上記完了後、GitHub Actionsの自動デプロイが正常動作するかテスト（gas-*の軽微な変更をpushして確認）
+4. `venue.html`の電話番号差し替え、スプレッドシートのタイポ修正
+5. 大会前にブラウザで全ページを目視確認（特にモバイル表示）
