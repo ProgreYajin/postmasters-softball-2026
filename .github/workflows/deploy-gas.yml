@@ -24,7 +24,9 @@ jobs:
         run: npm install -g @google/clasp
 
       - name: Create clasprc.json
-        run: echo "${{ secrets.CLASSPRC_JSON }}" > ~/.clasprc.json
+        run: cat <<'EOF' > ~/.clasprc.json
+          ${{ secrets.CLASSPRC_JSON }}
+          EOF
 
       - name: Deploy Staff GAS
         working-directory: ./gas-staff
