@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '**' # フォルダ階層が変わっているため、一旦広めに検知するようにします
+      - 'chiba-softball-r2-gallery/**'
   workflow_dispatch:
 
 jobs:
