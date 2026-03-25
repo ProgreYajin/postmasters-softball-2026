@@ -49,6 +49,12 @@ const COLS = {
   }
 };
 
+// 初回セットアップ用（GASエディタから1回だけ実行）
+function setupBroadcastToken() {
+  PropertiesService.getScriptProperties().setProperty('BROADCAST_TOKEN', 'OtAb9EzSRpSyUyO4tHNiqFLHWFcK6Ia1X1wpdPeoOlk=');
+  console.log('BROADCAST_TOKEN を設定しました');
+}
+
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('⚾ 大会管理')
     .addToUi();
