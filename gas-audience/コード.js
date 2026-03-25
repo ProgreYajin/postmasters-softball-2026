@@ -2,6 +2,12 @@
 // 観客用BOT - Cloudflare R2対応 (Refactored)
 // ============================================
 
+// 初回セットアップ用（GASエディタから1回だけ実行）
+function setupBroadcastToken() {
+  PropertiesService.getScriptProperties().setProperty('BROADCAST_TOKEN', 'OtAb9EzSRpSyUyO4tHNiqFLHWFcK6Ia1X1wpdPeoOlk=');
+  console.log('BROADCAST_TOKEN を設定しました');
+}
+
 const PROPS = PropertiesService.getScriptProperties();
 const CONFIG = {
   LINE_ACCESS_TOKEN: PROPS.getProperty('LINE_ACCESS_TOKEN'),
