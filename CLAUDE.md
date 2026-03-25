@@ -129,7 +129,8 @@ Body: binary image
 
 ### GAS（gas-staff/, gas-audience/）
 - GitHub Actionsで自動デプロイ（`clasp push -f`）
-- トリガー: `gas-staff/**` or `gas-audience/**` パス変更時
+- トリガー: `gas-staff/**` or `gas-audience/**` or `.github/workflows/deploy-gas.yml` パス変更時
+- ローカルからの手動デプロイ: `~/.local/node_modules/.bin/clasp push -f`（認証情報: `~/.clasprc.json`）
 
 ### Cloudflare Workers（chiba-softball-r2-gallery/）
 - GitHub Actionsで自動デプロイ（`wrangler deploy`）
