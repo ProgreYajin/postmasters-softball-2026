@@ -918,10 +918,11 @@ function notifyAudienceBot(message) {
   if (!AUDIENCE_BOT_SCRIPT_URL) return;
 
   try {
+    const broadcastToken = PROPS.getProperty('BROADCAST_TOKEN');
     const res = UrlFetchApp.fetch(AUDIENCE_BOT_SCRIPT_URL, {
       method: 'post',
       contentType: 'application/json',
-      payload: JSON.stringify({ type: 'broadcast', message: message }),
+      payload: JSON.stringify({ type: 'broadcast', message: message, token: broadcastToken }),
       muteHttpExceptions: true
     });
     const code = res.getResponseCode();
