@@ -26,8 +26,8 @@ jobs:
 
       - name: Create clasprc.json
         env:
-          CLASPRC: ${{ secrets.CLASSPRC_JSON }}
-        run: printf '%s' "$CLASPRC" > ~/.clasprc.json
+          CLASPRC_B64: ${{ secrets.CLASSPRC_JSON }}
+        run: echo "$CLASPRC_B64" | base64 -d > ~/.clasprc.json
 
       - name: Deploy Staff GAS
         working-directory: ./gas-staff
