@@ -295,7 +295,7 @@ function fillPastInningsOptimized(sheet, data, court, gameNum, currentInning, to
 
   Object.entries(byRow).forEach(([row, cells]) => {
     const rowNum = Number(row);
-    const startCol = COLS.SCOREBOARD.INNING_START + 1 + 1; // 1-based, イニング1列目
+    const startCol = COLS.SCOREBOARD.INNING_START + 1; // 1-based, イニング1列目
     const range = sheet.getRange(rowNum, startCol, 1, MAX_INNINGS);
     const vals = range.getValues()[0];
     cells.forEach(c => {
