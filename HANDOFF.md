@@ -1,24 +1,25 @@
-# セッション引き継ぎ（2026-03-25）
+# セッション引き継ぎ（2026-03-25 夜）
 
 ## 完了した作業
 
 ### GASコードのバグ修正・改善
-- `gas-staff/コード.js`: 配列アクセスのoff-by-oneバグ修正（`getCurrentInningScore` L645, `calculateLiveTotalScore` L671, `fillPastInningsOptimized` L269/L280の3関数で`INNING_START + inning`→`INNING_START + inning - 1`）
-- `gas-staff/コード.js`: `fillPastInningsOptimized`の`startCol`計算修正（L299: `INNING_START + 1 + 1`→`INNING_START + 1`）
-- `gas-staff/コード.js`: 同点時メッセージを「0-0の引き分け」固定から`getFinalScore()`で実際のスコア表示に修正（L499-506）
-- `gas-staff/コード.js`: `notifyAudienceBot`にBROADCAST_TOKEN認証を追加（L921）
-- `gas-staff/コード.js`: 未定義関数`syncScoreboardWithSchedule`のメニュー項目を削除（L53）
-- `gas-staff/コード.js`, `gas-audience/コード.js`: `setupBroadcastToken()`関数を追加（PropertiesService設定用）
-- `gas-audience/コード.js`: ブロードキャスト認証をLINE署名検証の前に移動し、トークンベースの認証に変更（L27-41）
+- `gas-staff/コード.js`: 配列アクセスのoff-by-oneバグ修正（`getCurrentInningScore`, `calculateLiveTotalScore`, `fillPastInningsOptimized`で`INNING_START + inning`→`INNING_START + inning - 1`）
+- `gas-staff/コード.js`: `fillPastInningsOptimized`の`startCol`計算修正（`INNING_START + 1 + 1`→`INNING_START + 1`）
+- `gas-staff/コード.js`: 同点時メッセージを「0-0の引き分け」固定から`getFinalScore()`で実際のスコア表示に修正
+- `gas-staff/コード.js`: `notifyAudienceBot`にBROADCAST_TOKEN認証を追加
+- `gas-staff/コード.js`: 未定義関数`syncScoreboardWithSchedule`のメニュー項目を削除
+- `gas-staff/コード.js`, `gas-audience/コード.js`: `setupBroadcastToken()`関数を追加
+- `gas-audience/コード.js`: ブロードキャスト認証をLINE署名検証の前に移動し、トークンベースの認証に変更
 
-### インフラ
-- GitHubへpush完了、clasp pushで両GASプロジェクトにデプロイ完了
+### インフラ（全て完了）
 - GitHubのPAT（claude-code）に`workflow`スコープを追加
 - clasp認証トークン再取得（`~/.clasprc.json`生成済み、`~/.local/node_modules/.bin/clasp`にインストール済み）
+- GitHub Secrets: 旧`CLASSPRC_JSON`を削除、新`CLASP_REFRESH_TOKEN`をAPI経由で設定
+- `.github/workflows/deploy-gas.yml`: node -eでrefresh_tokenからclasprc.jsonを組み立てる方式に変更（GitHubのシークレットマスク問題を回避）
+- GitHub Actions GASデプロイ成功確認済み
+- 両GASプロジェクトで`setupBroadcastToken`実行済み（BROADCAST_TOKEN設定完了）
 
 ## 保留中の作業
-- **GitHub Secrets `CLASSPRC_JSON` の更新が未完了** — `~/.clasprc.json`の内容をGitHub Secretsに登録する必要あり。これをしないとGitHub Actionsでの自動GASデプロイが失敗し続ける
-- **`setupBroadcastToken`の実行が未完了** — 両GASプロジェクトのGASエディタで`setupBroadcastToken`を1回ずつ実行する必要あり。これをしないとスタッフbot→観客botの速報配信が認証エラーになる
 - `web/venue.html:238` の電話番号プレースホルダー（`080-XXXX-XXXX`）→ 実際の番号に差し替え
 - スプレッドシート上の「西武」→「西部」のタイポ確認（前回セッションで発見）
 
@@ -27,10 +28,10 @@
 - 現状のテキストコマンド方式を維持（スタッフへの事前レクチャーで対応）
 - ブロードキャスト認証は`BROADCAST_TOKEN`（共有シークレット）方式を採用
 - コミット後は自動でgit pushする（ユーザー確認不要）— memoryに記録済み
+- GitHub Secretsへの値設定はGitHub API + pynacl暗号化で行う（iPhoneからのコピペで改行が混入する問題の回避）
 
 ## 次回やるべきこと
-1. **GitHub Secrets更新**（最優先）: `cat ~/.clasprc.json`の内容を github.com/ProgreYajin/postmasters-softball-2026/settings/secrets/actions の`CLASSPRC_JSON`に設定
-2. **setupBroadcastToken実行**: 両GASエディタ（script.google.com）でスタッフ用・観客用それぞれ`setupBroadcastToken`関数を1回実行
-3. 上記完了後、GitHub Actionsの自動デプロイが正常動作するかテスト（gas-*の軽微な変更をpushして確認）
-4. `venue.html`の電話番号差し替え、スプレッドシートのタイポ修正
-5. 大会前にブラウザで全ページを目視確認（特にモバイル表示）
+1. `venue.html`の電話番号差し替え
+2. スプレッドシートの「西武」タイポ修正
+3. 大会前にブラウザで全ページを目視確認（特にモバイル表示）
+4. LINE Botからの実際の得点入力 → シート反映 → Web表示のE2Eテスト（手動）
