@@ -121,7 +121,7 @@ Body: binary image
 - `R2_BUCKET` (binding) — R2バケット参照
 
 ### GitHub Actions Secrets
-- `CLASSPRC_JSON` — clasp認証（~/.clasprc.json）
+- `CLASP_REFRESH_TOKEN` — clasp認証用Googleリフレッシュトークン（workflowのnode -eでclasprc.jsonを組み立て）
 - `CLOUDFLARE_API_TOKEN` — Cloudflareデプロイ認証
 - `CLOUDFLARE_ACCOUNT_ID` — CloudflareアカウントID
 
