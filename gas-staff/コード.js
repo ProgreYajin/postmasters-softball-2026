@@ -745,40 +745,35 @@ function advanceTeams(scheduleSheet, scheduleData, finishedGameNum, winnerTeam, 
   let loserNextGame = null;
   let winnerPosition = null;
   let loserPosition = null;
+  const rowByGameNum = {};
 
+  // 1回のループで次試合情報の取得と行インデックスのマッピングを同時に行う
   for (let i = 1; i < scheduleData.length; i++) {
-    if (scheduleData[i][COLS.SCHEDULE.GAME_NO] == finishedGameNum) {
+    const gn = scheduleData[i][COLS.SCHEDULE.GAME_NO];
+    rowByGameNum[gn] = i;
+    if (gn == finishedGameNum) {
       winnerNextGame = scheduleData[i][COLS.SCHEDULE.WINNER_NEXT];
       loserNextGame = scheduleData[i][COLS.SCHEDULE.LOSER_NEXT];
       winnerPosition = (scheduleData[i][COLS.SCHEDULE.WINNER_POS] || '').trim();
       loserPosition = (scheduleData[i][COLS.SCHEDULE.LOSER_POS] || '').trim();
-      break;
     }
   }
 
-  if (winnerNextGame) {
-    for (let i = 1; i < scheduleData.length; i++) {
-      if (scheduleData[i][COLS.SCHEDULE.GAME_NO] == winnerNextGame) {
-        if (winnerPosition === '先攻') {
-          scheduleSheet.getRange(i + 1, COLS.SCHEDULE.TOP_TEAM + 1).setValue(winnerTeam);
-        } else if (winnerPosition === '後攻') {
-          scheduleSheet.getRange(i + 1, COLS.SCHEDULE.BOTTOM_TEAM + 1).setValue(winnerTeam);
-        }
-        break;
-      }
+  if (winnerNextGame && rowByGameNum[winnerNextGame] !== undefined) {
+    const row = rowByGameNum[winnerNextGame] + 1;
+    if (winnerPosition === '先攻') {
+      scheduleSheet.getRange(row, COLS.SCHEDULE.TOP_TEAM + 1).setValue(winnerTeam);
+    } else if (winnerPosition === '後攻') {
+      scheduleSheet.getRange(row, COLS.SCHEDULE.BOTTOM_TEAM + 1).setValue(winnerTeam);
     }
   }
 
-  if (loserNextGame) {
-    for (let i = 1; i < scheduleData.length; i++) {
-      if (scheduleData[i][COLS.SCHEDULE.GAME_NO] == loserNextGame) {
-        if (loserPosition === '先攻') {
-          scheduleSheet.getRange(i + 1, COLS.SCHEDULE.TOP_TEAM + 1).setValue(loserTeam);
-        } else if (loserPosition === '後攻') {
-          scheduleSheet.getRange(i + 1, COLS.SCHEDULE.BOTTOM_TEAM + 1).setValue(loserTeam);
-        }
-        break;
-      }
+  if (loserNextGame && rowByGameNum[loserNextGame] !== undefined) {
+    const row = rowByGameNum[loserNextGame] + 1;
+    if (loserPosition === '先攻') {
+      scheduleSheet.getRange(row, COLS.SCHEDULE.TOP_TEAM + 1).setValue(loserTeam);
+    } else if (loserPosition === '後攻') {
+      scheduleSheet.getRange(row, COLS.SCHEDULE.BOTTOM_TEAM + 1).setValue(loserTeam);
     }
   }
 }
