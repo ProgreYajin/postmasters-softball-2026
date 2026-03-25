@@ -7,6 +7,7 @@ on:
     paths:
       - 'gas-staff/**'
       - 'gas-audience/**'
+      - '.github/workflows/deploy-gas.yml'
 
 jobs:
   deploy:
