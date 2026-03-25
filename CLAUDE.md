@@ -48,6 +48,8 @@ web/                    # 静的Webサイト
   js/gallery-app.js     #   GalleryApp
   js/tournament-main.js #   TournamentApp（SVG）
   js/index-app.js       #   IndexApp
+test/                   # テスト
+  unit-test.js          #   ユニットテスト（Node.js assert）
 .github/workflows/      # CI/CD
   deploy-gas.yml        #   GAS自動デプロイ（clasp push）
   deploy-workers.yml    #   Workers自動デプロイ（wrangler deploy）
