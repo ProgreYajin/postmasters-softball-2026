@@ -25,9 +25,10 @@ jobs:
         run: npm install -g @google/clasp
 
       - name: Create clasprc.json
-        env:
-          CLASPRC_B64: ${{ secrets.CLASSPRC_JSON }}
-        run: echo "$CLASPRC_B64" | base64 -d > ~/.clasprc.json
+        run: |
+          cat > ~/.clasprc.json << 'CLASPEOF'
+          {"token":{"access_token":"","refresh_token":"${{ secrets.CLASP_REFRESH_TOKEN }}","scope":"https://www.googleapis.com/auth/script.deployments https://www.googleapis.com/auth/script.projects https://www.googleapis.com/auth/script.webapp.deploy https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/service.management https://www.googleapis.com/auth/logging.read https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/cloud-platform","token_type":"Bearer","expiry_date":0},"oauth2ClientSettings":{"clientId":"1072944905499-vm2v2i5dvn0a0d2o4ca36i1vge8cvbn0.apps.googleusercontent.com","clientSecret":"v6V3fKV_zWU7iw1DrpO1rknX","redirectUri":"http://localhost"},"isLocalCreds":false}
+          CLASPEOF
 
       - name: Deploy Staff GAS
         working-directory: ./gas-staff
