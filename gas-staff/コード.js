@@ -51,7 +51,6 @@ const COLS = {
 
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('⚾ 大会管理')
-    .addItem('📋 スコアボードを同期', 'syncScoreboardWithSchedule') // (中身は省略されているがメニューに残す)
     .addToUi();
 }
 
