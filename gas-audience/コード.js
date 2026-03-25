@@ -118,10 +118,17 @@ function handleImageMessage(messageId, userId, replyToken) {
     const extension = getExtensionFromMimeType(contentType);
     const filename = `photo_${timestamp}_${messageId}${extension}`;
 
-    const uploadResult = uploadToR2(blob, filename, contentType);
+    let uploadResult = uploadToR2(blob, filename, contentType);
+
+    // 失敗時に1回だけリトライ
+    if (!uploadResult.success) {
+      console.error('R2 Upload Failed (1st attempt):', uploadResult.error);
+      Utilities.sleep(1000);
+      uploadResult = uploadToR2(blob, filename, contentType);
+    }
 
     if (!uploadResult.success) {
-      console.error('R2 Upload Failed:', uploadResult.error);
+      console.error('R2 Upload Failed (2nd attempt):', uploadResult.error);
       replyMessage(replyToken, '⚠️ 保存に失敗しました。もう一度お試しください。');
       return;
     }
