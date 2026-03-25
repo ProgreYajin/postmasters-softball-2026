@@ -667,7 +667,7 @@ function calculateLiveTotalScore(scoreboardData, court, gameNum, currentInning, 
       let total = 0;
 
       for (let j = 1; j <= MAX_INNINGS; j++) {
-        const colIdx = COLS.SCOREBOARD.INNING_START + j;
+        const colIdx = COLS.SCOREBOARD.INNING_START + j - 1; // 0-based配列アクセス
         const val = scoreboardData[i][colIdx];
         if (j === currentInning && teamName === (topBottom === INNING_TYPE.TOP ? teams.top : teams.bottom)) {
           total += newScore;
