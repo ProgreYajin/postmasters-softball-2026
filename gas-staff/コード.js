@@ -496,9 +496,10 @@ function handleGameEnd(sheetsData, parsed, userId, fullTimestamp) {
   const winner = determineWinner(scoreboard, parsed.court, parsed.gameNum);
 
   if (winner.isDraw) {
+    const drawScore = getFinalScore(scoreboard, parsed.court, parsed.gameNum);
     return {
       success: true,
-      message: `⚠️ 0-0の引き分けです\nじゃんけんで勝者を決定してください\n\n入力例:\n${parsed.court} ${parsed.gameNum} じゃんけん チーム名`,
+      message: `⚠️ ${drawScore} で引き分けです\nじゃんけんで勝者を決定してください\n\n入力例:\n${parsed.court} ${parsed.gameNum} じゃんけん チーム名`,
       broadcastMessage: null
     };
   }
