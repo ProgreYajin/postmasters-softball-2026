@@ -431,6 +431,151 @@ test('数値 0 → "未定"（falsyなので）', () => {
 
 
 // ============================================================
+// validateSignature テスト (Node.js crypto で GAS Utilities を代替)
+// ============================================================
+console.log('\n=== validateSignature テスト ===');
+
+const crypto = require('crypto');
+
+function validateSignature(e, channelSecret) {
+  if (!channelSecret) return true;
+  const signature = e.requestHeaders && e.requestHeaders['x-line-signature'];
+  if (!signature) return false;
+
+  const hmac = crypto.createHmac('sha256', channelSecret);
+  hmac.update(e.postData.contents);
+  const computedSignatureBase64 = hmac.digest('base64');
+  return signature === computedSignatureBase64;
+}
+
+test('CHANNEL_SECRET未設定 → true (開発用スキップ)', () => {
+  const e = { requestHeaders: {}, postData: { contents: '{}' } };
+  assert.strictEqual(validateSignature(e, null), true);
+  assert.strictEqual(validateSignature(e, ''), true);
+});
+
+test('署名ヘッダーなし → false', () => {
+  const e = { requestHeaders: {}, postData: { contents: '{}' } };
+  assert.strictEqual(validateSignature(e, 'secret123'), false);
+});
+
+test('正しい署名 → true', () => {
+  const secret = 'test_channel_secret';
+  const body = '{"events":[]}';
+  const hmac = crypto.createHmac('sha256', secret);
+  hmac.update(body);
+  const validSig = hmac.digest('base64');
+
+  const e = {
+    requestHeaders: { 'x-line-signature': validSig },
+    postData: { contents: body }
+  };
+  assert.strictEqual(validateSignature(e, secret), true);
+});
+
+test('不正な署名 → false', () => {
+  const e = {
+    requestHeaders: { 'x-line-signature': 'invalid_signature_base64' },
+    postData: { contents: '{"events":[]}' }
+  };
+  assert.strictEqual(validateSignature(e, 'test_secret'), false);
+});
+
+test('bodyが変わると署名不一致 → false', () => {
+  const secret = 'test_channel_secret';
+  const originalBody = '{"events":[]}';
+  const hmac = crypto.createHmac('sha256', secret);
+  hmac.update(originalBody);
+  const sig = hmac.digest('base64');
+
+  const e = {
+    requestHeaders: { 'x-line-signature': sig },
+    postData: { contents: '{"events":[{"type":"tampered"}]}' }
+  };
+  assert.strictEqual(validateSignature(e, secret), false);
+});
+
+// ============================================================
+// Cloudflare Worker リクエスト検証テスト
+// ============================================================
+console.log('\n=== Cloudflare Worker バリデーションテスト ===');
+
+// Worker の検証ロジックを再現
+function validateWorkerRequest(headers, bodySize) {
+  const errors = [];
+  const authToken = headers['x-auth-token'];
+  const filename = headers['x-filename'];
+  const maxSizeBytes = 20 * 1024 * 1024;
+
+  if (!authToken) errors.push('missing_auth');
+  if (authToken && authToken !== 'valid_token') errors.push('invalid_auth');
+  if (!filename) errors.push('missing_filename');
+  if (filename && !/^[a-zA-Z0-9._-]+$/.test(filename)) errors.push('invalid_filename');
+  if (filename && (filename.includes('..') || filename.includes('/'))) errors.push('path_traversal');
+  if (bodySize > maxSizeBytes) errors.push('too_large');
+
+  return errors;
+}
+
+test('正常なリクエスト → エラーなし', () => {
+  const errors = validateWorkerRequest({
+    'x-auth-token': 'valid_token',
+    'x-filename': 'photo_123.jpg'
+  }, 1024 * 1024);
+  assert.deepStrictEqual(errors, []);
+});
+
+test('認証トークンなし → missing_auth', () => {
+  const errors = validateWorkerRequest({ 'x-filename': 'test.jpg' }, 100);
+  assert.ok(errors.includes('missing_auth'));
+});
+
+test('不正な認証トークン → invalid_auth', () => {
+  const errors = validateWorkerRequest({
+    'x-auth-token': 'wrong_token',
+    'x-filename': 'test.jpg'
+  }, 100);
+  assert.ok(errors.includes('invalid_auth'));
+});
+
+test('ファイル名なし → missing_filename', () => {
+  const errors = validateWorkerRequest({ 'x-auth-token': 'valid_token' }, 100);
+  assert.ok(errors.includes('missing_filename'));
+});
+
+test('不正なファイル名（日本語） → invalid_filename', () => {
+  const errors = validateWorkerRequest({
+    'x-auth-token': 'valid_token',
+    'x-filename': '写真.jpg'
+  }, 100);
+  assert.ok(errors.includes('invalid_filename'));
+});
+
+test('パストラバーサル → invalid_filename', () => {
+  const errors = validateWorkerRequest({
+    'x-auth-token': 'valid_token',
+    'x-filename': '../../../etc/passwd'
+  }, 100);
+  assert.ok(errors.includes('invalid_filename'));
+});
+
+test('20MB超過 → too_large', () => {
+  const errors = validateWorkerRequest({
+    'x-auth-token': 'valid_token',
+    'x-filename': 'big.jpg'
+  }, 21 * 1024 * 1024);
+  assert.ok(errors.includes('too_large'));
+});
+
+test('20MBちょうど → エラーなし', () => {
+  const errors = validateWorkerRequest({
+    'x-auth-token': 'valid_token',
+    'x-filename': 'exact.jpg'
+  }, 20 * 1024 * 1024);
+  assert.deepStrictEqual(errors, []);
+});
+
+// ============================================================
 // 結果サマリー
 // ============================================================
 console.log('\n========================================');
