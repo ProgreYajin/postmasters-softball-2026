@@ -47,12 +47,7 @@ function doPost(e) {
 
       if (event.type === 'message') {
         if (event.message.type === 'image') {
-          // 画像処理実行
           handleImageMessage(event.message.id, userId, replyToken);
-        } else if (event.message.type === 'text' && event.message.text.startsWith('[BROADCAST]')) {
-          // ブロードキャスト (管理者機能として実装すべきだが、今回は既存ロジックを踏襲)
-          const message = event.message.text.replace('[BROADCAST]', '').trim();
-          broadcastToAllUsers(message);
         }
       }
     });
