@@ -626,6 +626,8 @@ function updateScore(scoreboardSheet, scoreboardData, court, gameNum, inning, to
   const isTop = topBottom === INNING_TYPE.TOP;
   const targetRow = isTop ? topRow : bottomRow;
   const attackTeamName = isTop ? teams.top : teams.bottom;
+  // COLS.SCOREBOARD.INNING_START は0-based(=3)、inningは1始まり
+  // getRange()は1-based なので: (0-based列3)+1 + (inning-1) = INNING_START + inning
   const inningCol = COLS.SCOREBOARD.INNING_START + inning;
 
   scoreboardSheet.getRange(targetRow, inningCol).setValue(score);
