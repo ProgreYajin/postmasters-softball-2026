@@ -687,20 +687,20 @@ function calculateLiveTotalScore(scoreboardData, court, gameNum, currentInning, 
 // ============================================================
 // 試合ステータス更新
 // ============================================================
-function updateGameStatus(scheduleSheet, scoreboardSheet, court, gameNum, status) {
+function updateGameStatus(scheduleSheet, scoreboardSheet, court, gameNum, status, scheduleData, scoreData) {
   const statusText = status === 'start' ? STATUS.PLAYING : STATUS.ENDED;
 
-  const scheduleData = scheduleSheet.getDataRange().getValues();
-  for (let i = 1; i < scheduleData.length; i++) {
-    if (scheduleData[i][COLS.SCHEDULE.COURT] == court && scheduleData[i][COLS.SCHEDULE.GAME_NO] == gameNum) {
+  const sData = scheduleData || scheduleSheet.getDataRange().getValues();
+  for (let i = 1; i < sData.length; i++) {
+    if (sData[i][COLS.SCHEDULE.COURT] == court && sData[i][COLS.SCHEDULE.GAME_NO] == gameNum) {
       scheduleSheet.getRange(i + 1, COLS.SCHEDULE.STATUS + 1).setValue(statusText);
       break;
     }
   }
 
-  const scoreData = scoreboardSheet.getDataRange().getValues();
-  for (let i = 1; i < scoreData.length; i++) {
-    if (scoreData[i][COLS.SCOREBOARD.COURT] == court && scoreData[i][COLS.SCOREBOARD.GAME_NO] == gameNum) {
+  const scData = scoreData || scoreboardSheet.getDataRange().getValues();
+  for (let i = 1; i < scData.length; i++) {
+    if (scData[i][COLS.SCOREBOARD.COURT] == court && scData[i][COLS.SCOREBOARD.GAME_NO] == gameNum) {
       scoreboardSheet.getRange(i + 1, COLS.SCOREBOARD.STATUS + 1).setValue(statusText);
     }
   }
