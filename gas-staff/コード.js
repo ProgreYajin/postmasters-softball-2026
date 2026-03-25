@@ -641,7 +641,7 @@ function updateScore(scoreboardSheet, scoreboardData, court, gameNum, inning, to
 // ============================================================
 function getCurrentInningScore(scoreboardData, court, gameNum, inning, topBottom, teams) {
   const attackTeamName = topBottom === INNING_TYPE.TOP ? teams.top : teams.bottom;
-  const inningCol = COLS.SCOREBOARD.INNING_START + inning;
+  const inningCol = COLS.SCOREBOARD.INNING_START + inning - 1; // 0-based配列アクセス
 
   for (let i = 1; i < scoreboardData.length; i++) {
     if (scoreboardData[i][COLS.SCOREBOARD.COURT] == court &&
