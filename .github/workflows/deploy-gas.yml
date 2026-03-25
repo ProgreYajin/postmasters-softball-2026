@@ -27,11 +27,9 @@ jobs:
         run: echo "${{ secrets.CLASSPRC_JSON }}" > ~/.clasprc.json
 
       - name: Deploy Staff GAS
-        if: contains(github.event.head_commit.modified, 'gas-staff') || contains(github.event.head_commit.added, 'gas-staff')
         working-directory: ./gas-staff
         run: clasp push -f
 
       - name: Deploy Audience GAS
-        if: contains(github.event.head_commit.modified, 'gas-audience') || contains(github.event.head_commit.added, 'gas-audience')
         working-directory: ./gas-audience
         run: clasp push -f
