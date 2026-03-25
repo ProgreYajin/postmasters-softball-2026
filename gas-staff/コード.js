@@ -423,6 +423,523 @@ function getHelpMessage() {
     '■じゃんけん: A 1 じゃんけん 勝ったチーム';
 }
 
-// その他の既存関数（updateScheduleWithTeams, handleGameStartWithTeams, notifyAudienceBotなど）は
-// ロジック的に大きな問題はないが、COLS定数を使うように置換すること。
-// (紙面の都合上省略するが、原則全ての列インデックスをCOLS経由にすること)
+// ============================================================
+// 試合開始処理（チーム指定あり）
+// ============================================================
+function handleGameStartWithTeams(sheetsData, parsed, userId, fullTimestamp) {
+  const { scheduleSheet, scoreboardSheet, recordSheet, schedule } = sheetsData;
+
+  updateScheduleWithTeams(scheduleSheet, schedule, parsed.court, parsed.gameNum, parsed.topTeam, parsed.bottomTeam);
+  initializeScoreboard(scoreboardSheet, parsed.court, parsed.gameNum, parsed.topTeam, parsed.bottomTeam, fullTimestamp);
+  updateGameStatus(scheduleSheet, scoreboardSheet, parsed.court, parsed.gameNum, 'start');
+
+  recordSheet.appendRow([fullTimestamp, parsed.court, parsed.gameNum, '-', '-', '-', userId, `開始:${parsed.topTeam}vs${parsed.bottomTeam}`]);
+
+  return {
+    success: true,
+    message: `${parsed.court}コート 第${parsed.gameNum}試合 開始\n先攻: ${parsed.topTeam}\n後攻: ${parsed.bottomTeam}`,
+    broadcastMessage: `⚾ 試合開始!\n${parsed.court}コートで「${parsed.topTeam}（先攻）」対「${parsed.bottomTeam}（後攻）」の試合が始まりました!`
+  };
+}
+
+// ============================================================
+// 試合予定シートにチーム名を設定
+// ============================================================
+function updateScheduleWithTeams(scheduleSheet, scheduleData, court, gameNum, topTeam, bottomTeam) {
+  for (let i = 1; i < scheduleData.length; i++) {
+    if (scheduleData[i][COLS.SCHEDULE.COURT] == court && scheduleData[i][COLS.SCHEDULE.GAME_NO] == gameNum) {
+      scheduleSheet.getRange(i + 1, COLS.SCHEDULE.TOP_TEAM + 1).setValue(topTeam);
+      scheduleSheet.getRange(i + 1, COLS.SCHEDULE.BOTTOM_TEAM + 1).setValue(bottomTeam);
+      return;
+    }
+  }
+  scheduleSheet.appendRow([court, gameNum, topTeam, bottomTeam, STATUS.STANDBY, '', '', '', '', '']);
+}
+
+// ============================================================
+// スコアボード初期化
+// ============================================================
+function initializeScoreboard(scoreboardSheet, court, gameNum, topTeam, bottomTeam, timestamp) {
+  const data = scoreboardSheet.getDataRange().getValues();
+
+  let topExists = false;
+  let bottomExists = false;
+
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][COLS.SCOREBOARD.COURT] == court && data[i][COLS.SCOREBOARD.GAME_NO] == gameNum) {
+      if (data[i][COLS.SCOREBOARD.TEAM_NAME] === topTeam) topExists = true;
+      if (data[i][COLS.SCOREBOARD.TEAM_NAME] === bottomTeam) bottomExists = true;
+    }
+  }
+
+  const allInitialScores = Array(MAX_INNINGS).fill('');
+
+  if (!topExists) {
+    scoreboardSheet.appendRow([court, gameNum, topTeam, ...allInitialScores, 0, STATUS.PLAYING, timestamp]);
+  }
+  if (!bottomExists) {
+    scoreboardSheet.appendRow([court, gameNum, bottomTeam, ...allInitialScores, 0, STATUS.PLAYING, timestamp]);
+  }
+}
+
+// ============================================================
+// 試合終了処理
+// ============================================================
+function handleGameEnd(sheetsData, parsed, userId, fullTimestamp) {
+  const { scheduleSheet, scoreboardSheet, recordSheet, schedule, scoreboard } = sheetsData;
+
+  const winner = determineWinner(scoreboard, parsed.court, parsed.gameNum);
+
+  if (winner.isDraw) {
+    return {
+      success: true,
+      message: `⚠️ 0-0の引き分けです\nじゃんけんで勝者を決定してください\n\n入力例:\n${parsed.court} ${parsed.gameNum} じゃんけん チーム名`,
+      broadcastMessage: null
+    };
+  }
+
+  if (winner.winnerTeam && winner.loserTeam) {
+    updateGameStatus(scheduleSheet, scoreboardSheet, parsed.court, parsed.gameNum, 'end');
+    recordSheet.appendRow([fullTimestamp, parsed.court, parsed.gameNum, '-', '-', '-', userId, '終了']);
+    advanceTeams(scheduleSheet, schedule, parsed.gameNum, winner.winnerTeam, winner.loserTeam);
+
+    const finalScore = getFinalScore(scoreboard, parsed.court, parsed.gameNum);
+    let broadcastMsg = `🏁 試合終了!\n${parsed.court}コート 第${parsed.gameNum}試合\n${finalScore}`;
+
+    const nextMatchDetails = getNextMatchDetails(schedule, parsed.gameNum);
+    broadcastMsg += `\n\n🎉 ${winner.winnerTeam} の勝利!`;
+
+    if (nextMatchDetails.winnerMatch) {
+      const wm = nextMatchDetails.winnerMatch;
+      broadcastMsg += `\n次は第${wm.gameNum}試合（${wm.court}コート・${wm.startTime}開始予定）に進出します!`;
+    }
+    if (nextMatchDetails.loserMatch) {
+      const lm = nextMatchDetails.loserMatch;
+      broadcastMsg += `\n${winner.loserTeam} は第${lm.gameNum}試合（${lm.court}コート・${lm.startTime}開始予定）へ`;
+    }
+
+    const nextCourtMatch = getNextCourtMatch(schedule, parsed.court, parsed.gameNum);
+    if (nextCourtMatch) {
+      broadcastMsg += `\n\n📢 ${parsed.court}コートの次の試合\n第${nextCourtMatch.gameNum}試合: ${nextCourtMatch.top} vs ${nextCourtMatch.bottom}\n${nextCourtMatch.startTime}開始予定`;
+    }
+
+    return {
+      success: true,
+      message: `${parsed.court}コート 第${parsed.gameNum}試合 終了`,
+      broadcastMessage: broadcastMsg
+    };
+  }
+
+  return {
+    success: false,
+    message: 'スコアボードにデータがありません。試合開始コマンドを送信してください。'
+  };
+}
+
+// ============================================================
+// 試合再開処理
+// ============================================================
+function handleGameResume(sheetsData, parsed, userId, fullTimestamp) {
+  const { scheduleSheet, scoreboardSheet, recordSheet } = sheetsData;
+
+  updateGameStatus(scheduleSheet, scoreboardSheet, parsed.court, parsed.gameNum, 'start');
+  recordSheet.appendRow([fullTimestamp, parsed.court, parsed.gameNum, '-', '-', '-', userId, '再開']);
+
+  return {
+    success: true,
+    message: `${parsed.court}コート 第${parsed.gameNum}試合 再開しました`,
+    broadcastMessage: null
+  };
+}
+
+// ============================================================
+// じゃんけん決着処理
+// ============================================================
+function handleJanken(sheetsData, parsed, userId, fullTimestamp) {
+  const { scheduleSheet, scoreboardSheet, recordSheet, schedule } = sheetsData;
+
+  const teams = getTeamNames(schedule, parsed.court, parsed.gameNum);
+  if (!teams.top || !teams.bottom) {
+    return { success: false, message: '試合予定が見つかりません' };
+  }
+
+  if (parsed.winnerTeam !== teams.top && parsed.winnerTeam !== teams.bottom) {
+    return {
+      success: false,
+      message: `チーム名が一致しません\n正しいチーム名: ${teams.top} / ${teams.bottom}`
+    };
+  }
+
+  const loserTeam = parsed.winnerTeam === teams.top ? teams.bottom : teams.top;
+
+  updateGameStatus(scheduleSheet, scoreboardSheet, parsed.court, parsed.gameNum, 'end');
+  recordSheet.appendRow([fullTimestamp, parsed.court, parsed.gameNum, '-', '-', '-', userId, `じゃんけん:${parsed.winnerTeam}`]);
+  advanceTeams(scheduleSheet, schedule, parsed.gameNum, parsed.winnerTeam, loserTeam);
+
+  const nextMatchDetails = getNextMatchDetails(schedule, parsed.gameNum);
+  let broadcastMsg = `🏁 試合終了（じゃんけん決着）\n${parsed.court}コート 第${parsed.gameNum}試合\n${teams.top} 0 - 0 ${teams.bottom}`;
+  broadcastMsg += `\n\n✊✌️✋ じゃんけんで ${parsed.winnerTeam} の勝利!`;
+
+  if (nextMatchDetails.winnerMatch) {
+    const wm = nextMatchDetails.winnerMatch;
+    broadcastMsg += `\n次は第${wm.gameNum}試合（${wm.court}コート・${wm.startTime}開始予定）に進出します!`;
+  }
+  if (nextMatchDetails.loserMatch) {
+    const lm = nextMatchDetails.loserMatch;
+    broadcastMsg += `\n${loserTeam} は第${lm.gameNum}試合（${lm.court}コート・${lm.startTime}開始予定）へ`;
+  }
+
+  const nextCourtMatch = getNextCourtMatch(schedule, parsed.court, parsed.gameNum);
+  if (nextCourtMatch) {
+    broadcastMsg += `\n\n📢 ${parsed.court}コートの次の試合\n第${nextCourtMatch.gameNum}試合: ${nextCourtMatch.top} vs ${nextCourtMatch.bottom}\n${nextCourtMatch.startTime}開始予定`;
+  }
+
+  return {
+    success: true,
+    message: `${parsed.court}コート 第${parsed.gameNum}試合 じゃんけんで ${parsed.winnerTeam} の勝利`,
+    broadcastMessage: broadcastMsg
+  };
+}
+
+// ============================================================
+// 得点更新
+// ============================================================
+function updateScore(scoreboardSheet, scoreboardData, court, gameNum, inning, topBottom, score, teams, timestamp) {
+  let topRow = -1;
+  let bottomRow = -1;
+
+  for (let i = 1; i < scoreboardData.length; i++) {
+    if (scoreboardData[i][COLS.SCOREBOARD.COURT] == court && scoreboardData[i][COLS.SCOREBOARD.GAME_NO] == gameNum) {
+      if (scoreboardData[i][COLS.SCOREBOARD.TEAM_NAME] === teams.top) topRow = i + 1;
+      if (scoreboardData[i][COLS.SCOREBOARD.TEAM_NAME] === teams.bottom) bottomRow = i + 1;
+    }
+  }
+
+  if (topRow === -1 || bottomRow === -1) return null;
+
+  const isTop = topBottom === INNING_TYPE.TOP;
+  const targetRow = isTop ? topRow : bottomRow;
+  const attackTeamName = isTop ? teams.top : teams.bottom;
+  const inningCol = COLS.SCOREBOARD.INNING_START + inning;
+
+  scoreboardSheet.getRange(targetRow, inningCol).setValue(score);
+  updateTotal(scoreboardSheet, targetRow);
+  scoreboardSheet.getRange(targetRow, COLS.SCOREBOARD.TIMESTAMP + 1).setValue(timestamp);
+
+  return attackTeamName;
+}
+
+// ============================================================
+// 現在のイニングスコア取得
+// ============================================================
+function getCurrentInningScore(scoreboardData, court, gameNum, inning, topBottom, teams) {
+  const attackTeamName = topBottom === INNING_TYPE.TOP ? teams.top : teams.bottom;
+  const inningCol = COLS.SCOREBOARD.INNING_START + inning;
+
+  for (let i = 1; i < scoreboardData.length; i++) {
+    if (scoreboardData[i][COLS.SCOREBOARD.COURT] == court &&
+        scoreboardData[i][COLS.SCOREBOARD.GAME_NO] == gameNum &&
+        scoreboardData[i][COLS.SCOREBOARD.TEAM_NAME] === attackTeamName) {
+      const val = scoreboardData[i][inningCol];
+      return { score: (val === '' || val === null || val === undefined) ? 0 : Number(val) };
+    }
+  }
+  return { score: 0 };
+}
+
+// ============================================================
+// ライブ合計スコア文字列生成
+// ============================================================
+function calculateLiveTotalScore(scoreboardData, court, gameNum, currentInning, topBottom, newScore, teams) {
+  let topTotal = 0;
+  let bottomTotal = 0;
+
+  for (let i = 1; i < scoreboardData.length; i++) {
+    if (scoreboardData[i][COLS.SCOREBOARD.COURT] == court && scoreboardData[i][COLS.SCOREBOARD.GAME_NO] == gameNum) {
+      const teamName = scoreboardData[i][COLS.SCOREBOARD.TEAM_NAME];
+      let total = 0;
+
+      for (let j = 1; j <= MAX_INNINGS; j++) {
+        const colIdx = COLS.SCOREBOARD.INNING_START + j;
+        const val = scoreboardData[i][colIdx];
+        if (j === currentInning && teamName === (topBottom === INNING_TYPE.TOP ? teams.top : teams.bottom)) {
+          total += newScore;
+        } else {
+          total += (val === '' || val === null || val === undefined) ? 0 : Number(val);
+        }
+      }
+
+      if (teamName === teams.top) topTotal = total;
+      if (teamName === teams.bottom) bottomTotal = total;
+    }
+  }
+  return `${teams.top} ${topTotal} - ${bottomTotal} ${teams.bottom}`;
+}
+
+// ============================================================
+// 試合ステータス更新
+// ============================================================
+function updateGameStatus(scheduleSheet, scoreboardSheet, court, gameNum, status) {
+  const statusText = status === 'start' ? STATUS.PLAYING : STATUS.ENDED;
+
+  const scheduleData = scheduleSheet.getDataRange().getValues();
+  for (let i = 1; i < scheduleData.length; i++) {
+    if (scheduleData[i][COLS.SCHEDULE.COURT] == court && scheduleData[i][COLS.SCHEDULE.GAME_NO] == gameNum) {
+      scheduleSheet.getRange(i + 1, COLS.SCHEDULE.STATUS + 1).setValue(statusText);
+      break;
+    }
+  }
+
+  const scoreData = scoreboardSheet.getDataRange().getValues();
+  for (let i = 1; i < scoreData.length; i++) {
+    if (scoreData[i][COLS.SCOREBOARD.COURT] == court && scoreData[i][COLS.SCOREBOARD.GAME_NO] == gameNum) {
+      scoreboardSheet.getRange(i + 1, COLS.SCOREBOARD.STATUS + 1).setValue(statusText);
+    }
+  }
+}
+
+// ============================================================
+// 勝敗判定
+// ============================================================
+function determineWinner(scoreboardData, court, gameNum) {
+  const teams = [];
+
+  for (let i = 1; i < scoreboardData.length; i++) {
+    if (scoreboardData[i][COLS.SCOREBOARD.COURT] == court && scoreboardData[i][COLS.SCOREBOARD.GAME_NO] == gameNum) {
+      teams.push({
+        name: scoreboardData[i][COLS.SCOREBOARD.TEAM_NAME],
+        total: scoreboardData[i][COLS.SCOREBOARD.TOTAL] || 0
+      });
+    }
+  }
+
+  if (teams.length < 2) {
+    return { winnerTeam: null, loserTeam: null, isDraw: false };
+  }
+
+  const team1Total = Number(teams[0].total) || 0;
+  const team2Total = Number(teams[1].total) || 0;
+
+  if (team1Total > team2Total) {
+    return { winnerTeam: teams[0].name, loserTeam: teams[1].name, isDraw: false };
+  } else if (team2Total > team1Total) {
+    return { winnerTeam: teams[1].name, loserTeam: teams[0].name, isDraw: false };
+  } else {
+    return { winnerTeam: null, loserTeam: null, isDraw: true };
+  }
+}
+
+// ============================================================
+// 次試合へチームを振り分け
+// ============================================================
+function advanceTeams(scheduleSheet, scheduleData, finishedGameNum, winnerTeam, loserTeam) {
+  let winnerNextGame = null;
+  let loserNextGame = null;
+  let winnerPosition = null;
+  let loserPosition = null;
+
+  for (let i = 1; i < scheduleData.length; i++) {
+    if (scheduleData[i][COLS.SCHEDULE.GAME_NO] == finishedGameNum) {
+      winnerNextGame = scheduleData[i][COLS.SCHEDULE.WINNER_NEXT];
+      loserNextGame = scheduleData[i][COLS.SCHEDULE.LOSER_NEXT];
+      winnerPosition = (scheduleData[i][COLS.SCHEDULE.WINNER_POS] || '').trim();
+      loserPosition = (scheduleData[i][COLS.SCHEDULE.LOSER_POS] || '').trim();
+      break;
+    }
+  }
+
+  if (winnerNextGame) {
+    for (let i = 1; i < scheduleData.length; i++) {
+      if (scheduleData[i][COLS.SCHEDULE.GAME_NO] == winnerNextGame) {
+        if (winnerPosition === '先攻') {
+          scheduleSheet.getRange(i + 1, COLS.SCHEDULE.TOP_TEAM + 1).setValue(winnerTeam);
+        } else if (winnerPosition === '後攻') {
+          scheduleSheet.getRange(i + 1, COLS.SCHEDULE.BOTTOM_TEAM + 1).setValue(winnerTeam);
+        }
+        break;
+      }
+    }
+  }
+
+  if (loserNextGame) {
+    for (let i = 1; i < scheduleData.length; i++) {
+      if (scheduleData[i][COLS.SCHEDULE.GAME_NO] == loserNextGame) {
+        if (loserPosition === '先攻') {
+          scheduleSheet.getRange(i + 1, COLS.SCHEDULE.TOP_TEAM + 1).setValue(loserTeam);
+        } else if (loserPosition === '後攻') {
+          scheduleSheet.getRange(i + 1, COLS.SCHEDULE.BOTTOM_TEAM + 1).setValue(loserTeam);
+        }
+        break;
+      }
+    }
+  }
+}
+
+// ============================================================
+// チーム名取得
+// ============================================================
+function getTeamNames(scheduleData, court, gameNum) {
+  for (let i = 1; i < scheduleData.length; i++) {
+    if (scheduleData[i][COLS.SCHEDULE.COURT] == court && scheduleData[i][COLS.SCHEDULE.GAME_NO] == gameNum) {
+      return {
+        top: scheduleData[i][COLS.SCHEDULE.TOP_TEAM],
+        bottom: scheduleData[i][COLS.SCHEDULE.BOTTOM_TEAM]
+      };
+    }
+  }
+  return { top: '', bottom: '' };
+}
+
+// ============================================================
+// 試合ステータス取得
+// ============================================================
+function getGameStatus(scheduleData, court, gameNum) {
+  for (let i = 1; i < scheduleData.length; i++) {
+    if (scheduleData[i][COLS.SCHEDULE.COURT] == court && scheduleData[i][COLS.SCHEDULE.GAME_NO] == gameNum) {
+      return scheduleData[i][COLS.SCHEDULE.STATUS];
+    }
+  }
+  return null;
+}
+
+// ============================================================
+// 最終スコア取得
+// ============================================================
+function getFinalScore(scoreboardData, court, gameNum) {
+  const teams = [];
+
+  for (let i = 1; i < scoreboardData.length; i++) {
+    if (scoreboardData[i][COLS.SCOREBOARD.COURT] == court && scoreboardData[i][COLS.SCOREBOARD.GAME_NO] == gameNum) {
+      teams.push({
+        name: scoreboardData[i][COLS.SCOREBOARD.TEAM_NAME],
+        total: scoreboardData[i][COLS.SCOREBOARD.TOTAL] || 0
+      });
+    }
+  }
+
+  if (teams.length >= 2) {
+    return `${teams[0].name} ${teams[0].total} - ${teams[1].total} ${teams[1].name}`;
+  }
+  return '試合結果取得エラー';
+}
+
+// ============================================================
+// 次試合の詳細情報を取得
+// ============================================================
+function getNextMatchDetails(scheduleData, finishedGameNum) {
+  let winnerNextGameNum = null;
+  let loserNextGameNum = null;
+
+  for (let i = 1; i < scheduleData.length; i++) {
+    if (scheduleData[i][COLS.SCHEDULE.GAME_NO] == finishedGameNum) {
+      winnerNextGameNum = scheduleData[i][COLS.SCHEDULE.WINNER_NEXT];
+      loserNextGameNum = scheduleData[i][COLS.SCHEDULE.LOSER_NEXT];
+      break;
+    }
+  }
+
+  const result = { winnerMatch: null, loserMatch: null };
+
+  if (winnerNextGameNum) {
+    for (let i = 1; i < scheduleData.length; i++) {
+      if (scheduleData[i][COLS.SCHEDULE.GAME_NO] == winnerNextGameNum) {
+        result.winnerMatch = {
+          gameNum: scheduleData[i][COLS.SCHEDULE.GAME_NO],
+          court: scheduleData[i][COLS.SCHEDULE.COURT],
+          startTime: formatTime(scheduleData[i][COLS.SCHEDULE.START_TIME])
+        };
+        break;
+      }
+    }
+  }
+
+  if (loserNextGameNum) {
+    for (let i = 1; i < scheduleData.length; i++) {
+      if (scheduleData[i][COLS.SCHEDULE.GAME_NO] == loserNextGameNum) {
+        result.loserMatch = {
+          gameNum: scheduleData[i][COLS.SCHEDULE.GAME_NO],
+          court: scheduleData[i][COLS.SCHEDULE.COURT],
+          startTime: formatTime(scheduleData[i][COLS.SCHEDULE.START_TIME])
+        };
+        break;
+      }
+    }
+  }
+
+  return result;
+}
+
+// ============================================================
+// 同じコートの次の試合を取得
+// ============================================================
+function getNextCourtMatch(scheduleData, court, currentGameNum) {
+  for (let i = 1; i < scheduleData.length; i++) {
+    if (scheduleData[i][COLS.SCHEDULE.COURT] == court &&
+        scheduleData[i][COLS.SCHEDULE.GAME_NO] > currentGameNum &&
+        scheduleData[i][COLS.SCHEDULE.STATUS] === STATUS.STANDBY) {
+      return {
+        gameNum: scheduleData[i][COLS.SCHEDULE.GAME_NO],
+        court: scheduleData[i][COLS.SCHEDULE.COURT],
+        top: scheduleData[i][COLS.SCHEDULE.TOP_TEAM] || 'TBD',
+        bottom: scheduleData[i][COLS.SCHEDULE.BOTTOM_TEAM] || 'TBD',
+        startTime: formatTime(scheduleData[i][COLS.SCHEDULE.START_TIME])
+      };
+    }
+  }
+  return null;
+}
+
+// ============================================================
+// 時刻フォーマット
+// ============================================================
+function formatTime(timeValue) {
+  if (!timeValue) return '未定';
+
+  if (timeValue instanceof Date) {
+    return Utilities.formatDate(timeValue, 'Asia/Tokyo', 'HH:mm');
+  }
+  if (typeof timeValue === 'string') {
+    return timeValue.trim();
+  }
+  if (typeof timeValue === 'number') {
+    const date = new Date((timeValue - 25569) * 86400 * 1000);
+    return Utilities.formatDate(date, 'Asia/Tokyo', 'HH:mm');
+  }
+  return '未定';
+}
+
+// ============================================================
+// 観客Botへ通知
+// ============================================================
+function notifyAudienceBot(message) {
+  if (!AUDIENCE_BOT_SCRIPT_URL) return;
+
+  try {
+    UrlFetchApp.fetch(AUDIENCE_BOT_SCRIPT_URL, {
+      method: 'post',
+      contentType: 'application/json',
+      payload: JSON.stringify({ type: 'broadcast', message: message }),
+      muteHttpExceptions: true
+    });
+  } catch (e) {
+    console.error('観客Botへの通知失敗:', e);
+  }
+}
+
+// ============================================================
+// LINE返信
+// ============================================================
+function replyMessage(replyToken, message) {
+  UrlFetchApp.fetch('https://api.line.me/v2/bot/message/reply', {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + LINE_ACCESS_TOKEN
+    },
+    payload: JSON.stringify({
+      replyToken: replyToken,
+      messages: [{ type: 'text', text: message }]
+    }),
+    muteHttpExceptions: true
+  });
+}
