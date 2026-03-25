@@ -140,6 +140,19 @@ Body: binary image
 - 写真投稿 — 投稿写真の記録
 - ユーザー一覧 — LINEユーザー管理
 
+## テスト
+
+### ユニットテスト（test/unit-test.js）
+- `node test/unit-test.js` で実行（npm依存なし、Node.js assertのみ）
+- テスト対象: parseMessage, determineWinner, formatTime, validateSignature, Workerバリデーション
+- GAS固有API（Utilities等）はNode.js crypto等で代替してテスト
+- 新しい純粋関数を追加した場合はここにテストを追加すること
+
+### API疎通テスト
+- Staff API: `config.js` の `STAFF_API_URL` にGETリクエスト（パラメータ: なし/schedule/teams）
+- Audience API: `config.js` の `AUDIENCE_API_URL` にGETリクエスト
+- GAS URLは302リダイレクト（script.google.com → script.googleusercontent.com）を経由する
+
 ## 開発時の注意
 
 - GASファイルはUTF-8で日本語ファイル名を使用
@@ -147,3 +160,5 @@ Body: binary image
 - R2公開URL: `https://pub-d1b8738273da4b779dbc93fc861dc066.r2.dev`
 - Web側はフレームワーク不使用のVanilla JS、ビルドステップなし
 - トーナメント表はSVG座標のハードコードあり（config.jsのTEAM_COORDINATES, MATCH_COORDINATES）
+- Web全ページで `common.js`（escapeHtml, getSafeValue等）をグローバル依存として使用。新ページ追加時は `config.js` → `common.js` → アプリJS の順で読み込むこと
+- GASのシート列番号は `COLS` 定数（0-based）で管理。`getRange()` は1-basedなので `+1` が必要
