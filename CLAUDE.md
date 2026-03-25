@@ -166,3 +166,5 @@ Body: binary image
 - トーナメント表はSVG座標のハードコードあり（config.jsのTEAM_COORDINATES, MATCH_COORDINATES）
 - Web全ページで `common.js`（escapeHtml, getSafeValue等）をグローバル依存として使用。新ページ追加時は `config.js` → `common.js` → アプリJS の順で読み込むこと
 - GASのシート列番号は `COLS` 定数（0-based）で管理。`getRange()` は1-basedなので `+1` が必要
+- イニング列アクセス: 配列(0-based)は `INNING_START + inning - 1`、getRange(1-based)は `INNING_START + inning`。混同注意
+- GitHub Secretsに値を設定する際はGitHub API + pynacl暗号化を使う（`/tmp/set_secret.py`参照）。iPhoneからのコピペは改行混入で失敗しやすい
