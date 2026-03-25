@@ -113,6 +113,7 @@ Body: binary image
 - `R2_UPLOAD_WORKER_URL` — Cloudflare Worker URL（観客bot側で使用）
 - `WORKER_AUTH_TOKEN` — Worker認証トークン
 - `DRIVE_FOLDER_ID` — Google Drive写真フォルダID
+- `BROADCAST_TOKEN` — スタッフbot→観客bot内部通信認証（両方に同じ値を設定。`setupBroadcastToken()`で設定済み）
 
 ### Cloudflare Workers（wrangler.jsonc）
 - `WORKER_AUTH_TOKEN` — アップロード認証
