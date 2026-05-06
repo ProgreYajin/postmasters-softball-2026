@@ -575,6 +575,32 @@ function handleGameResume(sheetsData, parsed, userId, fullTimestamp) {
 }
 
 // ============================================================
+// ホームラン速報
+// ============================================================
+function handleHomerun(sheetsData, parsed) {
+  const { schedule, scoreboard } = sheetsData;
+
+  const teams = getTeamNames(schedule, parsed.court, parsed.gameNum);
+  if (!teams.top || !teams.bottom) return { success: false, message: '試合情報なし' };
+
+  if (getGameStatus(schedule, parsed.court, parsed.gameNum) === STATUS.ENDED) {
+    return { success: false, message: '試合は終了しています' };
+  }
+
+  const totalScoreString = getFinalScore(scoreboard, parsed.court, parsed.gameNum);
+  const battingTeam = parsed.topBottom === INNING_TYPE.TOP ? teams.top
+                    : parsed.topBottom === INNING_TYPE.BOTTOM ? teams.bottom
+                    : null;
+  const teamStr = battingTeam ? `${battingTeam}が本塁打！` : 'ホームラン発生！';
+
+  return {
+    success: true,
+    message: `⚾ ホームラン記録しました`,
+    broadcastMessage: `🏠 ホームラン！\n${parsed.court}コ 第${parsed.gameNum}試合\n${teamStr}\n（${totalScoreString}）`
+  };
+}
+
+// ============================================================
 // じゃんけん決着処理
 // ============================================================
 function handleJanken(sheetsData, parsed, userId, fullTimestamp) {
