@@ -50,7 +50,20 @@
       "mcp__plugin_claude-mem_mcp-search__search",
       "mcp__plugin_claude-mem_mcp-search__get_observations",
       "Bash(rtk proxy *)",
-      "Bash(rtk find *)"
+      "Bash(rtk find *)",
+      "Bash(~/.local/node_modules/.bin/clasp status *)",
+      "Bash(~/.local/node_modules/.bin/clasp deployments *)",
+      "Bash(~/.local/node_modules/.bin/clasp deploy *)",
+      "Bash(~/.local/node_modules/.bin/clasp logs *)",
+      "Bash(kill %1)",
+      "Bash(wait)",
+      "Bash(~/.local/node_modules/.bin/clasp run *)",
+      "Bash(~/.local/node_modules/.bin/clasp versions *)",
+      "Bash(mkdir -p /tmp/gas-v41)",
+      "Bash(cp /home/junki/dev/postmasters-softball-2026/gas-staff/.clasp.json /tmp/gas-v41/)",
+      "Read(//tmp/**)",
+      "Bash(~/.local/node_modules/.bin/clasp pull *)",
+      "Bash(rtk diff *)"
     ]
   }
 }

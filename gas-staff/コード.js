@@ -5,7 +5,7 @@
 // ★★★ 設定項目 ★★★
 const PROPS = PropertiesService.getScriptProperties();
 const LINE_ACCESS_TOKEN = PROPS.getProperty('LINE_ACCESS_TOKEN');
-const CHANNEL_SECRET = PROPS.getProperty('CHANNEL_SECRET'); // ★追加: LINE Developersコンソールから取得
+const CHANNEL_SECRET = (PROPS.getProperty('CHANNEL_SECRET') || '').trim();
 const AUDIENCE_BOT_SCRIPT_URL = PROPS.getProperty('AUDIENCE_BOT_URL');
 
 // ★★★ 定数定義 ★★★
