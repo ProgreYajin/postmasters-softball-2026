@@ -249,12 +249,16 @@ function handleScoreInput(sheetsData, parsed, userId, fullTimestamp) {
 
   let resultMsg = `【${parsed.topBottom === INNING_TYPE.TOP ? '先攻' : '後攻'}：${attackTeam}】 ${inningText}\n${oldScore} → ${newScore}`;
   if (diffScore > 0) resultMsg += ` (+${diffScore}点)`;
+  else if (diffScore < 0) resultMsg += ` (訂正)`;
 
-  return {
-    success: true,
-    message: resultMsg,
-    broadcastMessage: diffScore > 0 ? `📢 速報\n${parsed.court}コ 第${parsed.gameNum}試合 ${inningText}\n${attackTeam} ${diffScore}点追加!\n${totalScoreString}` : null
-  };
+  let broadcastMessage = null;
+  if (diffScore > 0) {
+    broadcastMessage = `📢 速報\n${parsed.court}コ 第${parsed.gameNum}試合 ${inningText}\n${attackTeam} ${diffScore}点追加!\n${totalScoreString}`;
+  } else if (diffScore < 0) {
+    broadcastMessage = `⚠️ 訂正\n${parsed.court}コ 第${parsed.gameNum}試合 ${inningText}\n${attackTeam} ${oldScore}点→${newScore}点に修正\n${totalScoreString}`;
+  }
+
+  return { success: true, message: resultMsg, broadcastMessage };
 }
 
 // ★最適化: ループ内書き込みを排除
