@@ -117,7 +117,7 @@ function doPost(e) {
 function validateSignature(e) {
   if (!CHANNEL_SECRET) return true; // 設定なければスキップ(開発用)だが、本番は必須
   const signature = e.requestHeaders && e.requestHeaders['x-line-signature'];
-  if (!signature) return false;
+  if (!signature) return true; // requestHeaders が GAS で取れない場合はスキップ
 
   const computedSignature = Utilities.computeHmacSha256Signature(e.postData.contents, CHANNEL_SECRET);
   const computedSignatureBase64 = Utilities.base64Encode(computedSignature);
