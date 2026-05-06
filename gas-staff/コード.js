@@ -196,32 +196,134 @@ function processMessage(message, userId, fullTimestamp) {
 function parseMessage(message) {
   const msg = message.trim().replace(/[ 　]+/g, ' ');
 
-  // マッチ結果を共通化して再利用
   let m;
 
-  // 開始: A 1 開始 チームA チームB
-  if (m = msg.match(/^([A-Za-z0-9]+)(?:コート)?\s*第?(\d+)(?:試合)?\s*開始\s+(.+?)\s+(.+)$/)) {
-    return { type: 'start_with_teams', court: m[1], gameNum: parseInt(m[2]), topTeam: m[3], bottomTeam: m[4] };
+  // 開始: A 開始 チームA チームB
+  if (m = msg.match(/^([A-Za-z0-9]+)(?:コート)?\s*開始\s+(.+?)\s+(.+)$/)) {
+    return { type: 'start_with_teams', court: m[1], topTeam: m[2], bottomTeam: m[3] };
   }
-  // 終了: A 1 終了
-  if (m = msg.match(/^([A-Za-z0-9]+)(?:コート)?\s*第?(\d+)(?:試合)?\s*終了$/)) {
-    return { type: 'end', court: m[1], gameNum: parseInt(m[2]) };
+  // 終了: A 終了
+  if (m = msg.match(/^([A-Za-z0-9]+)(?:コート)?\s*終了$/)) {
+    return { type: 'end', court: m[1] };
   }
-  // 再開: A 1 再開
-  if (m = msg.match(/^([A-Za-z0-9]+)(?:コート)?\s*第?(\d+)(?:試合)?\s*再開$/)) {
-    return { type: 'resume', court: m[1], gameNum: parseInt(m[2]) };
+  // 再開: A 再開
+  if (m = msg.match(/^([A-Za-z0-9]+)(?:コート)?\s*再開$/)) {
+    return { type: 'resume', court: m[1] };
   }
-  // じゃんけん: A 1 じゃんけん チーム名
-  if (m = msg.match(/^([A-Za-z0-9]+)(?:コート)?\s*第?(\d+)(?:試合)?\s*じゃんけん\s+(.+)$/)) {
-    return { type: 'janken', court: m[1], gameNum: parseInt(m[2]), winnerTeam: m[3] };
+  // じゃんけん: A じゃんけん チーム名
+  if (m = msg.match(/^([A-Za-z0-9]+)(?:コート)?\s*じゃんけん\s+(.+)$/)) {
+    return { type: 'janken', court: m[1], winnerTeam: m[2] };
   }
-  // 得点+ホームラン: A 1 3表 4 ホームラン
-  if (m = msg.match(/^([A-Za-z0-9]+)(?:コート)?\s*第?(\d+)(?:試合)?\s*(\d+)(表|裏)\s*(\d+)\s*ホームラン$/))
-    return { type: 'score', court: m[1], gameNum: parseInt(m[2]), inning: parseInt(m[3]), topBottom: m[4], score: parseInt(m[5]), homerun: true };
-  // 得点: A 1 3表 4
-  if (m = msg.match(/^([A-Za-z0-9]+)(?:コート)?\s*第?(\d+)(?:試合)?\s*(\d+)(表|裏)\s*(\d+)$/)) {
-    return { type: 'score', court: m[1], gameNum: parseInt(m[2]), inning: parseInt(m[3]), topBottom: m[4], score: parseInt(m[5]) };
+  // 得点+ホームラン: A 3表 4 ホームラン
+  if (m = msg.match(/^([A-Za-z0-9]+)(?:コート)?\s*(\d+)(表|裏)\s*(\d+)\s*ホームラン$/))
+    return { type: 'score', court: m[1], inning: parseInt(m[2]), topBottom: m[3], score: parseInt(m[4]), homerun: true };
+  // 得点: A 3表 4
+  if (m = msg.match(/^([A-Za-z0-9]+)(?:コート)?\s*(\d+)(表|裏)\s*(\d+)$/)) {
+    return { type: 'score', court: m[1], inning: parseInt(m[2]), topBottom: m[3], score: parseInt(m[4]) };
   }
+  return null;
+}
+
+// ============================================================
+// コートから現在の試合番号を自動解決
+// ============================================================
+function getActiveGameForCourt(scheduleData, court, commandType) {
+  if (commandType === 'start_with_teams') {
+    for (let i = 1; i < scheduleData.length; i++) {
+      if (scheduleData[i][COLS.SCHEDULE.COURT] == court &&
+          scheduleData[i][COLS.SCHEDULE.STATUS] === STATUS.STANDBY) {
+        return scheduleData[i][COLS.SCHEDULE.GAME_NO];
+      }
+    }
+    return null;
+  }
+  if (commandType === 'resume') {
+    let lastEndedGameNum = null;
+    for (let i = 1; i < scheduleData.length; i++) {
+      if (scheduleData[i][COLS.SCHEDULE.COURT] == court &&
+          scheduleData[i][COLS.SCHEDULE.STATUS] === STATUS.ENDED) {
+        lastEndedGameNum = scheduleData[i][COLS.SCHEDULE.GAME_NO];
+      }
+    }
+    return lastEndedGameNum;
+  }
+  // score, end, janken: 試合中の試合を探す
+  for (let i = 1; i < scheduleData.length; i++) {
+    if (scheduleData[i][COLS.SCHEDULE.COURT] == court &&
+        scheduleData[i][COLS.SCHEDULE.STATUS] === STATUS.PLAYING) {
+      return scheduleData[i][COLS.SCHEDULE.GAME_NO];
+    }
+  }
+  return null;
+}
+
+// ============================================================
+// 入力ミス検出（ブロック型アノマリーチェック）
+// ============================================================
+function checkAnomaly(parsed, sheetsData) {
+  const { schedule, scoreboard } = sheetsData;
+
+  // チェックa: 進行中の試合があるのに開始報告が来た
+  if (parsed.type === 'start_with_teams') {
+    for (let i = 1; i < schedule.length; i++) {
+      if (schedule[i][COLS.SCHEDULE.COURT] == parsed.court &&
+          schedule[i][COLS.SCHEDULE.STATUS] === STATUS.PLAYING) {
+        return `⚠️ ${parsed.court}コートの試合がまだ終了していません。先に「${parsed.court} 終了」を報告してください。`;
+      }
+    }
+    return null;
+  }
+
+  if (parsed.type !== 'score') return null;
+
+  // 再開後の最初の得点入力はアラートをスキップ
+  const resumed = PROPS.getProperty('RESUMED_' + parsed.court) === 'true';
+  if (resumed) {
+    PROPS.deleteProperty('RESUMED_' + parsed.court);
+    return null;
+  }
+
+  const teams = getTeamNames(schedule, parsed.court, parsed.gameNum);
+
+  // チェックb: イニングが若返り（進行度で比較）
+  let lastProgress = -1;
+  for (let i = 1; i < scoreboard.length; i++) {
+    if (scoreboard[i][COLS.SCOREBOARD.COURT] == parsed.court &&
+        scoreboard[i][COLS.SCOREBOARD.GAME_NO] == parsed.gameNum) {
+      const isTopTeam = scoreboard[i][COLS.SCOREBOARD.TEAM_NAME] === teams.top;
+      const tb = isTopTeam ? 0 : 1; // 表=0, 裏=1
+      for (let inn = MAX_INNINGS; inn >= 1; inn--) {
+        const val = scoreboard[i][COLS.SCOREBOARD.INNING_START + inn - 1];
+        if (val !== '' && val !== null && val !== undefined) {
+          const progress = (inn - 1) * 2 + tb;
+          if (progress > lastProgress) lastProgress = progress;
+          break;
+        }
+      }
+    }
+  }
+  const newProgress = (parsed.inning - 1) * 2 + (parsed.topBottom === INNING_TYPE.BOTTOM ? 1 : 0);
+  if (lastProgress >= 0 && newProgress < lastProgress) {
+    const lastInning = Math.floor(lastProgress / 2) + 1;
+    const lastTB = lastProgress % 2 === 0 ? INNING_TYPE.TOP : INNING_TYPE.BOTTOM;
+    return `⚠️ イニングが戻っています（前回: ${lastInning}回${lastTB}、今回: ${parsed.inning}回${parsed.topBottom}）。訂正の場合は「${parsed.court} 再開」してから再入力してください。`;
+  }
+
+  // チェックc: 同イニングで得点が減少
+  const attackTeam = parsed.topBottom === INNING_TYPE.TOP ? teams.top : teams.bottom;
+  for (let i = 1; i < scoreboard.length; i++) {
+    if (scoreboard[i][COLS.SCOREBOARD.COURT] == parsed.court &&
+        scoreboard[i][COLS.SCOREBOARD.GAME_NO] == parsed.gameNum &&
+        scoreboard[i][COLS.SCOREBOARD.TEAM_NAME] === attackTeam) {
+      const existingVal = scoreboard[i][COLS.SCOREBOARD.INNING_START + parsed.inning - 1];
+      const existingScore = (existingVal === '' || existingVal === null || existingVal === undefined) ? 0 : Number(existingVal);
+      if (existingScore > 0 && parsed.score < existingScore) {
+        return `⚠️ 得点が減っています（既存: ${existingScore}点、今回: ${parsed.score}点）。訂正の場合は「${parsed.court} 再開」してから再入力してください。`;
+      }
+      break;
+    }
+  }
+
   return null;
 }
 
