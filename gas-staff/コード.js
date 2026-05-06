@@ -635,7 +635,7 @@ function handleGameEnd(sheetsData, parsed, userId, fullTimestamp) {
     const drawScore = getFinalScore(scoreboard, parsed.court, parsed.gameNum);
     return {
       success: true,
-      message: `⚠️ ${drawScore} で引き分けです\nじゃんけんで勝者を決定してください\n\n入力例:\n${parsed.court} ${parsed.gameNum} じゃんけん チーム名`,
+      message: `⚠️ ${drawScore} で引き分けです\nじゃんけんで勝者を決定してください\n\n入力例:\n${parsed.court} じゃんけん チーム名`,
       broadcastMessage: null
     };
   }
