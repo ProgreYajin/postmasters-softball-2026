@@ -143,7 +143,7 @@ function processMessageWithLock(message, userId, fullTimestamp) {
 function processMessage(message, userId, fullTimestamp) {
   const parsed = parseMessage(message);
   if (!parsed) {
-    return { success: false, message: '形式エラー\n例: A 1 開始 先攻 後攻\n例: A 1 3表 4' };
+    return { success: false, message: '形式エラー\n例: A 開始 先攻 後攻\n例: A 3表 4' };
   }
 
   const ss = SpreadsheetApp.getActiveSpreadsheet();
