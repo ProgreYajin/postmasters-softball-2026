@@ -49,9 +49,9 @@ function parseMessage(message) {
   if (m = msg.match(/^([A-Za-z0-9]+)(?:コート)?\s*第?(\d+)(?:試合)?\s*じゃんけん\s+(.+)$/)) {
     return { type: 'janken', court: m[1], gameNum: parseInt(m[2]), winnerTeam: m[3] };
   }
-  // ホームラン: A 1 ホームラン [表|裏]
-  if (m = msg.match(/^([A-Za-z0-9]+)(?:コート)?\s*第?(\d+)(?:試合)?\s*ホームラン(?:\s+(表|裏))?$/))
-    return { type: 'homerun', court: m[1], gameNum: parseInt(m[2]), topBottom: m[3] || null };
+  // 得点+ホームラン: A 1 3表 4 ホームラン
+  if (m = msg.match(/^([A-Za-z0-9]+)(?:コート)?\s*第?(\d+)(?:試合)?\s*(\d+)(表|裏)\s*(\d+)\s*ホームラン$/))
+    return { type: 'score', court: m[1], gameNum: parseInt(m[2]), inning: parseInt(m[3]), topBottom: m[4], score: parseInt(m[5]), homerun: true };
   // 得点: A 1 3表 4
   if (m = msg.match(/^([A-Za-z0-9]+)(?:コート)?\s*第?(\d+)(?:試合)?\s*(\d+)(表|裏)\s*(\d+)$/)) {
     return { type: 'score', court: m[1], gameNum: parseInt(m[2]), inning: parseInt(m[3]), topBottom: m[4], score: parseInt(m[5]) };
