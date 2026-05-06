@@ -686,6 +686,7 @@ function handleGameResume(sheetsData, parsed, userId, fullTimestamp) {
 
   updateGameStatus(scheduleSheet, scoreboardSheet, parsed.court, parsed.gameNum, 'start');
   recordSheet.appendRow([fullTimestamp, parsed.court, parsed.gameNum, '-', '-', '-', userId, '再開']);
+  PROPS.setProperty('RESUMED_' + parsed.court, 'true');
 
   return {
     success: true,
