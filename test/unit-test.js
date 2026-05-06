@@ -305,21 +305,21 @@ test('数字だけ → null', () => {
 });
 
 test('得点にマイナスは不可 → null', () => {
-  assert.strictEqual(parseMessage('A 1 3表 -1'), null);
+  assert.strictEqual(parseMessage('A 3表 -1'), null);
 });
 
 test('開始コマンドにチーム名なし → null', () => {
-  assert.strictEqual(parseMessage('A 1 開始'), null);
+  assert.strictEqual(parseMessage('A 開始'), null);
 });
 
 test('ホームラン（得点と同時）', () => {
-  const r = parseMessage('B 2 3表 1 ホームラン');
-  assert.deepStrictEqual(r, { type: 'score', court: 'B', gameNum: 2, inning: 3, topBottom: '表', score: 1, homerun: true });
+  const r = parseMessage('B 3表 1 ホームラン');
+  assert.deepStrictEqual(r, { type: 'score', court: 'B', inning: 3, topBottom: '表', score: 1, homerun: true });
 });
 
 test('ホームラン（長形式）', () => {
-  const r = parseMessage('Bコート 第2試合 3表 0 ホームラン');
-  assert.deepStrictEqual(r, { type: 'score', court: 'B', gameNum: 2, inning: 3, topBottom: '表', score: 0, homerun: true });
+  const r = parseMessage('Bコート 3表 0 ホームラン');
+  assert.deepStrictEqual(r, { type: 'score', court: 'B', inning: 3, topBottom: '表', score: 0, homerun: true });
 });
 
 
