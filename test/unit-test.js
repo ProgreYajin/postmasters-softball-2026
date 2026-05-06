@@ -323,6 +323,62 @@ test('ホームラン（長形式）', () => {
 });
 
 
+console.log('\n=== getActiveGameForCourt テスト ===');
+
+function makeScheduleData(rows) {
+  const header = ['コート', '試合番号', '先攻', '後攻', 'ステータス'];
+  return [header, ...rows];
+}
+
+test('start_with_teams: 待機中の試合を返す', () => {
+  const data = makeScheduleData([
+    ['A', 1, 'チームA', 'チームB', '終了'],
+    ['A', 2, 'チームC', 'チームD', '待機'],
+    ['A', 3, 'チームE', 'チームF', '待機'],
+  ]);
+  assert.strictEqual(getActiveGameForCourt(data, 'A', 'start_with_teams'), 2);
+});
+
+test('score: 試合中の試合を返す', () => {
+  const data = makeScheduleData([
+    ['A', 1, 'チームA', 'チームB', '終了'],
+    ['A', 2, 'チームC', 'チームD', '試合中'],
+    ['B', 1, 'チームE', 'チームF', '試合中'],
+  ]);
+  assert.strictEqual(getActiveGameForCourt(data, 'A', 'score'), 2);
+});
+
+test('end: 試合中の試合を返す', () => {
+  const data = makeScheduleData([
+    ['A', 1, 'チームA', 'チームB', '試合中'],
+  ]);
+  assert.strictEqual(getActiveGameForCourt(data, 'A', 'end'), 1);
+});
+
+test('resume: 最後に終了した試合を返す', () => {
+  const data = makeScheduleData([
+    ['A', 1, 'チームA', 'チームB', '終了'],
+    ['A', 2, 'チームC', 'チームD', '終了'],
+    ['A', 3, 'チームE', 'チームF', '待機'],
+  ]);
+  assert.strictEqual(getActiveGameForCourt(data, 'A', 'resume'), 2);
+});
+
+test('試合なし → null', () => {
+  const data = makeScheduleData([
+    ['B', 1, 'チームA', 'チームB', '試合中'],
+  ]);
+  assert.strictEqual(getActiveGameForCourt(data, 'A', 'score'), null);
+});
+
+test('別コートは無視される', () => {
+  const data = makeScheduleData([
+    ['A', 1, 'チームA', 'チームB', '試合中'],
+    ['B', 2, 'チームC', 'チームD', '試合中'],
+  ]);
+  assert.strictEqual(getActiveGameForCourt(data, 'B', 'score'), 2);
+});
+
 console.log('\n=== determineWinner テスト ===');
 
 test('チーム1が勝ち: 5-3', () => {
