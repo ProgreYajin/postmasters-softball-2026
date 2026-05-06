@@ -275,6 +275,21 @@ test('開始コマンドにチーム名なし → null', () => {
   assert.strictEqual(parseMessage('A 1 開始'), null);
 });
 
+test('ホームラン（表裏なし）', () => {
+  const r = parseMessage('A 1 ホームラン');
+  assert.deepStrictEqual(r, { type: 'homerun', court: 'A', gameNum: 1, topBottom: null });
+});
+
+test('ホームラン（表あり）', () => {
+  const r = parseMessage('Aコート 第1試合 ホームラン 表');
+  assert.deepStrictEqual(r, { type: 'homerun', court: 'A', gameNum: 1, topBottom: '表' });
+});
+
+test('ホームラン（裏あり）', () => {
+  const r = parseMessage('B 2 ホームラン 裏');
+  assert.deepStrictEqual(r, { type: 'homerun', court: 'B', gameNum: 2, topBottom: '裏' });
+});
+
 
 console.log('\n=== determineWinner テスト ===');
 
