@@ -238,7 +238,9 @@ function handleScoreInput(sheetsData, parsed, userId, fullTimestamp) {
 
   const diffScore = newScore - oldScore;
   const inningText = `${parsed.inning}回${parsed.topBottom}`;
-  const totalScoreString = calculateLiveTotalScore(scoreboard, parsed.court, parsed.gameNum, parsed.inning, parsed.topBottom, newScore, teams);
+  // updateScore後にシートを再読み取りしてイニングデータのSUMから累計スコアを算出
+  const updatedScoreboard = scoreboardSheet.getDataRange().getValues();
+  const totalScoreString = getFinalScore(updatedScoreboard, parsed.court, parsed.gameNum);
 
   let resultMsg = `【${parsed.topBottom === INNING_TYPE.TOP ? '先攻' : '後攻'}：${attackTeam}】 ${inningText}\n${oldScore} → ${newScore}`;
   if (diffScore > 0) resultMsg += ` (+${diffScore}点)`;
@@ -567,7 +569,7 @@ function handleGameResume(sheetsData, parsed, userId, fullTimestamp) {
 // じゃんけん決着処理
 // ============================================================
 function handleJanken(sheetsData, parsed, userId, fullTimestamp) {
-  const { scheduleSheet, scoreboardSheet, recordSheet, schedule } = sheetsData;
+  const { scheduleSheet, scoreboardSheet, recordSheet, schedule, scoreboard } = sheetsData;
 
   const teams = getTeamNames(schedule, parsed.court, parsed.gameNum);
   if (!teams.top || !teams.bottom) {
@@ -588,7 +590,8 @@ function handleJanken(sheetsData, parsed, userId, fullTimestamp) {
   advanceTeams(scheduleSheet, schedule, parsed.gameNum, parsed.winnerTeam, loserTeam);
 
   const nextMatchDetails = getNextMatchDetails(schedule, parsed.gameNum);
-  let broadcastMsg = `🏁 試合終了（じゃんけん決着）\n${parsed.court}コート 第${parsed.gameNum}試合\n${teams.top} 0 - 0 ${teams.bottom}`;
+  const jankenFinalScore = getFinalScore(scoreboard, parsed.court, parsed.gameNum);
+  let broadcastMsg = `🏁 試合終了（じゃんけん決着）\n${parsed.court}コート 第${parsed.gameNum}試合\n${jankenFinalScore}`;
   broadcastMsg += `\n\n✊✌️✋ じゃんけんで ${parsed.winnerTeam} の勝利!`;
 
   if (nextMatchDetails.winnerMatch) {
@@ -658,35 +661,6 @@ function getCurrentInningScore(scoreboardData, court, gameNum, inning, topBottom
     }
   }
   return { score: 0 };
-}
-
-// ============================================================
-// ライブ合計スコア文字列生成
-// ============================================================
-function calculateLiveTotalScore(scoreboardData, court, gameNum, currentInning, topBottom, newScore, teams) {
-  let topTotal = 0;
-  let bottomTotal = 0;
-
-  for (let i = 1; i < scoreboardData.length; i++) {
-    if (scoreboardData[i][COLS.SCOREBOARD.COURT] == court && scoreboardData[i][COLS.SCOREBOARD.GAME_NO] == gameNum) {
-      const teamName = scoreboardData[i][COLS.SCOREBOARD.TEAM_NAME];
-      let total = 0;
-
-      for (let j = 1; j <= MAX_INNINGS; j++) {
-        const colIdx = COLS.SCOREBOARD.INNING_START + j - 1; // 0-based配列アクセス
-        const val = scoreboardData[i][colIdx];
-        if (j === currentInning && teamName === (topBottom === INNING_TYPE.TOP ? teams.top : teams.bottom)) {
-          total += newScore;
-        } else {
-          total += (val === '' || val === null || val === undefined) ? 0 : Number(val);
-        }
-      }
-
-      if (teamName === teams.top) topTotal = total;
-      if (teamName === teams.bottom) bottomTotal = total;
-    }
-  }
-  return `${teams.top} ${topTotal} - ${bottomTotal} ${teams.bottom}`;
 }
 
 // ============================================================
