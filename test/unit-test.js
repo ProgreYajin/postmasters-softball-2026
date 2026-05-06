@@ -185,101 +185,101 @@ function makeScoreboardData(rows) {
 console.log('\n=== parseMessage テスト ===');
 
 // --- 正常系 ---
-test('開始コマンド: A 1 開始 南部 東南', () => {
-  const result = parseMessage('A 1 開始 南部 東南');
+test('開始コマンド: A 開始 南部 東南', () => {
+  const result = parseMessage('A 開始 南部 東南');
   assert.deepStrictEqual(result, {
-    type: 'start_with_teams', court: 'A', gameNum: 1, topTeam: '南部', bottomTeam: '東南'
+    type: 'start_with_teams', court: 'A', topTeam: '南部', bottomTeam: '東南'
   });
 });
 
-test('得点コマンド: A 1 3表 4', () => {
-  const result = parseMessage('A 1 3表 4');
+test('得点コマンド: A 3表 4', () => {
+  const result = parseMessage('A 3表 4');
   assert.deepStrictEqual(result, {
-    type: 'score', court: 'A', gameNum: 1, inning: 3, topBottom: '表', score: 4
+    type: 'score', court: 'A', inning: 3, topBottom: '表', score: 4
   });
 });
 
-test('終了コマンド: A 1 終了', () => {
-  const result = parseMessage('A 1 終了');
+test('終了コマンド: A 終了', () => {
+  const result = parseMessage('A 終了');
   assert.deepStrictEqual(result, {
-    type: 'end', court: 'A', gameNum: 1
+    type: 'end', court: 'A'
   });
 });
 
-test('再開コマンド: A 1 再開', () => {
-  const result = parseMessage('A 1 再開');
+test('再開コマンド: A 再開', () => {
+  const result = parseMessage('A 再開');
   assert.deepStrictEqual(result, {
-    type: 'resume', court: 'A', gameNum: 1
+    type: 'resume', court: 'A'
   });
 });
 
-test('じゃんけんコマンド: A 1 じゃんけん 南部', () => {
-  const result = parseMessage('A 1 じゃんけん 南部');
+test('じゃんけんコマンド: A じゃんけん 南部', () => {
+  const result = parseMessage('A じゃんけん 南部');
   assert.deepStrictEqual(result, {
-    type: 'janken', court: 'A', gameNum: 1, winnerTeam: '南部'
+    type: 'janken', court: 'A', winnerTeam: '南部'
   });
 });
 
-test('裏の得点: B 2 1裏 0', () => {
-  const result = parseMessage('B 2 1裏 0');
+test('裏の得点: B 1裏 0', () => {
+  const result = parseMessage('B 1裏 0');
   assert.deepStrictEqual(result, {
-    type: 'score', court: 'B', gameNum: 2, inning: 1, topBottom: '裏', score: 0
+    type: 'score', court: 'B', inning: 1, topBottom: '裏', score: 0
   });
 });
 
-test('コート/試合の記法揺れ: Aコート 第1試合 開始 南部 東南', () => {
-  const result = parseMessage('Aコート 第1試合 開始 南部 東南');
+test('コート記法揺れ: Aコート 開始 南部 東南', () => {
+  const result = parseMessage('Aコート 開始 南部 東南');
   assert.deepStrictEqual(result, {
-    type: 'start_with_teams', court: 'A', gameNum: 1, topTeam: '南部', bottomTeam: '東南'
+    type: 'start_with_teams', court: 'A', topTeam: '南部', bottomTeam: '東南'
   });
 });
 
-test('コート/試合の記法揺れ(終了): Bコート 第3試合 終了', () => {
-  const result = parseMessage('Bコート 第3試合 終了');
+test('コート記法揺れ(終了): Bコート 終了', () => {
+  const result = parseMessage('Bコート 終了');
   assert.deepStrictEqual(result, {
-    type: 'end', court: 'B', gameNum: 3
+    type: 'end', court: 'B'
   });
 });
 
-test('コート/試合の記法揺れ(得点): Aコート 第2試合 4表 3', () => {
-  const result = parseMessage('Aコート 第2試合 4表 3');
+test('コート記法揺れ(得点): Aコート 4表 3', () => {
+  const result = parseMessage('Aコート 4表 3');
   assert.deepStrictEqual(result, {
-    type: 'score', court: 'A', gameNum: 2, inning: 4, topBottom: '表', score: 3
+    type: 'score', court: 'A', inning: 4, topBottom: '表', score: 3
   });
 });
 
-test('全角スペース混在: A　1　開始　南部　東南', () => {
-  const result = parseMessage('A　1　開始　南部　東南');
+test('全角スペース混在: A　開始　南部　東南', () => {
+  const result = parseMessage('A　開始　南部　東南');
   assert.deepStrictEqual(result, {
-    type: 'start_with_teams', court: 'A', gameNum: 1, topTeam: '南部', bottomTeam: '東南'
+    type: 'start_with_teams', court: 'A', topTeam: '南部', bottomTeam: '東南'
   });
 });
 
-test('前後の空白トリム: "  A 1 終了  "', () => {
-  const result = parseMessage('  A 1 終了  ');
+test('前後の空白トリム: "  A 終了  "', () => {
+  const result = parseMessage('  A 終了  ');
   assert.deepStrictEqual(result, {
-    type: 'end', court: 'A', gameNum: 1
+    type: 'end', court: 'A'
   });
 });
 
-test('得点0: A 1 1表 0', () => {
-  const result = parseMessage('A 1 1表 0');
+test('得点0: A 1表 0', () => {
+  const result = parseMessage('A 1表 0');
   assert.deepStrictEqual(result, {
-    type: 'score', court: 'A', gameNum: 1, inning: 1, topBottom: '表', score: 0
+    type: 'score', court: 'A', inning: 1, topBottom: '表', score: 0
   });
 });
 
-test('大きい得点: A 1 2裏 15', () => {
-  const result = parseMessage('A 1 2裏 15');
+test('大きい得点: A 2裏 15', () => {
+  const result = parseMessage('A 2裏 15');
   assert.deepStrictEqual(result, {
-    type: 'score', court: 'A', gameNum: 1, inning: 2, topBottom: '裏', score: 15
+    type: 'score', court: 'A', inning: 2, topBottom: '裏', score: 15
   });
 });
 
 test('7回はパース自体は成功する（MAX_INNINGS制限はhandlerで行う）', () => {
-  const result = parseMessage('A 1 7表 3');
+  const result = parseMessage('A 7表 3');
   assert.deepStrictEqual(result, {
-    type: 'score', court: 'A', gameNum: 1, inning: 7, topBottom: '表', score: 3
+    type: 'score', court: 'A', inning: 7, topBottom: '表', score: 3
   });
 });
 
