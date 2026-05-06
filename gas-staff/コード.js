@@ -165,6 +165,8 @@ function processMessage(message, userId, fullTimestamp) {
       return handleGameResume(sheetsData, parsed, userId, fullTimestamp);
     case 'janken':
       return handleJanken(sheetsData, parsed, userId, fullTimestamp);
+    case 'homerun':
+      return handleHomerun(sheetsData, parsed);
     case 'score':
       return handleScoreInput(sheetsData, parsed, userId, fullTimestamp);
     default:
