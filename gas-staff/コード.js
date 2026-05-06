@@ -156,6 +156,24 @@ function processMessage(message, userId, fullTimestamp) {
     recordSheet: ss.getSheetByName(SHEETS.RECORD)
   };
 
+  // コートから試合番号を自動解決
+  const gameNum = getActiveGameForCourt(sheetsData.schedule, parsed.court, parsed.type);
+  if (gameNum === null) {
+    const errMsgs = {
+      start_with_teams: `${parsed.court}コートで待機中の試合が見つかりません`,
+      score: `${parsed.court}コートで進行中の試合がありません`,
+      end: `${parsed.court}コートで進行中の試合がありません`,
+      janken: `${parsed.court}コートで進行中の試合がありません`,
+      resume: `${parsed.court}コートで終了した試合がありません`
+    };
+    return { success: false, message: errMsgs[parsed.type] || '試合が見つかりません' };
+  }
+  parsed.gameNum = gameNum;
+
+  // アノマリーチェック（入力ミス検出）
+  const anomaly = checkAnomaly(parsed, sheetsData);
+  if (anomaly) return { success: false, message: anomaly };
+
   switch (parsed.type) {
     case 'start_with_teams':
       return handleGameStartWithTeams(sheetsData, parsed, userId, fullTimestamp);
