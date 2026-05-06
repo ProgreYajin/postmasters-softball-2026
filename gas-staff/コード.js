@@ -251,7 +251,8 @@ function handleScoreInput(sheetsData, parsed, userId, fullTimestamp) {
 
   let broadcastMessage = null;
   if (diffScore > 0) {
-    broadcastMessage = `📢 速報\n${parsed.court}コ 第${parsed.gameNum}試合 ${inningText}\n${attackTeam} ${diffScore}点追加!\n${totalScoreString}`;
+    const prefix = parsed.homerun ? '🏠 ホームラン！\n' : '';
+    broadcastMessage = `${prefix}📢 速報\n${parsed.court}コ 第${parsed.gameNum}試合 ${inningText}\n${attackTeam} ${diffScore}点追加!\n${totalScoreString}`;
   } else if (diffScore < 0) {
     broadcastMessage = `⚠️ 訂正\n${parsed.court}コ 第${parsed.gameNum}試合 ${inningText}\n${attackTeam} ${oldScore}点→${newScore}点に修正\n${totalScoreString}`;
   }
