@@ -230,6 +230,10 @@ const ScoreboardApp = (() => {
      */
     function renderScoreboard(team1, team2, innings) {
         const inningsCount = innings.length || CONFIG.MAX_INNINGS;
+    const currentInningIndex = innings.reduce((max, inning, i) => {
+        const hasData = (v) => v !== null && v !== undefined && v !== '';
+        return (hasData(inning[0]) || hasData(inning[1])) ? i : max;
+    }, -1);
 
         let html = `
             <div class="scoreboard-wrapper">
