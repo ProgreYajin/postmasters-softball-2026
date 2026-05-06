@@ -262,7 +262,8 @@ const ScoreboardApp = (() => {
 
         // team1の得点
         for (let i = 0; i < inningsCount; i++) {
-            const score = innings[i]?.[0];
+            const raw = innings[i]?.[0];
+            const score = (raw === null || raw === undefined || raw === '') && i < currentInningIndex ? 0 : raw;
             html += getScoreCellHtml(score);
         }
 
