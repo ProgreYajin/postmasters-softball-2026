@@ -377,6 +377,8 @@ const TournamentApp = (() => {
             block.classList.add('final');
         } else if (coords.special === 'third') {
             block.classList.add('third-place');
+        } else if (coords.special === 'semi') {
+            block.classList.add('semi-final');
         }
 
         // 50px右にオフセット
@@ -385,7 +387,17 @@ const TournamentApp = (() => {
 
         const label = document.createElement('div');
         label.className = 'match-label';
-        label.textContent = coords.label;
+        label.textContent = CIRCLED_LABELS[coords.label] || coords.label;
+
+        if (coords.time || coords.venue) {
+            const venueInfo = document.createElement('div');
+            venueInfo.className = 'match-venue-info';
+            venueInfo.textContent = [coords.time, coords.venue].filter(Boolean).join(' ');
+            block.appendChild(label);
+            block.appendChild(venueInfo);
+        } else {
+            block.appendChild(label);
+        }
 
         const scoreLine = document.createElement('div');
         scoreLine.className = 'match-score-line';
