@@ -514,33 +514,10 @@ const TournamentApp = (() => {
                 ([_, coords]) => coords.gameNum === gameLabel
             );
 
-            console.log(`接続線描画: 試合${gameNum}`, { matchCoords, teams });
-
-            teams.forEach(([teamName, teamCoords]) => {
-                // 50px右にオフセット
-                const teamX = teamCoords.x + 50;
-
-                // チームカードの上端から試合カードの下端まで縦線を引く（上向き）
-                const teamTopY = teamCoords.y - CONFIG.CARD_SIZE.height / 2;
-                const matchBottomY = matchCoords.y + 40; // 試合カードの下部（高さ80pxの半分=40px）
-                const lineHeight = teamTopY - matchBottomY;
-
-                console.log(`${teamName}の接続線:`, {
-                    teamX,
-                    teamY: teamCoords.y,
-                    teamTopY,
-                    matchBottomY,
-                    lineHeight,
-                    cardHeight: CONFIG.CARD_SIZE.height
-                });
-
-                const vLine = document.createElement('div');
-                vLine.className = 'connector-line vertical';
-                vLine.style.left = teamX + 'px';
-                vLine.style.top = matchBottomY + 'px'; // 試合カードの下端から開始
-                vLine.style.height = lineHeight + 'px'; // 上向きに伸びる
-                vLine.style.backgroundColor = '#003366';
-                container.appendChild(vLine);
+            teams.forEach(([, tc]) => {
+                const teamX = tc.x + 50;
+                const teamTopY = tc.y - CONFIG.CARD_SIZE.height / 2;
+                vLine(teamX, BOTTOM, teamTopY);
             });
         }
 
