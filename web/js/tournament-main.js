@@ -345,7 +345,7 @@ const TournamentApp = (() => {
      * 3位決定戦が終了したら3位チーム名を表示
      */
     function updateThirdPlace() {
-        const thirdPlaceMatch = getMatchData(6);
+        const thirdPlaceMatch = getMatchData('F');
         const thirdPlaceSection = document.getElementById('thirdPlaceSection');
         const thirdPlaceName = document.getElementById('thirdPlaceName');
 
