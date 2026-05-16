@@ -314,7 +314,7 @@ const TournamentApp = (() => {
      * renderTournament()内で呼び出す
      */
     function renderThirdPlaceCard() {
-        const thirdPlaceMatch = CONFIG.MATCH_COORDINATES[6];
+        const thirdPlaceMatch = CONFIG.MATCH_COORDINATES['F'];
         if (!thirdPlaceMatch) return null;
 
         const card = document.createElement('div');
