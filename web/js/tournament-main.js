@@ -15,6 +15,9 @@ const TournamentApp = (() => {
     let isDevelopmentMode = window.location.search.includes('dev=true');
     let currentZoom = 0.6;
 
+    const GAME_LABEL_TO_NUM = { A: 1, B: 2, C: 3, D: 4, E: 5, F: 6, G: 7 };
+    const CIRCLED_LABELS = { A: 'Ⓐ', B: 'Ⓑ', C: 'Ⓒ', D: 'Ⓓ', E: 'Ⓔ', F: 'Ⓕ', G: 'Ⓖ' };
+
     // ==================== ユーティリティ関数 ====================
     // getSafeValue, escapeHtml は common.js でグローバル定義済み
 
