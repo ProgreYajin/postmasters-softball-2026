@@ -283,7 +283,7 @@ const TournamentApp = (() => {
     // ==================== 優勝カード描画 ====================
 
     function renderChampionCard() {
-        const finalMatch = CONFIG.MATCH_COORDINATES[7];
+        const finalMatch = CONFIG.MATCH_COORDINATES['G'];
         if (!finalMatch) return null;
 
         const card = document.createElement('div');
