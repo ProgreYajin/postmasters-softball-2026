@@ -21,51 +21,32 @@ const CONFIG = {
      * チーム座標マッピング
      */
     TEAM_COORDINATES: {
-        // メイントーナメントのチーム（Y: 700）
-        '南部': { x: 50, y: 900, isSeed: true, gameNum: null },
-        '東南': { x: 200, y: 900, isSeed: false, gameNum: 1 },
-        '中部': { x: 350, y: 900, isSeed: false, gameNum: 1 },
-        '印旛': { x: 500, y: 900, isSeed: false, gameNum: 2 },
-        '西部': { x: 650, y: 900, isSeed: false, gameNum: 2 },
-        '東部': { x: 800, y: 900, isSeed: false, gameNum: 3 },
-        '北部': { x: 950, y: 900, isSeed: false, gameNum: 3 },
-
-        // 3位決定戦用チームカード
-        '第4試合敗者': { x: 1050, y: 500, isSeed: false, gameNum: 6, position: 'team1' },
-        '第5試合敗者': { x: 1300, y: 500, isSeed: false, gameNum: 6, position: 'team2' }
+        '印旛': { x: 50,  y: 900, isSeed: true,  gameNum: null, side: null },
+        '①':   { x: 200, y: 900, isSeed: false, gameNum: 'A',  side: '1塁側' },
+        '②':   { x: 350, y: 900, isSeed: false, gameNum: 'A',  side: '3塁側' },
+        '③':   { x: 500, y: 900, isSeed: false, gameNum: 'B',  side: '1塁側' },
+        '④':   { x: 650, y: 900, isSeed: false, gameNum: 'B',  side: '3塁側' },
+        '⑤':   { x: 800, y: 900, isSeed: false, gameNum: 'C',  side: '1塁側' },
+        '⑥':   { x: 950, y: 900, isSeed: false, gameNum: 'C',  side: '3塁側' },
     },
 
     /**
      * 試合ブロック座標
      */
     MATCH_COORDINATES: {
-        // 1回戦
-        1: { x: 275, y: 700, round: 1, label: '第1試合' },
-        2: { x: 575, y: 700, round: 1, label: '第2試合' },
-        3: { x: 875, y: 700, round: 1, label: '第3試合' },
-
-        // 準決勝
-        4: { x: 200, y: 500, round: 2, label: '第4試合（準決勝）' },
-        5: { x: 725, y: 500, round: 2, label: '第5試合（準決勝）' },
-
-        // 決勝戦と3位決定戦
-        6: { x: 1175, y: 300, round: 3, label: '第6試合（3位決定戦）', special: 'third' },
-        7: { x: 425, y: 300, round: 3, label: '第7試合（決勝）', special: 'final' }
-    },
-
-    /**
-     * 3位カード座標
-     */
-    THIRD_PLACE_CARD: {
-        x: 1200,
-        y: 100,
-        label: '3位'
+        'A': { x: 275,  y: 700, round: 1, label: 'A', time: '10:00', venue: '長嶋茂雄球場' },
+        'B': { x: 575,  y: 700, round: 1, label: 'B', time: '10:00', venue: '第2球場' },
+        'C': { x: 875,  y: 700, round: 1, label: 'C', time: '11:20', venue: '長嶋茂雄球場' },
+        'D': { x: 200,  y: 500, round: 2, label: 'D', time: '13:00', venue: '長嶋茂雄球場', special: 'semi' },
+        'E': { x: 725,  y: 500, round: 2, label: 'E', time: '13:00', venue: '第2球場',      special: 'semi' },
+        'F': { x: 1175, y: 300, round: 3, label: 'F', time: '14:30', venue: '第2球場',       special: 'third' },
+        'G': { x: 425,  y: 300, round: 3, label: 'G', time: '14:30', venue: '長嶋茂雄球場',  special: 'final' },
     },
 
     TOURNAMENT_CANVAS: {
-        width: 1000,
+        width: 1400,
         height: 1000,
-        viewBox: '0 0 1000 1000'
+        viewBox: '0 0 1400 1000'
     },
 
     CARD_SIZE: {
