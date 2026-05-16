@@ -479,11 +479,39 @@ const TournamentApp = (() => {
 
     // ==================== 接続線描画 ====================
 
-    function renderConnectorLines(container, gameNum, matchCoords) {
-        // 1回戦（チームカード → 第1～3試合）
+    function renderConnectorLines(container, gameLabel, matchCoords) {
+        const CX     = matchCoords.x + 50;
+        const CY     = matchCoords.y;
+        const TOP    = matchCoords.y - 40;
+        const BOTTOM = matchCoords.y + 40;
+        const LEFT   = matchCoords.x - 40;   // CX - 90
+        const RIGHT  = matchCoords.x + 140;  // CX + 90
+
+        function vLine(x, y1, y2, color, width) {
+            const el = document.createElement('div');
+            el.className = 'connector-line vertical';
+            el.style.left = x + 'px';
+            el.style.top = Math.min(y1, y2) + 'px';
+            el.style.height = Math.abs(y2 - y1) + 'px';
+            if (color) el.style.backgroundColor = color;
+            if (width) el.style.width = width;
+            container.appendChild(el);
+        }
+
+        function hLine(x1, y, x2, color) {
+            const el = document.createElement('div');
+            el.className = 'connector-line horizontal';
+            el.style.left = Math.min(x1, x2) + 'px';
+            el.style.top = y + 'px';
+            el.style.width = Math.abs(x2 - x1) + 'px';
+            if (color) el.style.backgroundColor = color;
+            container.appendChild(el);
+        }
+
+        // 1回戦（チームカード → A/B/C）
         if (matchCoords.round === 1) {
             const teams = Object.entries(CONFIG.TEAM_COORDINATES).filter(
-                ([_, coords]) => coords.gameNum === gameNum
+                ([_, coords]) => coords.gameNum === gameLabel
             );
 
             console.log(`接続線描画: 試合${gameNum}`, { matchCoords, teams });
