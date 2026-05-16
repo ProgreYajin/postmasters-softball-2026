@@ -452,10 +452,8 @@ const TournamentApp = (() => {
         team2Name.textContent = matchData.team2.name;
         scoreLine.appendChild(team2Name);
 
-        block.appendChild(label);
         block.appendChild(scoreLine);
 
-        // 【修正】状態に応じた表示
         const statusInfo = document.createElement('div');
         statusInfo.className = 'match-time';
 
@@ -466,12 +464,7 @@ const TournamentApp = (() => {
             statusInfo.textContent = '✓ 試合終了';
             statusInfo.classList.add('status-finished');
         } else {
-            // 待機中は時間とコートを表示
-            if (matchData.time || matchData.court) {
-                statusInfo.textContent = `${matchData.time} ${matchData.court}コート`;
-            } else {
-                statusInfo.textContent = '待機中';
-            }
+            statusInfo.textContent = matchData.court ? `${matchData.court}コート` : '待機中';
             statusInfo.classList.add('status-waiting');
         }
 
