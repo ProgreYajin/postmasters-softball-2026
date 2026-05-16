@@ -216,10 +216,10 @@ const TournamentApp = (() => {
             container.appendChild(thirdPlaceCard);
         }
 
-        Object.entries(CONFIG.MATCH_COORDINATES).forEach(([gameNum, coords]) => {
-            const matchData = getMatchData(parseInt(gameNum));
+        Object.entries(CONFIG.MATCH_COORDINATES).forEach(([gameLabel, coords]) => {
+            const matchData = getMatchData(gameLabel);
             if (matchData) {
-                renderConnectorLines(container, parseInt(gameNum), coords);
+                renderConnectorLines(container, gameLabel, coords);
             }
         });
 
@@ -227,8 +227,8 @@ const TournamentApp = (() => {
             container.appendChild(renderTeamCard(teamName, coords));
         });
 
-        Object.entries(CONFIG.MATCH_COORDINATES).forEach(([gameNum, coords]) => {
-            const matchData = getMatchData(parseInt(gameNum));
+        Object.entries(CONFIG.MATCH_COORDINATES).forEach(([gameLabel, coords]) => {
+            const matchData = getMatchData(gameLabel);
             if (matchData) {
                 container.appendChild(renderMatchBlock(matchData, coords));
             }
