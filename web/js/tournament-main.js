@@ -941,7 +941,7 @@ const TournamentApp = (() => {
     // ==================== 優勝者表示 ====================
 
     function updateChampion() {
-        const finalMatch = getMatchData(7);
+        const finalMatch = getMatchData('G');
         const championSection = document.getElementById('championSection');
         const championName = document.getElementById('championName');
 
