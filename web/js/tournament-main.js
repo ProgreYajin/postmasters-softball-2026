@@ -124,7 +124,9 @@ const TournamentApp = (() => {
      * 試合データを取得（スコアボードとスケジュールの両方から）
      * スコアボードのチーム名を優先し、なければスケジュールから取得
      */
-    function getMatchData(gameNum) {
+    function getMatchData(gameLabel) {
+        const gameNum = GAME_LABEL_TO_NUM[gameLabel] !== undefined ? GAME_LABEL_TO_NUM[gameLabel] : gameLabel;
+
         let team1Name = null;
         let team2Name = null;
         let team1Score = null;
@@ -154,13 +156,8 @@ const TournamentApp = (() => {
             court = court || scheduleData[gameNum].court || '';
             time = formatTime(getSafeValue(scheduleData[gameNum], 'time', 'startTime'));
 
-            // スコアボードにチーム名がない場合のみスケジュールから取得
-            if (!team1Name) {
-                team1Name = scheduleData[gameNum].team1;
-            }
-            if (!team2Name) {
-                team2Name = scheduleData[gameNum].team2;
-            }
+            if (!team1Name) team1Name = scheduleData[gameNum].team1;
+            if (!team2Name) team2Name = scheduleData[gameNum].team2;
         }
 
         // 3. データが何もない場合はnullを返す
@@ -168,24 +165,17 @@ const TournamentApp = (() => {
             return null;
         }
 
-        // 4. プレースホルダーの判定と表示
-        // 重要: プレースホルダーでも実際のチーム名が入っていればそれを表示
         const displayTeam1 = team1Name || '未定';
         const displayTeam2 = team2Name || '未定';
 
         return {
+            gameLabel: gameLabel,
             gameNum: gameNum,
             court: court,
             time: time,
             status: status,
-            team1: {
-                name: displayTeam1,
-                score: team1Score
-            },
-            team2: {
-                name: displayTeam2,
-                score: team2Score
-            }
+            team1: { name: displayTeam1, score: team1Score },
+            team2: { name: displayTeam2, score: team2Score }
         };
     }
 
