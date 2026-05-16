@@ -263,6 +263,13 @@ const TournamentApp = (() => {
         card.appendChild(icon);
         card.appendChild(name);
 
+        if (coords.side) {
+            const sideLabel = document.createElement('div');
+            sideLabel.className = 'team-side';
+            sideLabel.textContent = coords.side;
+            card.appendChild(sideLabel);
+        }
+
         if (coords.isSeed) {
             const seedMark = document.createElement('div');
             seedMark.className = 'seed-mark';
