@@ -102,7 +102,7 @@ const CONFIG = {
 
     getTeamIcon(teamName) {
         if (!teamName) return '📍';
-        return this.TEAM_ICONS[teamName] || '📍';
+        return this.TEAM_ICONS[teamName] || '⚾';
     },
 
     updateTeamCoordinates(apiTeams) {
