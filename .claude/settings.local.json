@@ -63,7 +63,9 @@
       "Bash(cp /home/junki/dev/postmasters-softball-2026/gas-staff/.clasp.json /tmp/gas-v41/)",
       "Read(//tmp/**)",
       "Bash(~/.local/node_modules/.bin/clasp pull *)",
-      "Bash(rtk diff *)"
+      "Bash(rtk diff *)",
+      "Bash(awk 'NR==524,NR==822' /home/junki/dev/postmasters-softball-2026/web/js/tournament-main.js)",
+      "Bash(awk NR==818,NR==822 *)"
     ]
   }
 }

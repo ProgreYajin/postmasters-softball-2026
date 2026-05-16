@@ -521,7 +521,7 @@ const TournamentApp = (() => {
             });
         }
 
-        // シードチーム（南部）→ 第4試合
+        // 試合D: 印旛（シード）+ A勝者 → D
         if (gameNum === 4) {
             const seedTeam = Object.entries(CONFIG.TEAM_COORDINATES).find(
                 ([name, coords]) => coords.isSeed
