@@ -808,3 +808,21 @@ body {
         transform: translate(-50%, -50%) translateZ(0);
     }
 }
+/* Winner path highlighting */
+.team-card.team-alive {
+    border-color: #c0392b !important;
+    background-color: #fff5f5;
+}
+.team-card.team-alive .team-name {
+    color: #c0392b;
+    font-weight: bold;
+}
+.team-card.team-eliminated {
+    opacity: 0.4;
+    border-color: #cccccc !important;
+    background-color: #f5f5f5;
+}
+.match-block.winner-alive {
+    border-color: #c0392b !important;
+    background-color: #fff8f8;
+}
