@@ -197,6 +197,51 @@ const TournamentApp = (() => {
         return null;
     }
 
+    const ALIVE_LINE_COLOR     = '#c0392b';
+    const ALIVE_LINE_THICKNESS = '3px';
+    const DIM_LINE_COLOR       = '#cccccc';
+    const DIM_LINE_THICKNESS   = '1px';
+
+    function collectMatchResults() {
+        const results = [];
+        Object.keys(CONFIG.MATCH_COORDINATES).forEach(label => {
+            const md = getMatchData(label);
+            if (!md) return;
+            const w = getWinner(md);
+            results.push({
+                label,
+                team1: md.team1.name,
+                team2: md.team2.name,
+                winner: w === 1 ? md.team1.name : w === 2 ? md.team2.name : null
+            });
+        });
+        return results;
+    }
+
+    function getTeamStatus(teamName, results) {
+        if (!teamName || CONFIG.isPlaceholder(teamName)) return 'pending';
+        const hasWon  = results.some(r => r.winner === teamName);
+        const hasLost = results.some(r =>
+            r.winner && r.winner !== teamName &&
+            (r.team1 === teamName || r.team2 === teamName)
+        );
+        if (hasWon && !hasLost) return 'alive';
+        if (hasLost) return 'eliminated';
+        return 'pending';
+    }
+
+    function getMatchWinnerStatus(matchLabel, results) {
+        const r = results.find(x => x.label === matchLabel);
+        if (!r || !r.winner) return 'pending';
+        return getTeamStatus(r.winner, results);
+    }
+
+    function lineStyle(status) {
+        if (status === 'alive')      return { color: ALIVE_LINE_COLOR, thickness: ALIVE_LINE_THICKNESS };
+        if (status === 'eliminated') return { color: DIM_LINE_COLOR,   thickness: DIM_LINE_THICKNESS };
+        return { color: null, thickness: null };
+    }
+
     // ==================== レンダリング ====================
 
     function renderTournament() {
