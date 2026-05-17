@@ -65,7 +65,10 @@
       "Bash(~/.local/node_modules/.bin/clasp pull *)",
       "Bash(rtk diff *)",
       "Bash(awk 'NR==524,NR==822' /home/junki/dev/postmasters-softball-2026/web/js/tournament-main.js)",
-      "Bash(awk NR==818,NR==822 *)"
+      "Bash(awk NR==818,NR==822 *)",
+      "Bash(rtk wc *)",
+      "Bash(sed -n '1,200p' /home/junki/dev/postmasters-softball-2026/web/tournament.html)",
+      "Bash(pkill -f \"http.server 8765\")"
     ]
   }
 }
