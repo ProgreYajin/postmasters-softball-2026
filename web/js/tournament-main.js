@@ -428,7 +428,7 @@ const TournamentApp = (() => {
     }
 
     // ==================== 試合ブロック描画 ====================
-    function renderMatchBlock(matchData, coords) {
+    function renderMatchBlock(matchData, coords, results) {
         const block = document.createElement('div');
         block.className = 'match-block';
 
@@ -442,6 +442,10 @@ const TournamentApp = (() => {
             block.classList.add('third-place');
         } else if (coords.special === 'semi') {
             block.classList.add('semi-final');
+        }
+
+        if (results && getMatchWinnerStatus(matchData.gameLabel, results) === 'alive') {
+            block.classList.add('winner-alive');
         }
 
         // 50px右にオフセット
