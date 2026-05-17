@@ -299,11 +299,16 @@ const TournamentApp = (() => {
 
     // ==================== チームカード描画 ====================
 
-    function renderTeamCard(teamName, coords) {
+    function renderTeamCard(teamName, coords, results) {
         const card = document.createElement('div');
         card.className = 'team-card';
         if (coords.isSeed) {
             card.classList.add('seed');
+        }
+        if (results) {
+            const status = getTeamStatus(teamName, results);
+            if (status === 'alive') card.classList.add('team-alive');
+            else if (status === 'eliminated') card.classList.add('team-eliminated');
         }
 
         // 50px右にオフセット
