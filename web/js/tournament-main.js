@@ -546,7 +546,7 @@ const TournamentApp = (() => {
 
     // ==================== 接続線描画 ====================
 
-    function renderConnectorLines(container, gameLabel, matchCoords) {
+    function renderConnectorLines(container, gameLabel, matchCoords, results) {
         const CX     = matchCoords.x + 50;
         const CY     = matchCoords.y;
         const TOP    = matchCoords.y - 40;
@@ -565,13 +565,14 @@ const TournamentApp = (() => {
             container.appendChild(el);
         }
 
-        function hLine(x1, y, x2, color) {
+        function hLine(x1, y, x2, color, height) {
             const el = document.createElement('div');
             el.className = 'connector-line horizontal';
             el.style.left = Math.min(x1, x2) + 'px';
             el.style.top = y + 'px';
             el.style.width = Math.abs(x2 - x1) + 'px';
             if (color) el.style.backgroundColor = color;
+            if (height) el.style.height = height;
             container.appendChild(el);
         }
 
@@ -581,10 +582,11 @@ const TournamentApp = (() => {
                 ([_, coords]) => coords.gameNum === gameLabel
             );
 
-            teams.forEach(([, tc]) => {
+            teams.forEach(([teamName, tc]) => {
+                const s = lineStyle(results ? getTeamStatus(teamName, results) : 'pending');
                 const teamX = tc.x + 50;
                 const teamTopY = tc.y - CONFIG.CARD_SIZE.height / 2;
-                vLine(teamX, BOTTOM, teamTopY);
+                vLine(teamX, BOTTOM, teamTopY, s.color, s.thickness);
             });
         }
 
@@ -592,15 +594,17 @@ const TournamentApp = (() => {
         if (gameLabel === 'D') {
             const seedEntry = Object.entries(CONFIG.TEAM_COORDINATES).find(([, c]) => c.isSeed);
             if (seedEntry) {
-                const [, sc] = seedEntry;
+                const [seedName, sc] = seedEntry;
                 const seedX = sc.x + 50;
                 const seedTopY = sc.y - CONFIG.CARD_SIZE.height / 2;
-                vLine(seedX, CY, seedTopY);
-                hLine(seedX, CY, LEFT);
+                const sS = lineStyle(results ? getTeamStatus(seedName, results) : 'pending');
+                vLine(seedX, CY, seedTopY, sS.color, sS.thickness);
+                hLine(seedX, CY, LEFT, sS.color, sS.thickness);
             }
             const matchA = CONFIG.MATCH_COORDINATES['A'];
             if (matchA) {
-                vLine(matchA.x + 50, BOTTOM, matchA.y - 40);
+                const sA = lineStyle(results ? getMatchWinnerStatus('A', results) : 'pending');
+                vLine(matchA.x + 50, BOTTOM, matchA.y - 40, sA.color, sA.thickness);
             }
         }
 
@@ -609,14 +613,16 @@ const TournamentApp = (() => {
             const matchB = CONFIG.MATCH_COORDINATES['B'];
             if (matchB) {
                 const bX = matchB.x + 50;
-                vLine(bX, CY, matchB.y - 40);
-                hLine(bX, CY, LEFT);
+                const sB = lineStyle(results ? getMatchWinnerStatus('B', results) : 'pending');
+                vLine(bX, CY, matchB.y - 40, sB.color, sB.thickness);
+                hLine(bX, CY, LEFT, sB.color, sB.thickness);
             }
             const matchC = CONFIG.MATCH_COORDINATES['C'];
             if (matchC) {
                 const cX = matchC.x + 50;
-                vLine(cX, CY, matchC.y - 40);
-                hLine(RIGHT, CY, cX);
+                const sC = lineStyle(results ? getMatchWinnerStatus('C', results) : 'pending');
+                vLine(cX, CY, matchC.y - 40, sC.color, sC.thickness);
+                hLine(RIGHT, CY, cX, sC.color, sC.thickness);
             }
         }
 
@@ -625,14 +631,16 @@ const TournamentApp = (() => {
             const matchD = CONFIG.MATCH_COORDINATES['D'];
             if (matchD) {
                 const dX = matchD.x + 50;
-                vLine(dX, CY, matchD.y - 40);
-                hLine(dX, CY, LEFT);
+                const sD = lineStyle(results ? getMatchWinnerStatus('D', results) : 'pending');
+                vLine(dX, CY, matchD.y - 40, sD.color, sD.thickness);
+                hLine(dX, CY, LEFT, sD.color, sD.thickness);
             }
             const matchE = CONFIG.MATCH_COORDINATES['E'];
             if (matchE) {
                 const eX = matchE.x + 50;
-                vLine(eX, CY, matchE.y - 40);
-                hLine(RIGHT, CY, eX);
+                const sE = lineStyle(results ? getMatchWinnerStatus('E', results) : 'pending');
+                vLine(eX, CY, matchE.y - 40, sE.color, sE.thickness);
+                hLine(RIGHT, CY, eX, sE.color, sE.thickness);
             }
             // G → 優勝カード
             const champBottomY = CY - 200 + 40;
