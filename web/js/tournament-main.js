@@ -272,21 +272,23 @@ const TournamentApp = (() => {
             container.appendChild(thirdPlaceCard);
         }
 
+        const matchResults = collectMatchResults();
+
         Object.entries(CONFIG.MATCH_COORDINATES).forEach(([gameLabel, coords]) => {
             const matchData = getMatchData(gameLabel);
             if (matchData) {
-                renderConnectorLines(container, gameLabel, coords);
+                renderConnectorLines(container, gameLabel, coords, matchResults);
             }
         });
 
         Object.entries(CONFIG.TEAM_COORDINATES).forEach(([teamName, coords]) => {
-            container.appendChild(renderTeamCard(teamName, coords));
+            container.appendChild(renderTeamCard(teamName, coords, matchResults));
         });
 
         Object.entries(CONFIG.MATCH_COORDINATES).forEach(([gameLabel, coords]) => {
             const matchData = getMatchData(gameLabel);
             if (matchData) {
-                container.appendChild(renderMatchBlock(matchData, coords));
+                container.appendChild(renderMatchBlock(matchData, coords, matchResults));
             }
         });
 
