@@ -307,7 +307,18 @@ const TournamentApp = (() => {
             card.classList.add('seed');
         }
         if (results) {
-            const status = getTeamStatus(teamName, results);
+            let nameForStatus = teamName;
+            if (coords.gameNum) {
+                const md = getMatchData(coords.gameNum);
+                if (md) {
+                    const sameGameTeams = Object.entries(CONFIG.TEAM_COORDINATES)
+                        .filter(([_, c]) => c.gameNum === coords.gameNum);
+                    const myIndex = sameGameTeams.findIndex(([n]) => n === teamName);
+                    if (myIndex === 0) nameForStatus = md.team1.name;
+                    else if (myIndex === 1) nameForStatus = md.team2.name;
+                }
+            }
+            const status = getTeamStatus(nameForStatus, results);
             if (status === 'alive') card.classList.add('team-alive');
             else if (status === 'eliminated') card.classList.add('team-eliminated');
         }
