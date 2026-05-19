@@ -148,8 +148,9 @@ const TournamentApp = (() => {
 
         // 1. スコアボードからデータを取得（チーム名と得点）
         if (gamesData && gamesData.games) {
+            const target = Number(gameNum);
             const games = gamesData.games.filter(g =>
-                getSafeValue(g, 'gameNum', 'gameNumber', 'game_num') === gameNum
+                Number(getSafeValue(g, 'gameNum', 'gameNumber', 'game_num')) === target
             );
 
             if (games.length >= 2) {
