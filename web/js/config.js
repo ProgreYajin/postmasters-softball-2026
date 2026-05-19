@@ -111,13 +111,17 @@ const CONFIG = {
             return;
         }
 
+        const NUM_TO_LABEL = { 1:'A', 2:'B', 3:'C', 4:'D', 5:'E', 6:'F', 7:'G' };
         const newCoordinates = {};
         apiTeams.forEach(team => {
+            const gameLabel = typeof team.gameNum === 'number'
+                ? (NUM_TO_LABEL[team.gameNum] ?? team.gameNum)
+                : (team.gameNum || null);
             newCoordinates[team.name] = {
                 x: team.x,
                 y: team.y,
                 isSeed: team.isSeed,
-                gameNum: team.gameNum,
+                gameNum: gameLabel,
                 position: team.position
             };
         });
