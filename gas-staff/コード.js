@@ -13,7 +13,8 @@ const SHEETS = {
   RECORD: '得点記録',
   SCHEDULE: '試合予定',
   SCOREBOARD: 'スコアボード',
-  TEAMS: 'チーム名簿'
+  TEAMS: 'チーム名簿',
+  TOURNAMENT: 'トーナメント表'
 };
 
 const MAX_INNINGS = 6;
