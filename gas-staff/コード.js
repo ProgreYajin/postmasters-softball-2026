@@ -472,6 +472,26 @@ function doGet(e) {
   }
 }
 
+function getTournamentData(ss) {
+  const sheet = ss.getSheetByName(SHEETS.TOURNAMENT);
+  if (!sheet || sheet.getLastRow() <= 1) return jsonResponse({ teams: [] });
+  const data = sheet.getDataRange().getValues();
+  const teams = [];
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    if (!row[0]) continue;
+    teams.push({
+      name:     row[0],
+      x:        row[1],
+      y:        row[2],
+      isSeed:   row[3],
+      gameNum:  row[4],
+      position: row[5]
+    });
+  }
+  return jsonResponse({ teams });
+}
+
 function getTeamsData(ss) {
   const sheet = ss.getSheetByName(SHEETS.TEAMS);
   if (!sheet || sheet.getLastRow() <= 1) return jsonResponse({ teams: [] });
