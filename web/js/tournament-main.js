@@ -668,6 +668,21 @@ const TournamentApp = (() => {
         if (gameLabel === 'F') {
             const thirdBottomY = CY - 200 + 40;
             vLine(CX, thirdBottomY, TOP, '#cd7f32', '3px');
+
+            // 参加チームカード（第4試合敗者・第5試合敗者）→ F試合への縦線
+            const roundMatch = getMatchData(gameLabel);
+            const fTeams = Object.entries(CONFIG.TEAM_COORDINATES).filter(
+                ([_, c]) => c.gameNum === gameLabel
+            );
+            fTeams.forEach(([teamName, tc], i) => {
+                const resolvedName = roundMatch
+                    ? (i === 0 ? roundMatch.team1.name : roundMatch.team2.name)
+                    : teamName;
+                const s = lineStyle(results ? getTeamStatus(resolvedName, results) : 'pending');
+                const teamX = tc.x + 50;
+                const teamTopY = tc.y - CONFIG.CARD_SIZE.height / 2;
+                vLine(teamX, BOTTOM, teamTopY, s.color, s.thickness);
+            });
         }
     }
 
