@@ -306,6 +306,7 @@ const TournamentApp = (() => {
         if (coords.isSeed) {
             card.classList.add('seed');
         }
+        let displayName = teamName;
         if (results) {
             let nameForStatus = teamName;
             if (coords.gameNum) {
@@ -314,8 +315,8 @@ const TournamentApp = (() => {
                     const sameGameTeams = Object.entries(CONFIG.TEAM_COORDINATES)
                         .filter(([_, c]) => c.gameNum === coords.gameNum);
                     const myIndex = sameGameTeams.findIndex(([n]) => n === teamName);
-                    if (myIndex === 0) nameForStatus = md.team1.name;
-                    else if (myIndex === 1) nameForStatus = md.team2.name;
+                    if (myIndex === 0) { nameForStatus = md.team1.name; displayName = md.team1.name; }
+                    else if (myIndex === 1) { nameForStatus = md.team2.name; displayName = md.team2.name; }
                 }
             }
             const status = getTeamStatus(nameForStatus, results);
@@ -329,11 +330,11 @@ const TournamentApp = (() => {
 
         const icon = document.createElement('div');
         icon.className = 'team-icon';
-        icon.textContent = CONFIG.getTeamIcon(teamName);
+        icon.textContent = CONFIG.getTeamIcon(displayName);
 
         const name = document.createElement('div');
         name.className = 'team-name';
-        name.textContent = teamName;
+        name.textContent = displayName;
 
         card.appendChild(icon);
         card.appendChild(name);
