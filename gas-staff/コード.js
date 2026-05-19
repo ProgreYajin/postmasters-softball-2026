@@ -463,6 +463,7 @@ function doGet(e) {
 
     if (params.type === 'teams') return getTeamsData(ss);
     if (params.type === 'schedule') return getScheduleData(ss);
+    if (params.type === 'tournament') return getTournamentData(ss);
     return getScoreboardData(ss);
 
   } catch (error) {
