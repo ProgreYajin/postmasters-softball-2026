@@ -690,14 +690,14 @@ const TournamentApp = (() => {
             const thirdBottomY = CY - 200 + 40;
             vLine(CX, thirdBottomY, TOP, '#cd7f32', '3px');
 
-            // 参加チームカード（第4試合敗者・第5試合敗者）→ F試合への縦線
-            const roundMatch = getMatchData(gameLabel);
+            // results に解決済みチーム名が入っているのでそちらを使う
+            const fResult = results ? results.find(r => r.label === 'F') : null;
             const fTeams = Object.entries(CONFIG.TEAM_COORDINATES).filter(
                 ([_, c]) => c.gameNum === gameLabel
             );
             fTeams.forEach(([teamName, tc], i) => {
-                const resolvedName = roundMatch
-                    ? (i === 0 ? roundMatch.team1.name : roundMatch.team2.name)
+                const resolvedName = fResult
+                    ? (i === 0 ? fResult.team1 : fResult.team2)
                     : teamName;
                 const s = lineStyle(results ? getTeamStatus(resolvedName, results) : 'pending');
                 const teamX = tc.x + 50;
