@@ -275,11 +275,9 @@ const TournamentApp = (() => {
 
         const matchResults = collectMatchResults();
 
+        // 接続線はF/Gが未スケジュールでも常に描画（構造線）
         Object.entries(CONFIG.MATCH_COORDINATES).forEach(([gameLabel, coords]) => {
-            const matchData = getMatchData(gameLabel);
-            if (matchData) {
-                renderConnectorLines(container, gameLabel, coords, matchResults);
-            }
+            renderConnectorLines(container, gameLabel, coords, matchResults);
         });
 
         Object.entries(CONFIG.TEAM_COORDINATES).forEach(([teamName, coords]) => {
