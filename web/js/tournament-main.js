@@ -336,8 +336,14 @@ const TournamentApp = (() => {
                     const sameGameTeams = Object.entries(CONFIG.TEAM_COORDINATES)
                         .filter(([_, c]) => c.gameNum === coords.gameNum);
                     const myIndex = sameGameTeams.findIndex(([n]) => n === teamName);
-                    if (myIndex === 0) { nameForStatus = md.team1.name; displayName = md.team1.name; }
-                    else if (myIndex === 1) { nameForStatus = md.team2.name; displayName = md.team2.name; }
+                    if (myIndex === 0 || myIndex === 1) {
+                        displayName = myIndex === 0 ? md.team1.name : md.team2.name;
+                        // プレースホルダー名を results の解決済み名で上書き
+                        const matchResult = results.find(r => r.label === coords.gameNum);
+                        nameForStatus = matchResult
+                            ? (myIndex === 0 ? matchResult.team1 : matchResult.team2)
+                            : displayName;
+                    }
                 }
             }
             const status = getTeamStatus(nameForStatus, results);
