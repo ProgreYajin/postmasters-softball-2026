@@ -249,7 +249,7 @@ const TournamentApp = (() => {
             r.winner && r.winner !== teamName &&
             (r.team1 === teamName || r.team2 === teamName)
         );
-        if (hasWon && !hasLost) return 'alive';
+        if (hasWon) return 'alive';      // 一勝でもあれば軌跡を赤で残す
         if (hasLost) return 'eliminated';
         return 'pending';
     }
