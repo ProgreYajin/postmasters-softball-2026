@@ -203,17 +203,40 @@ const TournamentApp = (() => {
     const DIM_LINE_COLOR       = '#cccccc';
     const DIM_LINE_THICKNESS   = '1px';
 
+    // 「第N試合勝者/敗者」→ 実チーム名の解決マップを生成
+    function buildPlaceholderResolver() {
+        const resolver = {};
+        ['A', 'B', 'C', 'D', 'E', 'F', 'G'].forEach(label => {
+            const gameNum = GAME_LABEL_TO_NUM[label];
+            const md = getMatchData(label);
+            if (!md) return;
+            const t1 = resolver[md.team1.name] || md.team1.name;
+            const t2 = resolver[md.team2.name] || md.team2.name;
+            const w = getWinner(md);
+            if (w !== null) {
+                const winner = w === 1 ? t1 : t2;
+                const loser  = w === 1 ? t2 : t1;
+                resolver[`第${gameNum}試合勝者`] = winner;
+                resolver[`第${gameNum}試合敗者`] = loser;
+            }
+        });
+        return resolver;
+    }
+
     function collectMatchResults() {
+        const resolver = buildPlaceholderResolver();
         const results = [];
         Object.keys(CONFIG.MATCH_COORDINATES).forEach(label => {
             const md = getMatchData(label);
             if (!md) return;
             const w = getWinner(md);
+            const t1 = resolver[md.team1.name] || md.team1.name;
+            const t2 = resolver[md.team2.name] || md.team2.name;
             results.push({
                 label,
-                team1: md.team1.name,
-                team2: md.team2.name,
-                winner: w === 1 ? md.team1.name : w === 2 ? md.team2.name : null
+                team1: t1,
+                team2: t2,
+                winner: w === 1 ? t1 : w === 2 ? t2 : null
             });
         });
         return results;
