@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>2026年度千葉県郵便局長ソフトボール大会 組み合わせ表</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Hiragino Kaku Gothic Pro', 'メイリオ', sans-serif;
+      background: #f0f2f5;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 18px;
+      margin-bottom: 6px;
+      color: #333;
+      letter-spacing: 1px;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 16px;
+    }
+
+    /* 凡例 */
+    .legend {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #444;
+    }
+    .legend-color {
+      width: 20px;
+      height: 14px;
+      border-radius: 3px;
+      border: 2px solid;
+    }
+    .legend-nagashima { background: #e8f8e8; border-color: #4caf50; }
+    .legend-second    { background: #e3f2fd; border-color: #2196f3; }
+
+    /* スクロールコンテナ */
+    .bracket-scroll {
+      overflow-x: auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+      padding: 24px 20px 20px;
+    }
+
+    /* ブラケット本体 */
+    .bracket-container {
+      position: relative;
+      width: 1010px;
+      height: 670px;
+    }
+
+    /* ──── 線 ──── */
+    .vl, .hl {
+      position: absolute;
+      background: #555;
+      z-index: 1;
+    }
+    .vl { width: 2px; }
+    .hl { height: 2px; }
+
+    /* ──── チームボックス ──── */
+    .team-box {
+      position: absolute;
+      width: 68px;
+      height: 95px;
+      border: 2px solid #555;
+      border-radius: 5px;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      z-index: 20;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    }
+    .team-box.seed {
+      border-color: #c0392b;
+      border-width: 2.5px;
+    }
+    .team-num  { font-size: 12px; color: #888; line-height: 1.2; }
+    .team-name { font-size: 17px; font-weight: bold; color: #222; margin: 3px 0; }
+    .team-side { font-size: 10px; color: #999; line-height: 1.2; }
+    .seed-tag  {
+      font-size: 9px; color: #c0392b;
+      background: #fdecea;
+      padding: 1px 5px;
+      border-radius: 2px;
+      margin-top: 2px;
+    }
+
+    /* ──── 試合ボックス ──── */
+    .match-box {
+      position: absolute;
+      width: 78px;
+      height: 80px;
+      border: 2px solid #555;
+      border-radius: 7px;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      z-index: 20;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      padding: 4px;
+    }
+    .match-box.nagashima { background: #e8f8e8; border-color: #4caf50; }
+    .match-box.second    { background: #e3f2fd; border-color: #2196f3; }
+    .match-box.final {
+      background: linear-gradient(135deg, #fff9e6, #fff3cd);
+      border-color: #e0a800;
+      border-width: 2.5px;
+    }
+    .match-label { font-size: 22px; font-weight: bold; color: #333; line-height: 1; }
+    .match-box.nagashima .match-label { color: #2e7d32; }
+    .match-box.second    .match-label { color: #1565c0; }
+    .match-box.final     .match-label { color: #7d5a00; }
+    .match-time  { font-size: 12px; color: #555; margin: 2px 0 1px; }
+    .match-venue { font-size: 10px; color: #777; line-height: 1.2; }
+
+    /* ──── 優勝ボックス ──── */
+    .champion-box {
+      position: absolute;
+      width: 140px;
+      height: 62px;
+      background: linear-gradient(135deg, #f6d365, #fda085);
+      border: 3px solid #e67e22;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+    .champion-box .crown { font-size: 20px; line-height: 1; }
+    .champion-box .champ-label { font-size: 16px; font-weight: bold; color: #5d2e00; margin-top: 2px; }
+
+    /* ──── 3位決定戦 ──── */
+    .third-section {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 242px;
+    }
+    .third-header {
+      position: absolute;
+      width: 242px;
+      height: 38px;
+      background: #fff9c4;
+      border: 2px solid #f9a825;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: bold;
+      color: #5d4037;
+      z-index: 20;
+      top: 25px;
+      right: 0;
+    }
+    .loser-box {
+      position: absolute;
+      width: 68px;
+      height: 80px;
+      border: 2px dashed #999;
+      border-radius: 5px;
+      background: #fafafa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      z-index: 20;
+      color: #888;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    .loser-box .loser-label { font-size: 12px; font-weight: bold; color: #666; }
+
+    /* 3位ボックス */
+    .third-box {
+      position: absolute;
+      width: 140px;
+      height: 50px;
+      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      border: 2px solid #66bb6a;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      font-size: 15px;
+      font-weight: bold;
+      color: #2e7d32;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+<h1>2026年度千葉県郵便局長ソフトボール大会 組み合わせ表</h1>
+<p class="subtitle">2026年6月6日（土） 佐倉市岩名運動公園</p>
+
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-color legend-nagashima"></div>
+    <span>長嶋茂雄球場</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-color legend-second"></div>
+    <span>第2球場</span>
+  </div>
+</div>
+
+<div class="bracket-scroll">
+<div class="bracket-container">
+
+  <!--
+    座標まとめ（中心x, y=CSSのtop+height/2）
+    チームcx: 印旛=65 ①=195 ②=270 ③=420 ④=495 ⑤=640 ⑥=715
+    1回戦cx:  A=232   B=457   C=677
+    準決勝cx: D=148   E=567
+    決勝cx:   G=357
+    チームtop: 530, 高さ95
+    1回戦top:  400, 高さ80
+    準決勝top: 260, 高さ80
+    決勝top:   120, 高さ80
+    優勝top:   22
+  -->
+
+  <!-- ===== 縦線・横線 ===== -->
+
+  <!-- 印旛（シード）縦線 → 準決勝D -->
+  <div class="vl" style="left:64px; top:260px; height:270px;"></div>
+
+  <!-- ① 縦線 → 1回戦A -->
+  <div class="vl" style="left:194px; top:400px; height:130px;"></div>
+  <!-- ② 縦線 → 1回戦A -->
+  <div class="vl" style="left:269px; top:400px; height:130px;"></div>
+  <!-- A 横バー -->
+  <div class="hl" style="left:195px; top:439px; width:75px;"></div>
+  <!-- A 勝者 縦線 → 準決勝D -->
+  <div class="vl" style="left:231px; top:260px; height:140px;"></div>
+
+  <!-- ③ 縦線 → 1回戦B -->
+  <div class="vl" style="left:419px; top:400px; height:130px;"></div>
+  <!-- ④ 縦線 → 1回戦B -->
+  <div class="vl" style="left:494px; top:400px; height:130px;"></div>
+  <!-- B 横バー -->
+  <div class="hl" style="left:420px; top:439px; width:75px;"></div>
+  <!-- B 勝者 縦線 → 準決勝E -->
+  <div class="vl" style="left:456px; top:260px; height:140px;"></div>
+
+  <!-- ⑤ 縦線 → 1回戦C -->
+  <div class="vl" style="left:639px; top:400px; height:130px;"></div>
+  <!-- ⑥ 縦線 → 1回戦C -->
+  <div class="vl" style="left:714px; top:400px; height:130px;"></div>
+  <!-- C 横バー -->
+  <div class="hl" style="left:640px; top:439px; width:75px;"></div>
+  <!-- C 勝者 縦線 → 準決勝E -->
+  <div class="vl" style="left:676px; top:260px; height:140px;"></div>
+
+  <!-- D 横バー（印旛cx=65 〜 Afork cx=232） -->
+  <div class="hl" style="left:65px; top:299px; width:167px;"></div>
+  <!-- D 勝者 縦線 → 決勝G -->
+  <div class="vl" style="left:147px; top:120px; height:140px;"></div>
+
+  <!-- E 横バー（Bfork cx=457 〜 Cfork cx=677） -->
+  <div class="hl" style="left:457px; top:299px; width:220px;"></div>
+  <!-- E 勝者 縦線 → 決勝G -->
+  <div class="vl" style="left:566px; top:120px; height:140px;"></div>
+
+  <!-- G 横バー（Dfork cx=148 〜 Efork cx=567） -->
+  <div class="hl" style="left:148px; top:159px; width:419px;"></div>
+  <!-- G 勝者 縦線 → 優勝 -->
+  <div class="vl" style="left:356px; top:84px; height:36px;"></div>
+
+  <!-- ===== 3位決定戦 ミニブラケット ===== -->
+  <!-- D敗者 cx=800, E敗者 cx=960, F fork cx=880 -->
+  <!-- D敗者 縦線 → F -->
+  <div class="vl" style="left:799px; top:260px; height:140px;"></div>
+  <!-- E敗者 縦線 → F -->
+  <div class="vl" style="left:959px; top:260px; height:140px;"></div>
+  <!-- F 横バー -->
+  <div class="hl" style="left:800px; top:299px; width:160px;"></div>
+  <!-- F 勝者 縦線 → 3位 -->
+  <div class="vl" style="left:879px; top:160px; height:100px;"></div>
+
+  <!-- ===== チームボックス ===== -->
+
+  <!-- 印旛（シード） -->
+  <div class="team-box seed" style="left:31px; top:530px;">
+    <div class="team-name">印旛</div>
+    <div class="seed-tag">シード</div>
+  </div>
+
+  <!-- ①東部 -->
+  <div class="team-box" style="left:161px; top:530px;">
+    <div class="team-num">①</div>
+    <div class="team-name">東部</div>
+    <div class="team-side">1塁側</div>
+  </div>
+
+  <!-- ②東南 -->
+  <div class="team-box" style="left:236px; top:530px;">
+    <div class="team-num">②</div>
+    <div class="team-name">東南</div>
+    <div class="team-side">3塁側</div>
+  </div>
+
+  <!-- ③北部 -->
+  <div class="team-box" style="left:386px; top:530px;">
+    <div class="team-num">③</div>
+    <div class="team-name">北部</div>
+    <div class="team-side">1塁側</div>
+  </div>
+
+  <!-- ④西部 -->
+  <div class="team-box" style="left:461px; top:530px;">
+    <div class="team-num">④</div>
+    <div class="team-name">西部</div>
+    <div class="team-side">3塁側</div>
+  </div>
+
+  <!-- ⑤中部 -->
+  <div class="team-box" style="left:606px; top:530px;">
+    <div class="team-num">⑤</div>
+    <div class="team-name">中部</div>
+    <div class="team-side">1塁側</div>
+  </div>
+
+  <!-- ⑥南部 -->
+  <div class="team-box" style="left:681px; top:530px;">
+    <div class="team-num">⑥</div>
+    <div class="team-name">南部</div>
+    <div class="team-side">3塁側</div>
+  </div>
+
+  <!-- ===== 1回戦 試合ボックス ===== -->
+
+  <!-- 試合A (1回戦) 長嶋茂雄球場 -->
+  <div class="match-box nagashima" style="left:193px; top:400px;">
+    <div class="match-label">Ａ</div>
+    <div class="match-time">10:00</div>
+    <div class="match-venue">長嶋茂雄</div>
+  </div>
+
+  <!-- 試合B (1回戦) 第2球場 -->
+  <div class="match-box second" style="left:418px; top:400px;">
+    <div class="match-label">Ｂ</div>
+    <div class="match-time">10:00</div>
+    <div class="match-venue">第2球場</div>
+  </div>
+
+  <!-- 試合C (1回戦) 長嶋茂雄球場 -->
+  <div class="match-box nagashima" style="left:638px; top:400px;">
+    <div class="match-label">Ｃ</div>
+    <div class="match-time">11:20</div>
+    <div class="match-venue">長嶋茂雄</div>
+  </div>
+
+  <!-- ===== 準決勝 試合ボックス ===== -->
+
+  <!-- 試合D (準決勝) 長嶋茂雄球場 -->
+  <div class="match-box nagashima" style="left:109px; top:260px;">
+    <div class="match-label">Ｄ</div>
+    <div class="match-time">13:00</div>
+    <div class="match-venue">長嶋茂雄</div>
+  </div>
+
+  <!-- 試合E (準決勝) 第2球場 -->
+  <div class="match-box second" style="left:527px; top:260px;">
+    <div class="match-label">Ｅ</div>
+    <div class="match-time">13:00</div>
+    <div class="match-venue">第2球場</div>
+  </div>
+
+  <!-- ===== 決勝 試合ボックス ===== -->
+
+  <!-- 試合G (決勝) 長嶋茂雄球場 -->
+  <div class="match-box final" style="left:318px; top:120px;">
+    <div class="match-label">Ｇ</div>
+    <div class="match-time">14:30</div>
+    <div class="match-venue">長嶋茂雄</div>
+  </div>
+
+  <!-- ===== 優勝ボックス ===== -->
+  <div class="champion-box" style="left:287px; top:22px;">
+    <div class="crown">👑</div>
+    <div class="champ-label">優　勝</div>
+  </div>
+
+  <!-- ===== 3位決定戦セクション ===== -->
+
+  <!-- 3位決定戦 ヘッダー -->
+  <div class="third-header">🥉 3位決定戦</div>
+
+  <!-- D敗者プレースホルダー -->
+  <div class="loser-box" style="left:766px; top:400px;">
+    <div class="loser-label">D敗者</div>
+    <div>準決勝D<br>敗退チーム</div>
+  </div>
+
+  <!-- E敗者プレースホルダー -->
+  <div class="loser-box" style="left:926px; top:400px;">
+    <div class="loser-label">E敗者</div>
+    <div>準決勝E<br>敗退チーム</div>
+  </div>
+
+  <!-- 試合F (3位決定戦) 第2球場 -->
+  <div class="match-box second" style="left:841px; top:260px;">
+    <div class="match-label">Ｆ</div>
+    <div class="match-time">14:30</div>
+    <div class="match-venue">第2球場</div>
+  </div>
+
+  <!-- 3位ボックス -->
+  <div class="third-box" style="left:810px; top:110px;">
+    <span>🥉 3位</span>
+  </div>
+
+</div><!-- .bracket-container -->
+</div><!-- .bracket-scroll -->
+
+</body>
+</html>
