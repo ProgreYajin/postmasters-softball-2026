@@ -70,7 +70,8 @@
       "Bash(sed -n '1,200p' /home/junki/dev/postmasters-softball-2026/web/tournament.html)",
       "Bash(pkill -f \"http.server 8765\")",
       "mcp__plugin_claude-mem_mcp-search__smart_search",
-      "mcp__plugin_claude-mem_mcp-search__smart_unfold"
+      "mcp__plugin_claude-mem_mcp-search__smart_unfold",
+      "mcp__playwright__browser_resize"
     ]
   }
 }
