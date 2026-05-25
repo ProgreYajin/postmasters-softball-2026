@@ -1,5 +1,5 @@
 /**
- * トーナメント表アプリケーション（座標ベース・div版）
+ * トーナメント表アプリケーション（SVG折れ線方式）
  * 下から上へ勝ち上がる従来型トーナメント表
  */
 
@@ -249,7 +249,7 @@ const TournamentApp = (() => {
             r.winner && r.winner !== teamName &&
             (r.team1 === teamName || r.team2 === teamName)
         );
-        if (hasWon) return 'alive';      // 一勝でもあれば軌跡を赤で残す
+        if (hasWon) return 'alive';
         if (hasLost) return 'eliminated';
         return 'pending';
     }
@@ -266,573 +266,232 @@ const TournamentApp = (() => {
         return { color: null, thickness: null };
     }
 
-    // ==================== レンダリング ====================
+    // ==================== SVGブラケット描画 ====================
+
+    function buildSVGString() {
+        return `<svg id="bracket" viewBox="0 0 1060 635" width="1060" height="635"
+     xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="gChamp" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#f6d365"/>
+    <stop offset="100%" stop-color="#fda085"/>
+  </linearGradient>
+</defs>
+
+<line id="lt0" x1="80"  y1="565" x2="80"  y2="280" stroke="#ccc" stroke-width="2"/>
+<line id="lt1" x1="215" y1="565" x2="215" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="lt2" x1="305" y1="565" x2="305" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="bA"  x1="215" y1="440" x2="305" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="wA"  x1="260" y1="440" x2="260" y2="280" stroke="#ccc" stroke-width="2"/>
+<line id="lt3" x1="440" y1="565" x2="440" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="lt4" x1="530" y1="565" x2="530" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="bB"  x1="440" y1="440" x2="530" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="wB"  x1="485" y1="440" x2="485" y2="280" stroke="#ccc" stroke-width="2"/>
+<line id="lt5" x1="665" y1="565" x2="665" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="lt6" x1="755" y1="565" x2="755" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="bC"  x1="665" y1="440" x2="755" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="wC"  x1="710" y1="440" x2="710" y2="280" stroke="#ccc" stroke-width="2"/>
+<line id="bD"  x1="80"  y1="280" x2="260" y2="280" stroke="#ccc" stroke-width="2"/>
+<line id="wD"  x1="170" y1="280" x2="170" y2="120" stroke="#ccc" stroke-width="2"/>
+<line id="bE"  x1="485" y1="280" x2="710" y2="280" stroke="#ccc" stroke-width="2"/>
+<line id="wE"  x1="597" y1="280" x2="597" y2="120" stroke="#ccc" stroke-width="2"/>
+<line id="bG"  x1="170" y1="120" x2="597" y2="120" stroke="#ccc" stroke-width="2"/>
+<line id="wG"  x1="383" y1="120" x2="383" y2="54"  stroke="#ccc" stroke-width="2"/>
+<line id="lld" x1="865" y1="565" x2="865" y2="280" stroke="#ccc" stroke-width="2"/>
+<line id="lle" x1="975" y1="565" x2="975" y2="280" stroke="#ccc" stroke-width="2"/>
+<line id="bF"  x1="865" y1="280" x2="975" y2="280" stroke="#ccc" stroke-width="2"/>
+<line id="wF"  x1="920" y1="280" x2="920" y2="228" stroke="#ccc" stroke-width="2"/>
+
+<rect x="313" y="2" width="140" height="52" rx="9"
+      fill="url(#gChamp)" stroke="#e67e22" stroke-width="2.5"/>
+<text x="383" y="21" text-anchor="middle" font-size="15">👑</text>
+<text x="383" y="43" text-anchor="middle" font-size="17" font-weight="bold" fill="#5d2e00">優　勝</text>
+
+<rect x="822" y="8" width="216" height="36" rx="7"
+      fill="#fff9c4" stroke="#f9a825" stroke-width="2"/>
+<text x="930" y="32" text-anchor="middle" font-size="13" font-weight="bold" fill="#5d4037">🥉 3位決定戦</text>
+
+<rect x="845" y="178" width="150" height="50" rx="7"
+      fill="#e8f5e9" stroke="#66bb6a" stroke-width="2"/>
+<text x="920" y="209" text-anchor="middle" font-size="15" font-weight="bold" fill="#2e7d32">🥉　3　位</text>
+
+<rect x="831" y="520" width="68" height="90" rx="5"
+      fill="#fafafa" stroke="#bbb" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="865" y="552" text-anchor="middle" font-size="13" font-weight="bold" fill="#999">D敗者</text>
+<text x="865" y="569" text-anchor="middle" font-size="10" fill="#bbb">準決勝D</text>
+<text x="865" y="583" text-anchor="middle" font-size="10" fill="#bbb">敗退チーム</text>
+
+<rect x="941" y="520" width="68" height="90" rx="5"
+      fill="#fafafa" stroke="#bbb" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="975" y="552" text-anchor="middle" font-size="13" font-weight="bold" fill="#999">E敗者</text>
+<text x="975" y="569" text-anchor="middle" font-size="10" fill="#bbb">準決勝E</text>
+<text x="975" y="583" text-anchor="middle" font-size="10" fill="#bbb">敗退チーム</text>
+
+<rect x="46" y="520" width="68" height="90" rx="5"
+      fill="white" stroke="#e53935" stroke-width="2.5"/>
+<text id="tn-seed" x="80" y="556" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e">印旛</text>
+<text x="80" y="574" text-anchor="middle" font-size="10" fill="#e53935">シード</text>
+
+<rect x="181" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
+<text x="215" y="544" text-anchor="middle" font-size="11" fill="#aaa">①</text>
+<text id="tn-t1a" x="215" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
+<text x="215" y="582" text-anchor="middle" font-size="10" fill="#aaa">1塁側</text>
+
+<rect x="271" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
+<text x="305" y="544" text-anchor="middle" font-size="11" fill="#aaa">②</text>
+<text id="tn-t2a" x="305" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
+<text x="305" y="582" text-anchor="middle" font-size="10" fill="#aaa">3塁側</text>
+
+<rect x="406" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
+<text x="440" y="544" text-anchor="middle" font-size="11" fill="#aaa">③</text>
+<text id="tn-t1b" x="440" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
+<text x="440" y="582" text-anchor="middle" font-size="10" fill="#aaa">1塁側</text>
+
+<rect x="496" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
+<text x="530" y="544" text-anchor="middle" font-size="11" fill="#aaa">④</text>
+<text id="tn-t2b" x="530" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
+<text x="530" y="582" text-anchor="middle" font-size="10" fill="#aaa">3塁側</text>
+
+<rect x="631" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
+<text x="665" y="544" text-anchor="middle" font-size="11" fill="#aaa">⑤</text>
+<text id="tn-t1c" x="665" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
+<text x="665" y="582" text-anchor="middle" font-size="10" fill="#aaa">1塁側</text>
+
+<rect x="721" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
+<text x="755" y="544" text-anchor="middle" font-size="11" fill="#aaa">⑥</text>
+<text id="tn-t2c" x="755" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
+<text x="755" y="582" text-anchor="middle" font-size="10" fill="#aaa">3塁側</text>
+
+<text x="260" y="458" text-anchor="middle" font-size="14" font-weight="bold" fill="#2e7d32">Ａ</text>
+<text x="260" y="474" text-anchor="middle" font-size="11" fill="#555">10:00　長嶋茂雄球場</text>
+<text x="260" y="488" text-anchor="middle" font-size="10" fill="#888">①東部 vs ②東南</text>
+
+<text x="485" y="458" text-anchor="middle" font-size="14" font-weight="bold" fill="#1565c0">Ｂ</text>
+<text x="485" y="474" text-anchor="middle" font-size="11" fill="#555">10:00　第2球場</text>
+<text x="485" y="488" text-anchor="middle" font-size="10" fill="#888">③北部 vs ④西部</text>
+
+<text x="710" y="458" text-anchor="middle" font-size="14" font-weight="bold" fill="#2e7d32">Ｃ</text>
+<text x="710" y="474" text-anchor="middle" font-size="11" fill="#555">11:20　長嶋茂雄球場</text>
+<text x="710" y="488" text-anchor="middle" font-size="10" fill="#888">⑤中部 vs ⑥南部</text>
+
+<text x="170" y="298" text-anchor="middle" font-size="13" font-weight="bold" fill="#2e7d32">Ｄ　準決勝</text>
+<text x="170" y="313" text-anchor="middle" font-size="11" fill="#555">13:00　長嶋茂雄球場</text>
+<text x="170" y="328" text-anchor="middle" font-size="10" fill="#888">印旛 vs Ａ勝者</text>
+
+<text x="597" y="298" text-anchor="middle" font-size="13" font-weight="bold" fill="#1565c0">Ｅ　準決勝</text>
+<text x="597" y="313" text-anchor="middle" font-size="11" fill="#555">13:00　第2球場</text>
+<text x="597" y="328" text-anchor="middle" font-size="10" fill="#888">Ｂ勝者 vs Ｃ勝者</text>
+
+<text x="383" y="138" text-anchor="middle" font-size="13" font-weight="bold" fill="#7d5a00">Ｇ　決　勝</text>
+<text x="383" y="153" text-anchor="middle" font-size="11" fill="#555">14:30　長嶋茂雄球場</text>
+<text x="383" y="168" text-anchor="middle" font-size="10" fill="#888">Ｄ勝者 vs Ｅ勝者</text>
+
+<text x="920" y="298" text-anchor="middle" font-size="13" font-weight="bold" fill="#1565c0">Ｆ　3位決定戦</text>
+<text x="920" y="313" text-anchor="middle" font-size="11" fill="#555">14:30　第2球場</text>
+<text x="920" y="328" text-anchor="middle" font-size="10" fill="#888">Ｄ敗者 vs Ｅ敗者</text>
+
+<line id="r-lt0" x1="80"  y1="565" x2="80"  y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-lt1" x1="215" y1="565" x2="215" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-lt2" x1="305" y1="565" x2="305" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-bA"  x1="215" y1="440" x2="305" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-wA"  x1="260" y1="440" x2="260" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-lt3" x1="440" y1="565" x2="440" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-lt4" x1="530" y1="565" x2="530" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-bB"  x1="440" y1="440" x2="530" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-wB"  x1="485" y1="440" x2="485" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-lt5" x1="665" y1="565" x2="665" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-lt6" x1="755" y1="565" x2="755" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-bC"  x1="665" y1="440" x2="755" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-wC"  x1="710" y1="440" x2="710" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-bD"  x1="80"  y1="280" x2="260" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-wD"  x1="170" y1="280" x2="170" y2="120" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-bE"  x1="485" y1="280" x2="710" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-wE"  x1="597" y1="280" x2="597" y2="120" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-bG"  x1="170" y1="120" x2="597" y2="120" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-wG"  x1="383" y1="120" x2="383" y2="54"  stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-lld" x1="865" y1="565" x2="865" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-lle" x1="975" y1="565" x2="975" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-bF"  x1="865" y1="280" x2="975" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-wF"  x1="920" y1="280" x2="920" y2="228" stroke="none" stroke-width="4" stroke-linecap="round"/>
+</svg>`;
+    }
+
+    function setText(id, text) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    }
+
+    function populateTeamNames() {
+        const matchA = getMatchData('A');
+        const matchB = getMatchData('B');
+        const matchC = getMatchData('C');
+        const matchD = getMatchData('D');
+        if (matchD) setText('tn-seed', matchD.team1.name || '印旛');
+        if (matchA) {
+            setText('tn-t1a', matchA.team1.name || '①');
+            setText('tn-t2a', matchA.team2.name || '②');
+        }
+        if (matchB) {
+            setText('tn-t1b', matchB.team1.name || '③');
+            setText('tn-t2b', matchB.team2.name || '④');
+        }
+        if (matchC) {
+            setText('tn-t1c', matchC.team1.name || '⑤');
+            setText('tn-t2c', matchC.team2.name || '⑥');
+        }
+    }
+
+    function activateRedLines() {
+        function red(id) {
+            const el = document.getElementById('r-' + id);
+            if (el) el.setAttribute('stroke', '#FF0000');
+        }
+        // Match A
+        const matchA = getMatchData('A');
+        if (matchA && getWinner(matchA)) {
+            red(getWinner(matchA) === 1 ? 'lt1' : 'lt2');
+            red('bA'); red('wA');
+        }
+        // Match B
+        const matchB = getMatchData('B');
+        if (matchB && getWinner(matchB)) {
+            red(getWinner(matchB) === 1 ? 'lt3' : 'lt4');
+            red('bB'); red('wB');
+        }
+        // Match C
+        const matchC = getMatchData('C');
+        if (matchC && getWinner(matchC)) {
+            red(getWinner(matchC) === 1 ? 'lt5' : 'lt6');
+            red('bC'); red('wC');
+        }
+        // Match D: team1=印旛(シード), team2=A勝者
+        const matchD = getMatchData('D');
+        if (matchD && getWinner(matchD)) {
+            const seedWins = getWinner(matchD) === 1 && !CONFIG.isPlaceholder(matchD.team1.name);
+            red(seedWins ? 'lt0' : 'wA');
+            red('bD'); red('wD');
+        }
+        // Match E (B勝者 vs C勝者)
+        const matchE = getMatchData('E');
+        if (matchE && getWinner(matchE)) { red('bE'); red('wE'); }
+        // Match G (決勝)
+        const matchG = getMatchData('G');
+        if (matchG && getWinner(matchG)) { red('bG'); red('wG'); }
+        // Match F (3位決定戦: team1=D敗者, team2=E敗者)
+        const matchF = getMatchData('F');
+        if (matchF && getWinner(matchF)) {
+            red(getWinner(matchF) === 1 ? 'lld' : 'lle');
+            red('bF'); red('wF');
+        }
+    }
 
     function renderTournament() {
         const container = document.getElementById('tournamentArea');
-
-        if (!CONFIG.TEAM_COORDINATES || Object.keys(CONFIG.TEAM_COORDINATES).length === 0) {
-            showError('トーナメント表データが見つかりません');
-            return;
-        }
-
-        container.innerHTML = '';
-
-        if (isDevelopmentMode) {
-            container.appendChild(renderGrid());
-            container.appendChild(renderMouseCoords());
-            container.appendChild(renderStageGuides());
-        }
-
-        // 優勝カードを追加
-        const championCard = renderChampionCard();
-        if (championCard) {
-            container.appendChild(championCard);
-        }
-
-        // 3位カードを追加
-        const thirdPlaceCard = renderThirdPlaceCard();
-        if (thirdPlaceCard) {
-            container.appendChild(thirdPlaceCard);
-        }
-
-        const matchResults = collectMatchResults();
-
-        // 接続線はF/Gが未スケジュールでも常に描画（構造線）
-        Object.entries(CONFIG.MATCH_COORDINATES).forEach(([gameLabel, coords]) => {
-            renderConnectorLines(container, gameLabel, coords, matchResults);
-        });
-
-        Object.entries(CONFIG.TEAM_COORDINATES).forEach(([teamName, coords]) => {
-            container.appendChild(renderTeamCard(teamName, coords, matchResults));
-        });
-
-        Object.entries(CONFIG.MATCH_COORDINATES).forEach(([gameLabel, coords]) => {
-            const matchData = getMatchData(gameLabel);
-            if (matchData) {
-                container.appendChild(renderMatchBlock(matchData, coords, matchResults));
-            }
-        });
-
+        container.innerHTML = buildSVGString();
+        populateTeamNames();
+        activateRedLines();
         updateChampion();
-        updateThirdPlace();
         initZoomControl();
-    }
-
-    // ==================== チームカード描画 ====================
-
-    function renderTeamCard(teamName, coords, results) {
-        const card = document.createElement('div');
-        card.className = 'team-card';
-        if (coords.isSeed) {
-            card.classList.add('seed');
-        }
-        let displayName = teamName;
-        if (results) {
-            let nameForStatus = teamName;
-            if (coords.gameNum) {
-                const md = getMatchData(coords.gameNum);
-                if (md) {
-                    const sameGameTeams = Object.entries(CONFIG.TEAM_COORDINATES)
-                        .filter(([_, c]) => c.gameNum === coords.gameNum);
-                    const myIndex = sameGameTeams.findIndex(([n]) => n === teamName);
-                    if (myIndex === 0 || myIndex === 1) {
-                        displayName = myIndex === 0 ? md.team1.name : md.team2.name;
-                        // プレースホルダー名を results の解決済み名で上書き
-                        const matchResult = results.find(r => r.label === coords.gameNum);
-                        nameForStatus = matchResult
-                            ? (myIndex === 0 ? matchResult.team1 : matchResult.team2)
-                            : displayName;
-                    }
-                }
-            }
-            const status = getTeamStatus(nameForStatus, results);
-            if (status === 'alive') card.classList.add('team-alive');
-            else if (status === 'eliminated') card.classList.add('team-eliminated');
-        }
-
-        // 50px右にオフセット
-        card.style.left = (coords.x + 50) + 'px';
-        card.style.top = coords.y + 'px';
-
-        const icon = document.createElement('div');
-        icon.className = 'team-icon';
-        icon.textContent = CONFIG.getTeamIcon(displayName);
-
-        const name = document.createElement('div');
-        name.className = 'team-name';
-        name.textContent = displayName;
-
-        card.appendChild(icon);
-        card.appendChild(name);
-
-        if (coords.side) {
-            const sideLabel = document.createElement('div');
-            sideLabel.className = 'team-side';
-            sideLabel.textContent = coords.side;
-            card.appendChild(sideLabel);
-        }
-
-        if (coords.isSeed) {
-            const seedMark = document.createElement('div');
-            seedMark.className = 'seed-mark';
-            seedMark.textContent = '⭐';
-            card.appendChild(seedMark);
-        }
-
-        return card;
-    }
-
-    // ==================== 優勝カード描画 ====================
-
-    function renderChampionCard() {
-        const finalMatch = CONFIG.MATCH_COORDINATES['G'];
-        if (!finalMatch) return null;
-
-        const card = document.createElement('div');
-        card.className = 'team-card champion-card';
-        card.style.left = (finalMatch.x + 50) + 'px';
-        card.style.top = (finalMatch.y - 200) + 'px'; // 決勝戦の200px上
-
-        const icon = document.createElement('div');
-        icon.className = 'team-icon';
-        icon.textContent = '🏆';
-        icon.style.fontSize = '32px';
-
-        const name = document.createElement('div');
-        name.className = 'team-name';
-        name.textContent = '優勝';
-        name.style.fontSize = '18px';
-        name.style.fontWeight = 'bold';
-
-        card.appendChild(icon);
-        card.appendChild(name);
-
-        return card;
-    }
-
-    // ==================== 3位カード描画（tournament-main.js に追加） ====================
-    /**
-     * 3位カードを描画
-     * renderTournament()内で呼び出す
-     */
-    function renderThirdPlaceCard() {
-        const thirdPlaceMatch = CONFIG.MATCH_COORDINATES['F'];
-        if (!thirdPlaceMatch) return null;
-
-        const card = document.createElement('div');
-        card.className = 'team-card third-place-card';
-        card.style.left = (thirdPlaceMatch.x + 50) + 'px';
-        card.style.top = (thirdPlaceMatch.y - 200) + 'px'; // 第6試合の200px上
-
-        const icon = document.createElement('div');
-        icon.className = 'team-icon';
-        icon.textContent = '🥉'; // 銅メダル
-        icon.style.fontSize = '32px';
-
-        const name = document.createElement('div');
-        name.className = 'team-name';
-        name.textContent = '3位';
-        name.style.fontSize = '18px';
-        name.style.fontWeight = 'bold';
-
-        card.appendChild(icon);
-        card.appendChild(name);
-
-        return card;
-    }
-
-    // ==================== 3位表示の更新 ====================
-
-    /**
-     * 3位決定戦が終了したら3位チーム名を表示
-     */
-    function updateThirdPlace() {
-        const thirdPlaceMatch = getMatchData('F');
-        const thirdPlaceSection = document.getElementById('thirdPlaceSection');
-        const thirdPlaceName = document.getElementById('thirdPlaceName');
-
-        // HTML側にセクションがない場合は作成しない
-        if (!thirdPlaceSection || !thirdPlaceName) return;
-
-        if (thirdPlaceMatch && thirdPlaceMatch.status === '終了') {
-            const winner = getWinner(thirdPlaceMatch);
-            if (winner) {
-                const thirdPlaceTeam = winner === 1 ? thirdPlaceMatch.team1.name : thirdPlaceMatch.team2.name;
-                thirdPlaceName.textContent = thirdPlaceTeam;
-                thirdPlaceSection.style.display = 'block';
-            }
-        } else {
-            thirdPlaceSection.style.display = 'none';
-        }
-    }
-
-    // ==================== 試合ブロック描画 ====================
-    function renderMatchBlock(matchData, coords, results) {
-        const block = document.createElement('div');
-        block.className = 'match-block';
-
-        const statusClass = matchData.status === '試合中' ? 'playing' :
-            matchData.status === '終了' ? 'finished' : 'waiting';
-        block.classList.add(statusClass);
-
-        if (coords.special === 'final') {
-            block.classList.add('final');
-        } else if (coords.special === 'third') {
-            block.classList.add('third-place');
-        } else if (coords.special === 'semi') {
-            block.classList.add('semi-final');
-        }
-
-        if (results && getMatchWinnerStatus(matchData.gameLabel, results) === 'alive') {
-            block.classList.add('winner-alive');
-        }
-
-        // 50px右にオフセット
-        block.style.left = (coords.x + 50) + 'px';
-        block.style.top = coords.y + 'px';
-
-        const label = document.createElement('div');
-        label.className = 'match-label';
-        label.textContent = CIRCLED_LABELS[coords.label] || coords.label;
-
-        if (coords.time || coords.venue) {
-            const venueInfo = document.createElement('div');
-            venueInfo.className = 'match-venue-info';
-            venueInfo.textContent = [coords.time, coords.venue].filter(Boolean).join(' ');
-            block.appendChild(label);
-            block.appendChild(venueInfo);
-        } else {
-            block.appendChild(label);
-        }
-
-        const scoreLine = document.createElement('div');
-        scoreLine.className = 'match-score-line';
-
-        const winner = getWinner(matchData);
-
-        // チーム1
-        const team1Name = document.createElement('span');
-        team1Name.className = 'match-team-name';
-        if (CONFIG.isPlaceholder(matchData.team1.name)) {
-            team1Name.classList.add('placeholder');
-        }
-        if (winner === 1) {
-            team1Name.classList.add('winner');
-        }
-        team1Name.textContent = matchData.team1.name;
-        scoreLine.appendChild(team1Name);
-
-        // スコア表示（得点がある場合のみ）
-        if (matchData.team1.score !== null && matchData.team2.score !== null) {
-            const score1 = document.createElement('span');
-            score1.className = 'match-team-score';
-            if (winner === 1) {
-                score1.classList.add('winner');
-            }
-            score1.textContent = matchData.team1.score;
-            scoreLine.appendChild(score1);
-
-            const separator = document.createElement('span');
-            separator.className = 'match-score-separator';
-            separator.textContent = '-';
-            scoreLine.appendChild(separator);
-
-            const score2 = document.createElement('span');
-            score2.className = 'match-team-score';
-            if (winner === 2) {
-                score2.classList.add('winner');
-            }
-            score2.textContent = matchData.team2.score;
-            scoreLine.appendChild(score2);
-        }
-
-        // チーム2
-        const team2Name = document.createElement('span');
-        team2Name.className = 'match-team-name';
-        if (CONFIG.isPlaceholder(matchData.team2.name)) {
-            team2Name.classList.add('placeholder');
-        }
-        if (winner === 2) {
-            team2Name.classList.add('winner');
-        }
-        team2Name.textContent = matchData.team2.name;
-        scoreLine.appendChild(team2Name);
-
-        block.appendChild(scoreLine);
-
-        const statusInfo = document.createElement('div');
-        statusInfo.className = 'match-time';
-
-        if (matchData.status === '試合中') {
-            statusInfo.textContent = '⚾ 試合中';
-            statusInfo.classList.add('status-playing');
-        } else if (matchData.status === '終了') {
-            statusInfo.textContent = '✓ 試合終了';
-            statusInfo.classList.add('status-finished');
-        } else {
-            statusInfo.textContent = matchData.court ? `${matchData.court}コート` : '待機中';
-            statusInfo.classList.add('status-waiting');
-        }
-
-        block.appendChild(statusInfo);
-
-        block.addEventListener('click', () => {
-            openMatch(matchData.court, matchData.gameNum);
-        });
-
-        return block;
-    }
-
-    // ==================== 接続線描画 ====================
-
-    function renderConnectorLines(container, gameLabel, matchCoords, results) {
-        const CX     = matchCoords.x + 50;
-        const CY     = matchCoords.y;
-        const TOP    = matchCoords.y - 40;
-        const BOTTOM = matchCoords.y + 40;
-        const LEFT   = matchCoords.x - 40;   // CX - 90
-        const RIGHT  = matchCoords.x + 140;  // CX + 90
-
-        function vLine(x, y1, y2, color, width) {
-            const el = document.createElement('div');
-            el.className = 'connector-line vertical';
-            el.style.left = x + 'px';
-            el.style.top = Math.min(y1, y2) + 'px';
-            el.style.height = Math.abs(y2 - y1) + 'px';
-            if (color) el.style.backgroundColor = color;
-            if (width) el.style.width = width;
-            container.appendChild(el);
-        }
-
-        function hLine(x1, y, x2, color, height) {
-            const el = document.createElement('div');
-            el.className = 'connector-line horizontal';
-            el.style.left = Math.min(x1, x2) + 'px';
-            el.style.top = y + 'px';
-            el.style.width = Math.abs(x2 - x1) + 'px';
-            if (color) el.style.backgroundColor = color;
-            if (height) el.style.height = height;
-            container.appendChild(el);
-        }
-
-        // 1回戦（チームカード → A/B/C）
-        if (matchCoords.round === 1) {
-            const roundMatch = getMatchData(gameLabel);
-            const teams = Object.entries(CONFIG.TEAM_COORDINATES).filter(
-                ([_, coords]) => coords.gameNum === gameLabel
-            );
-
-            teams.forEach(([teamName, tc], i) => {
-                const resolvedName = roundMatch
-                    ? (i === 0 ? roundMatch.team1.name : roundMatch.team2.name)
-                    : teamName;
-                const s = lineStyle(results ? getTeamStatus(resolvedName, results) : 'pending');
-                const teamX = tc.x + 50;
-                const teamTopY = tc.y - CONFIG.CARD_SIZE.height / 2;
-                vLine(teamX, BOTTOM, teamTopY, s.color, s.thickness);
-            });
-        }
-
-        // 試合D: 印旛（シード）→ D (L字), A勝者 → D (縦線)
-        if (gameLabel === 'D') {
-            const seedEntry = Object.entries(CONFIG.TEAM_COORDINATES).find(([, c]) => c.isSeed);
-            if (seedEntry) {
-                const [seedName, sc] = seedEntry;
-                const seedX = sc.x + 50;
-                const seedTopY = sc.y - CONFIG.CARD_SIZE.height / 2;
-                const sS = lineStyle(results ? getTeamStatus(seedName, results) : 'pending');
-                vLine(seedX, CY, seedTopY, sS.color, sS.thickness);
-                hLine(seedX, CY, LEFT, sS.color, sS.thickness);
-            }
-            const matchA = CONFIG.MATCH_COORDINATES['A'];
-            if (matchA) {
-                const sA = lineStyle(results ? getMatchWinnerStatus('A', results) : 'pending');
-                vLine(matchA.x + 50, BOTTOM, matchA.y - 40, sA.color, sA.thickness);
-            }
-        }
-
-        // 試合E: B勝者（左）+ C勝者（右）→ E
-        if (gameLabel === 'E') {
-            const matchB = CONFIG.MATCH_COORDINATES['B'];
-            if (matchB) {
-                const bX = matchB.x + 50;
-                const sB = lineStyle(results ? getMatchWinnerStatus('B', results) : 'pending');
-                vLine(bX, CY, matchB.y - 40, sB.color, sB.thickness);
-                hLine(bX, CY, LEFT, sB.color, sB.thickness);
-            }
-            const matchC = CONFIG.MATCH_COORDINATES['C'];
-            if (matchC) {
-                const cX = matchC.x + 50;
-                const sC = lineStyle(results ? getMatchWinnerStatus('C', results) : 'pending');
-                vLine(cX, CY, matchC.y - 40, sC.color, sC.thickness);
-                hLine(RIGHT, CY, cX, sC.color, sC.thickness);
-            }
-        }
-
-        // 試合G（決勝）: D勝者（左）+ E勝者（右）→ G, G → 優勝カード
-        if (gameLabel === 'G') {
-            const matchD = CONFIG.MATCH_COORDINATES['D'];
-            if (matchD) {
-                const dX = matchD.x + 50;
-                const sD = lineStyle(results ? getMatchWinnerStatus('D', results) : 'pending');
-                vLine(dX, CY, matchD.y - 40, sD.color, sD.thickness);
-                hLine(dX, CY, LEFT, sD.color, sD.thickness);
-            }
-            const matchE = CONFIG.MATCH_COORDINATES['E'];
-            if (matchE) {
-                const eX = matchE.x + 50;
-                const sE = lineStyle(results ? getMatchWinnerStatus('E', results) : 'pending');
-                vLine(eX, CY, matchE.y - 40, sE.color, sE.thickness);
-                hLine(RIGHT, CY, eX, sE.color, sE.thickness);
-            }
-            // G → 優勝カード
-            const champBottomY = CY - 200 + 40;
-            vLine(CX, champBottomY, TOP, '#ffa000', '3px');
-        }
-
-        // 試合F（3位決定戦）→ 3位カード
-        if (gameLabel === 'F') {
-            const thirdBottomY = CY - 200 + 40;
-            vLine(CX, thirdBottomY, TOP, '#cd7f32', '3px');
-
-            // results に解決済みチーム名が入っているのでそちらを使う
-            const fResult = results ? results.find(r => r.label === 'F') : null;
-            const fTeams = Object.entries(CONFIG.TEAM_COORDINATES).filter(
-                ([_, c]) => c.gameNum === gameLabel
-            );
-            fTeams.forEach(([teamName, tc], i) => {
-                const resolvedName = fResult
-                    ? (i === 0 ? fResult.team1 : fResult.team2)
-                    : teamName;
-                const s = lineStyle(results ? getTeamStatus(resolvedName, results) : 'pending');
-                const teamX = tc.x + 50;
-                const teamTopY = tc.y - CONFIG.CARD_SIZE.height / 2;
-                vLine(teamX, BOTTOM, teamTopY, s.color, s.thickness);
-            });
-        }
-    }
-
-    // ==================== 開発用グリッド ====================
-
-    function renderGrid() {
-        const gridOverlay = document.createElement('div');
-        gridOverlay.className = 'grid-overlay';
-
-        const width = 1600;
-        const height = 1000;
-
-        for (let x = 0; x <= width; x += 100) {
-            const line = document.createElement('div');
-            line.className = 'grid-line-major vertical';
-            line.style.left = x + 'px';
-            gridOverlay.appendChild(line);
-
-            if (x > 0) {
-                const label = document.createElement('div');
-                label.className = 'grid-label x';
-                label.textContent = x;
-                label.style.left = (x - 10) + 'px';
-                gridOverlay.appendChild(label);
-            }
-        }
-
-        for (let y = 0; y <= height; y += 100) {
-            const line = document.createElement('div');
-            line.className = 'grid-line-major horizontal';
-            line.style.top = y + 'px';
-            gridOverlay.appendChild(line);
-
-            if (y > 0) {
-                const label = document.createElement('div');
-                label.className = 'grid-label y';
-                label.textContent = y;
-                label.style.top = (y - 10) + 'px';
-                gridOverlay.appendChild(label);
-            }
-        }
-
-        for (let x = 50; x < width; x += 100) {
-            const line = document.createElement('div');
-            line.className = 'grid-line-minor vertical';
-            line.style.left = x + 'px';
-            gridOverlay.appendChild(line);
-        }
-
-        for (let y = 50; y < height; y += 100) {
-            const line = document.createElement('div');
-            line.className = 'grid-line-minor horizontal';
-            line.style.top = y + 'px';
-            gridOverlay.appendChild(line);
-        }
-
-        return gridOverlay;
-    }
-
-    function renderMouseCoords() {
-        const coords = document.createElement('div');
-        coords.className = 'mouse-coords';
-        coords.id = 'mouseCoords';
-        coords.innerHTML = `
-            <div><strong>マウス座標</strong></div>
-            <div>X: <span id="coordX">-</span>px</div>
-            <div>Y: <span id="coordY">-</span>px</div>
-            <div style="font-size: 11px; margin-top: 10px; opacity: 0.7;">クリックで座標コピー</div>
-        `;
-
-        const tournamentArea = document.getElementById('tournamentArea');
-
-        tournamentArea.addEventListener('mousemove', (e) => {
-            const rect = tournamentArea.getBoundingClientRect();
-            const x = Math.round(e.clientX - rect.left);
-            const y = Math.round(e.clientY - rect.top);
-
-            document.getElementById('coordX').textContent = x;
-            document.getElementById('coordY').textContent = y;
-        });
-
-        tournamentArea.addEventListener('mouseleave', () => {
-            document.getElementById('coordX').textContent = '-';
-            document.getElementById('coordY').textContent = '-';
-        });
-
-        tournamentArea.addEventListener('click', (e) => {
-            const rect = tournamentArea.getBoundingClientRect();
-            const x = Math.round(e.clientX - rect.left);
-            const y = Math.round(e.clientY - rect.top);
-
-            const coordText = `X: ${x}px, Y: ${y}px`;
-            navigator.clipboard.writeText(coordText).then(() => {
-                coords.style.background = '#4CAF50';
-                setTimeout(() => {
-                    coords.style.background = '#333';
-                }, 200);
-            });
-        });
-
-        return coords;
-    }
-
-    function renderStageGuides() {
-        const wrapper = document.createElement('div');
-
-        const stages = [
-            { top: 10, text: '<div><strong>優勝</strong> Y: 0-50px</div>' },
-            { top: 120, text: '<div><strong>決勝戦</strong> Y: 100-200px</div>' },
-            { top: 280, text: '<div><strong>準決勝</strong> Y: 250-350px</div>' },
-            { top: 480, text: '<div><strong>1回戦</strong> Y: 500-600px</div>' },
-            { top: 880, text: '<div><strong>チーム</strong> Y: 900-950px</div>' }
-        ];
-
-        stages.forEach(stage => {
-            const guide = document.createElement('div');
-            guide.className = 'stage-guide';
-            guide.style.top = stage.top + 'px';
-            guide.innerHTML = stage.text;
-            wrapper.appendChild(guide);
-        });
-
-        return wrapper;
     }
 
     // ==================== 優勝者表示 ====================
@@ -865,7 +524,7 @@ const TournamentApp = (() => {
         const initialZoom = 0.6;
         tournamentArea.style.transform = `scale(${initialZoom})`;
         tournamentArea.style.transformOrigin = 'top left';
-        const initialHeight = 1000 * initialZoom;
+        const initialHeight = 635 * initialZoom;
         tournamentWrapper.style.height = `${initialHeight}px`;
 
         // 60%ボタンをアクティブに
@@ -882,7 +541,7 @@ const TournamentApp = (() => {
                 tournamentArea.style.transform = `scale(${zoom})`;
                 tournamentArea.style.transformOrigin = 'top left';
 
-                const newHeight = 1000 * zoom;
+                const newHeight = 635 * zoom;
                 tournamentWrapper.style.height = `${newHeight}px`;
 
                 zoomButtons.forEach(b => b.classList.remove('active'));
