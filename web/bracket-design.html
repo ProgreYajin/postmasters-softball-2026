@@ -278,20 +278,23 @@ function updateBracket() {
 
     // ── スコアテキスト更新 ──
     // 勝者名を赤・太字、敗者名をグレー、スコアを赤・太字で表示
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+    function span(text, fill, bold) {
+        const t = document.createElementNS(SVG_NS, 'tspan');
+        t.textContent = text;
+        t.setAttribute('fill', fill);
+        if (bold) t.setAttribute('font-weight', 'bold');
+        return t;
+    }
     function setScore(matchId, m) {
         const el = document.getElementById('score-' + matchId);
         if (!el || m.s1 === null || m.s2 === null) return;
-
-        const c1 = (m.winner === 1) ? RED : '#888';
-        const c2 = (m.winner === 2) ? RED : '#888';
-        const fw1 = (m.winner === 1) ? 'bold' : 'normal';
-        const fw2 = (m.winner === 2) ? 'bold' : 'normal';
-
-        // tspan で勝者を強調（SVG innerHTML は主要ブラウザで対応済み）
-        el.innerHTML =
-            `<tspan font-weight="${fw1}" fill="${c1}">${m.t1}</tspan>` +
-            `<tspan font-weight="bold" fill="${RED}"> ${m.s1} - ${m.s2} </tspan>` +
-            `<tspan font-weight="${fw2}" fill="${c2}">${m.t2}</tspan>`;
+        while (el.firstChild) el.removeChild(el.firstChild);
+        const c1 = m.winner === 1 ? RED : '#888';
+        const c2 = m.winner === 2 ? RED : '#888';
+        el.appendChild(span(m.t1 + ' ', c1, m.winner === 1));
+        el.appendChild(span(m.s1 + ' - ' + m.s2, RED, true));
+        el.appendChild(span(' ' + m.t2, c2, m.winner === 2));
     }
 
     ['A','B','C','D','E','G','F'].forEach(id => setScore(id, matches[id]));
