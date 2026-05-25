@@ -2,90 +2,44 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-<title>2026年度千葉県郵便局長ソフトボール大会 組合せ表</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
+<title>2026年度千葉県郵便局長ソフトボール大会組合せ表</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'Hiragino Kaku Gothic Pro', 'メイリオ', sans-serif;
-  background: #f2f4f8;
-  padding: 14px;
-}
-h1 {
-  text-align: center;
-  font-size: 16px;
-  letter-spacing: 0.5px;
-  color: #1a1a2e;
-  margin-bottom: 3px;
-}
-.sub {
-  text-align: center;
-  font-size: 11px;
-  color: #777;
-  margin-bottom: 10px;
-}
-.legend {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  margin-bottom: 10px;
-}
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  color: #444;
-}
-.sw { width: 18px; height: 12px; border-radius: 3px; border: 2px solid; }
-.sw-ng { background: #e8f5e9; border-color: #4caf50; }
-.sw-sb { background: #e3f2fd; border-color: #2196f3; }
-
-.wrap {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0,0,0,.1);
-  padding: 12px;
-  overflow-x: auto;
-}
-svg { display: block; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
+    background: #f0f2f5;
+    min-height: 100vh;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 {
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 12px;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .bracket-container {
+    overflow-x: auto;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+  svg {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    display: block;
+  }
 </style>
 </head>
 <body>
 
-<h1>2026年度千葉県郵便局長ソフトボール大会 組合せ表</h1>
-<p class="sub">2026年6月6日（土）　佐倉市岩名運動公園</p>
-<div class="legend">
-  <div class="legend-item"><div class="sw sw-ng"></div>長嶋茂雄球場</div>
-  <div class="legend-item"><div class="sw sw-sb"></div>第2球場</div>
-</div>
+<h1>2026年度千葉県郵便局長ソフトボール大会組合せ表</h1>
 
-<div class="wrap">
-<!--
-  ═══════════════════════════════════════════════════
-  座標系メモ  （y: 上=小）
-
-  Y レベル（バー中心）:
-    優勝ボックス   y= 28  (top=2,  h=52, bottom=54)
-    決勝G バー     y=120
-    準決勝D/E バー y=280  ← Fバーも同じ y=280
-    1回戦A/B/C バー y=440
-    チームボックス y=565  (top=520, h=90, bottom=610)
-
-  X センター（メインブラケット）:
-    印旛  =  80
-    ①=215, ②=305  →  A fork = 260  (bar: 215 to 305)
-    ③=440, ④=530  →  B fork = 485  (bar: 440 to 530)
-    ⑤=665, ⑥=755  →  C fork = 710  (bar: 665 to 755)
-    D fork = 170   (=(80+260)/2)
-    E fork = 597   (=(485+710)/2)
-    G fork = 383   (=(170+597)/2)
-
-  X センター（3位決定戦）:
-    D敗者=865, E敗者=975, F fork=920
-    3位ボックス中心 x=920
-  ═══════════════════════════════════════════════════
--->
+<div class="bracket-container">
 <svg id="bracket" viewBox="0 0 1060 635" width="1060" height="635"
      xmlns="http://www.w3.org/2000/svg">
 
@@ -104,37 +58,37 @@ svg { display: block; }
 <!-- 印旛シード縦線 → 準決勝D -->
 <line id="lt0" x1="80"  y1="565" x2="80"  y2="280" stroke="#ccc" stroke-width="2"/>
 
-<!-- ① ② 縦線 → A、A横バー、A勝者アーム -->
+<!-- ① ② 縦線 → A横バー → A勝者アーム -->
 <line id="lt1" x1="215" y1="565" x2="215" y2="440" stroke="#ccc" stroke-width="2"/>
 <line id="lt2" x1="305" y1="565" x2="305" y2="440" stroke="#ccc" stroke-width="2"/>
 <line id="bA"  x1="215" y1="440" x2="305" y2="440" stroke="#ccc" stroke-width="2"/>
 <line id="wA"  x1="260" y1="440" x2="260" y2="280" stroke="#ccc" stroke-width="2"/>
 
-<!-- ③ ④ 縦線 → B、B横バー、B勝者アーム -->
+<!-- ③ ④ 縦線 → B横バー → B勝者アーム -->
 <line id="lt3" x1="440" y1="565" x2="440" y2="440" stroke="#ccc" stroke-width="2"/>
 <line id="lt4" x1="530" y1="565" x2="530" y2="440" stroke="#ccc" stroke-width="2"/>
 <line id="bB"  x1="440" y1="440" x2="530" y2="440" stroke="#ccc" stroke-width="2"/>
 <line id="wB"  x1="485" y1="440" x2="485" y2="280" stroke="#ccc" stroke-width="2"/>
 
-<!-- ⑤ ⑥ 縦線 → C、C横バー、C勝者アーム -->
+<!-- ⑤ ⑥ 縦線 → C横バー → C勝者アーム -->
 <line id="lt5" x1="665" y1="565" x2="665" y2="440" stroke="#ccc" stroke-width="2"/>
 <line id="lt6" x1="755" y1="565" x2="755" y2="440" stroke="#ccc" stroke-width="2"/>
 <line id="bC"  x1="665" y1="440" x2="755" y2="440" stroke="#ccc" stroke-width="2"/>
 <line id="wC"  x1="710" y1="440" x2="710" y2="280" stroke="#ccc" stroke-width="2"/>
 
-<!-- D横バー、D勝者アーム -->
+<!-- D横バー → D勝者アーム -->
 <line id="bD"  x1="80"  y1="280" x2="260" y2="280" stroke="#ccc" stroke-width="2"/>
 <line id="wD"  x1="170" y1="280" x2="170" y2="120" stroke="#ccc" stroke-width="2"/>
 
-<!-- E横バー、E勝者アーム -->
+<!-- E横バー → E勝者アーム -->
 <line id="bE"  x1="485" y1="280" x2="710" y2="280" stroke="#ccc" stroke-width="2"/>
 <line id="wE"  x1="597" y1="280" x2="597" y2="120" stroke="#ccc" stroke-width="2"/>
 
-<!-- G横バー、G勝者アーム → 優勝 -->
+<!-- G横バー → 優勝アーム -->
 <line id="bG"  x1="170" y1="120" x2="597" y2="120" stroke="#ccc" stroke-width="2"/>
 <line id="wG"  x1="383" y1="120" x2="383" y2="54"  stroke="#ccc" stroke-width="2"/>
 
-<!-- 3位決定戦 ミニブラケット（D敗者/E敗者 → F、F → 3位） -->
+<!-- 3位決定戦（D敗者・E敗者縦線 → F横バー → F勝者アーム） -->
 <line id="lld" x1="865" y1="565" x2="865" y2="280" stroke="#ccc" stroke-width="2"/>
 <line id="lle" x1="975" y1="565" x2="975" y2="280" stroke="#ccc" stroke-width="2"/>
 <line id="bF"  x1="865" y1="280" x2="975" y2="280" stroke="#ccc" stroke-width="2"/>
@@ -152,12 +106,11 @@ svg { display: block; }
 <text x="383" y="43" text-anchor="middle" font-size="17" font-weight="bold" fill="#5d2e00">優　勝</text>
 
 <!-- ── 3位決定戦セクション ── -->
-<!-- ヘッダー -->
 <rect x="822" y="8" width="216" height="36" rx="7"
       fill="#fff9c4" stroke="#f9a825" stroke-width="2"/>
 <text x="930" y="32" text-anchor="middle" font-size="13" font-weight="bold" fill="#5d4037">🥉 3位決定戦</text>
 
-<!-- 3位結果ボックス（F勝者アーム上端に接する y=228） -->
+<!-- 3位結果ボックス -->
 <rect x="845" y="178" width="150" height="50" rx="7"
       fill="#e8f5e9" stroke="#66bb6a" stroke-width="2"/>
 <text x="920" y="209" text-anchor="middle" font-size="15" font-weight="bold" fill="#2e7d32">🥉　3　位</text>
@@ -177,6 +130,7 @@ svg { display: block; }
 <text x="975" y="583" text-anchor="middle" font-size="10" fill="#bbb">敗退チーム</text>
 
 <!-- ── チームボックス ── -->
+
 <!-- 印旛（シード） -->
 <rect x="46" y="520" width="68" height="90" rx="5"
       fill="white" stroke="#e53935" stroke-width="2.5"/>
@@ -222,148 +176,163 @@ svg { display: block; }
 
 <!-- ── 試合情報テキスト（横バーのすぐ真下） ── -->
 
-<!-- 試合A  (横バー y=440、中心 x=260) -->
+<!-- 試合A  (bar y=440, center x=260) -->
 <text x="260" y="458" text-anchor="middle" font-size="14" font-weight="bold" fill="#2e7d32">Ａ</text>
 <text x="260" y="474" text-anchor="middle" font-size="11" fill="#555">10:00　長嶋茂雄球場</text>
 <text x="260" y="488" text-anchor="middle" font-size="10" fill="#888">①東部 vs ②東南</text>
 
-<!-- 試合B  (横バー y=440、中心 x=485) -->
+<!-- 試合B  (bar y=440, center x=485) -->
 <text x="485" y="458" text-anchor="middle" font-size="14" font-weight="bold" fill="#1565c0">Ｂ</text>
 <text x="485" y="474" text-anchor="middle" font-size="11" fill="#555">10:00　第2球場</text>
 <text x="485" y="488" text-anchor="middle" font-size="10" fill="#888">③北部 vs ④西部</text>
 
-<!-- 試合C  (横バー y=440、中心 x=710) -->
+<!-- 試合C  (bar y=440, center x=710) -->
 <text x="710" y="458" text-anchor="middle" font-size="14" font-weight="bold" fill="#2e7d32">Ｃ</text>
 <text x="710" y="474" text-anchor="middle" font-size="11" fill="#555">11:20　長嶋茂雄球場</text>
 <text x="710" y="488" text-anchor="middle" font-size="10" fill="#888">⑤中部 vs ⑥南部</text>
 
-<!-- 試合D  (横バー y=280、中心 x=170) -->
+<!-- 試合D  (bar y=280, center x=170) -->
 <text x="170" y="298" text-anchor="middle" font-size="13" font-weight="bold" fill="#2e7d32">Ｄ　準決勝</text>
 <text x="170" y="313" text-anchor="middle" font-size="11" fill="#555">13:00　長嶋茂雄球場</text>
 <text x="170" y="328" text-anchor="middle" font-size="10" fill="#888">印旛 vs Ａ勝者</text>
 
-<!-- 試合E  (横バー y=280、中心 x=597) -->
+<!-- 試合E  (bar y=280, center x=597) -->
 <text x="597" y="298" text-anchor="middle" font-size="13" font-weight="bold" fill="#1565c0">Ｅ　準決勝</text>
 <text x="597" y="313" text-anchor="middle" font-size="11" fill="#555">13:00　第2球場</text>
 <text x="597" y="328" text-anchor="middle" font-size="10" fill="#888">Ｂ勝者 vs Ｃ勝者</text>
 
-<!-- 試合G  (横バー y=120、中心 x=383) -->
+<!-- 試合G  (bar y=120, center x=383) -->
 <text x="383" y="138" text-anchor="middle" font-size="13" font-weight="bold" fill="#7d5a00">Ｇ　決　勝</text>
 <text x="383" y="153" text-anchor="middle" font-size="11" fill="#555">14:30　長嶋茂雄球場</text>
 <text x="383" y="168" text-anchor="middle" font-size="10" fill="#888">Ｄ勝者 vs Ｅ勝者</text>
 
-<!-- 試合F  (横バー y=280、中心 x=920) ※3位決定戦 -->
+<!-- 試合F  (bar y=280, center x=920) -->
 <text x="920" y="298" text-anchor="middle" font-size="13" font-weight="bold" fill="#1565c0">Ｆ　3位決定戦</text>
 <text x="920" y="313" text-anchor="middle" font-size="11" fill="#555">14:30　第2球場</text>
 <text x="920" y="328" text-anchor="middle" font-size="10" fill="#888">Ｄ敗者 vs Ｅ敗者</text>
 
 
+<!-- ── スコアテキスト（横バーのすぐ真上）— JSが内容を設定 ── -->
+<!-- baseline を横バーの 12px 上に配置 -->
+<text id="score-A" x="260" y="428" text-anchor="middle" font-size="10"></text>
+<text id="score-B" x="485" y="428" text-anchor="middle" font-size="10"></text>
+<text id="score-C" x="710" y="428" text-anchor="middle" font-size="10"></text>
+<text id="score-D" x="170" y="268" text-anchor="middle" font-size="10"></text>
+<text id="score-E" x="597" y="268" text-anchor="middle" font-size="10"></text>
+<text id="score-G" x="383" y="108" text-anchor="middle" font-size="10"></text>
+<text id="score-F" x="920" y="268" text-anchor="middle" font-size="10"></text>
+
+
 <!-- ══════════════════════════════════════════════════
      LAYER 3: 赤い勝者線（最前面 = 最後に描画）
-     初期値 stroke="none"、JSが stroke="#FF0000" を設定
+     初期値 stroke="none"、JSが stroke を設定
      ══════════════════════════════════════════════════ -->
 
-<line id="r-lt0" x1="80"  y1="565" x2="80"  y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-lt1" x1="215" y1="565" x2="215" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-lt2" x1="305" y1="565" x2="305" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-bA"  x1="215" y1="440" x2="305" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-wA"  x1="260" y1="440" x2="260" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-lt3" x1="440" y1="565" x2="440" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-lt4" x1="530" y1="565" x2="530" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-bB"  x1="440" y1="440" x2="530" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-wB"  x1="485" y1="440" x2="485" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-lt5" x1="665" y1="565" x2="665" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-lt6" x1="755" y1="565" x2="755" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-bC"  x1="665" y1="440" x2="755" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-wC"  x1="710" y1="440" x2="710" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-bD"  x1="80"  y1="280" x2="260" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-wD"  x1="170" y1="280" x2="170" y2="120" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-bE"  x1="485" y1="280" x2="710" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-wE"  x1="597" y1="280" x2="597" y2="120" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-bG"  x1="170" y1="120" x2="597" y2="120" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-wG"  x1="383" y1="120" x2="383" y2="54"  stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-lld" x1="865" y1="565" x2="865" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-lle" x1="975" y1="565" x2="975" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-bF"  x1="865" y1="280" x2="975" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-wF"  x1="920" y1="280" x2="920" y2="228" stroke="none" stroke-width="4" stroke-linecap="round"/>
+<line id="r-lt0" x1="80"  y1="565" x2="80"  y2="280" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-lt1" x1="215" y1="565" x2="215" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-lt2" x1="305" y1="565" x2="305" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bA"  x1="215" y1="440" x2="305" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-wA"  x1="260" y1="440" x2="260" y2="280" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-lt3" x1="440" y1="565" x2="440" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-lt4" x1="530" y1="565" x2="530" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bB"  x1="440" y1="440" x2="530" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-wB"  x1="485" y1="440" x2="485" y2="280" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-lt5" x1="665" y1="565" x2="665" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-lt6" x1="755" y1="565" x2="755" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bC"  x1="665" y1="440" x2="755" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-wC"  x1="710" y1="440" x2="710" y2="280" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bD"  x1="80"  y1="280" x2="260" y2="280" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-wD"  x1="170" y1="280" x2="170" y2="120" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bE"  x1="485" y1="280" x2="710" y2="280" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-wE"  x1="597" y1="280" x2="597" y2="120" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bG"  x1="170" y1="120" x2="597" y2="120" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-wG"  x1="383" y1="120" x2="383" y2="54"  stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-lld" x1="865" y1="565" x2="865" y2="280" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-lle" x1="975" y1="565" x2="975" y2="280" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bF"  x1="865" y1="280" x2="975" y2="280" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-wF"  x1="920" y1="280" x2="920" y2="228" stroke="none" stroke-width="5" stroke-linecap="round"/>
 
 </svg>
 </div>
 
 <script>
-// ──────────────────────────────────────────────────
-//  勝敗データ
-//  winner: チーム名（文字列）→ 赤線ハイライト
-//  null    → 未決定
-// ──────────────────────────────────────────────────
-const data = {
-  matchA: { t1: '東部',  t2: '東南', winner: '東部'  }, // テスト
-  matchB: { t1: '北部',  t2: '西部', winner: '北部'  }, // テスト
-  matchC: { t1: '中部',  t2: '南部', winner: null     },
-  matchD: { t1: '印旛',  t2: null,   winner: '印旛'  }, // テスト
-  matchE: { t1: null,    t2: null,   winner: null     },
-  matchF: { t1: null,    t2: null,   winner: null     },
-  matchG: { t1: null,    t2: null,   winner: null     },
+// ══════════════════════════════════════════════════
+// トーナメントデータ
+//   winner: 1 = t1勝利, 2 = t2勝利, null = 未確定
+//   t2 of D は A勝者（試合後に解決済みの実チーム名を入れる）
+//   t1/t2 of E は B/C勝者、G は D/E勝者、F は D/E敗者
+// ══════════════════════════════════════════════════
+const matches = {
+    A: { t1: '東部', t2: '東南', s1: 3, s2: 1, winner: 1 },
+    B: { t1: '北部', t2: '西部', s1: 5, s2: 0, winner: 1 },
+    C: { t1: '中部', t2: '南部', s1: 2, s2: 4, winner: 2 },
+    D: { t1: '印旛', t2: '東部', s1: 3, s2: 0, winner: 1 },  // t2 = A勝者
+    E: { t1: '北部', t2: '南部', s1: 1, s2: 2, winner: 2 },  // t1 = B勝者, t2 = C勝者
+    G: { t1: '印旛', t2: '南部', s1: 5, s2: 4, winner: 1 },  // t1 = D勝者, t2 = E勝者
+    F: { t1: '東部', t2: '北部', s1: 0, s2: 3, winner: 2 }   // t1 = D敗者, t2 = E敗者
 };
 
-const RED = '#FF0000';
-
-function red(id) {
-  const el = document.getElementById('r-' + id);
-  if (el) el.setAttribute('stroke', RED);
-}
+const RED = '#e53935';
 
 function updateBracket() {
-  // 試合A
-  if (data.matchA.winner) {
-    const t1w = data.matchA.winner === data.matchA.t1;
-    red(t1w ? 'lt1' : 'lt2');   // 勝者の縦ライン
-    red('bA');                    // A横バー
-    red('wA');                    // A勝者アーム
-  }
 
-  // 試合B
-  if (data.matchB.winner) {
-    const t1w = data.matchB.winner === data.matchB.t1;
-    red(t1w ? 'lt3' : 'lt4');
-    red('bB');
-    red('wB');
-  }
+    // ── スコアテキスト更新 ──
+    // 勝者名を赤・太字、敗者名をグレー、スコアを赤・太字で表示
+    function setScore(matchId, m) {
+        const el = document.getElementById('score-' + matchId);
+        if (!el || m.s1 === null || m.s2 === null) return;
 
-  // 試合C
-  if (data.matchC.winner) {
-    const t1w = data.matchC.winner === data.matchC.t1;
-    red(t1w ? 'lt5' : 'lt6');
-    red('bC');
-    red('wC');
-  }
+        const c1 = (m.winner === 1) ? RED : '#888';
+        const c2 = (m.winner === 2) ? RED : '#888';
+        const fw1 = (m.winner === 1) ? 'bold' : 'normal';
+        const fw2 = (m.winner === 2) ? 'bold' : 'normal';
 
-  // 試合D（印旛 vs A勝者）
-  if (data.matchD.winner) {
-    red(data.matchD.winner === '印旛' ? 'lt0' : 'wA'); // 印旛 stem or A winner arm
-    red('bD');
-    red('wD');
-  }
+        // tspan で勝者を強調（SVG innerHTML は主要ブラウザで対応済み）
+        el.innerHTML =
+            `<tspan font-weight="${fw1}" fill="${c1}">${m.t1}</tspan>` +
+            `<tspan font-weight="bold" fill="${RED}"> ${m.s1}－${m.s2} </tspan>` +
+            `<tspan font-weight="${fw2}" fill="${c2}">${m.t2}</tspan>`;
+    }
 
-  // 試合E
-  if (data.matchE.winner) {
-    red('bE');
-    red('wE');
-  }
+    ['A','B','C','D','E','G','F'].forEach(id => setScore(id, matches[id]));
 
-  // 試合G（決勝）
-  if (data.matchG.winner) {
-    red('bG');
-    red('wG');
-  }
+    // ── 赤線活性化 ──
+    // まず全赤線をリセット
+    document.querySelectorAll('[id^="r-"]').forEach(el => el.setAttribute('stroke', 'none'));
 
-  // 試合F（3位決定戦）
-  if (data.matchF.winner) {
-    red('lld');
-    red('lle');
-    red('bF');
-    red('wF');
-  }
+    function red(id) {
+        const el = document.getElementById('r-' + id);
+        if (el) el.setAttribute('stroke', RED);
+    }
+
+    // 試合A: ①東部(lt1, 左) vs ②東南(lt2, 右)
+    if      (matches.A.winner === 1) { red('lt1'); red('bA'); red('wA'); }
+    else if (matches.A.winner === 2) { red('lt2'); red('bA'); red('wA'); }
+
+    // 試合B: ③北部(lt3, 左) vs ④西部(lt4, 右)
+    if      (matches.B.winner === 1) { red('lt3'); red('bB'); red('wB'); }
+    else if (matches.B.winner === 2) { red('lt4'); red('bB'); red('wB'); }
+
+    // 試合C: ⑤中部(lt5, 左) vs ⑥南部(lt6, 右)
+    if      (matches.C.winner === 1) { red('lt5'); red('bC'); red('wC'); }
+    else if (matches.C.winner === 2) { red('lt6'); red('bC'); red('wC'); }
+
+    // 試合D: 印旛(lt0, シード側) vs A勝者(wA 経由)
+    //   印旛勝ち → lt0 を追加（wA はすでに A で活性化済み）
+    //   A勝者勝ち → wA はすでに赤いのでバーと勝者アームのみ
+    if      (matches.D.winner === 1) { red('lt0'); red('bD'); red('wD'); }
+    else if (matches.D.winner === 2) {             red('bD'); red('wD'); }
+
+    // 試合E: B勝者(wB 経由) vs C勝者(wC 経由)
+    //   入力アームは両側すでに活性化済みなのでバーと勝者アームのみ
+    if (matches.E.winner !== null) { red('bE'); red('wE'); }
+
+    // 試合G: D勝者(wD 経由) vs E勝者(wE 経由)
+    if (matches.G.winner !== null) { red('bG'); red('wG'); }
+
+    // 試合F: D敗者(lld, 左) vs E敗者(lle, 右)
+    if      (matches.F.winner === 1) { red('lld'); red('bF'); red('wF'); }
+    else if (matches.F.winner === 2) { red('lle'); red('bF'); red('wF'); }
 }
 
 updateBracket();
