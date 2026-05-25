@@ -293,7 +293,7 @@ function updateBracket() {
         const c1 = m.winner === 1 ? RED : '#888';
         const c2 = m.winner === 2 ? RED : '#888';
         el.appendChild(span(m.t1 + ' ', c1, m.winner === 1));
-        el.appendChild(span(m.s1 + ' - ' + m.s2, RED, true));
+        el.appendChild(span(' ' + m.s1 + '–' + m.s2 + ' ', RED, true));
         el.appendChild(span(' ' + m.t2, c2, m.winner === 2));
     }
 
