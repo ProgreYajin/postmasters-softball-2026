@@ -46,7 +46,7 @@ const CONFIG = {
     TOURNAMENT_CANVAS: {
         width: 1060,
         height: 635,
-        viewBox: '0 0 1060 635'
+        viewBox: '0 0 1080 635'
     },
 
     CARD_SIZE: {

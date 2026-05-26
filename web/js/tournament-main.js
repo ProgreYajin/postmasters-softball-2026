@@ -269,8 +269,9 @@ const TournamentApp = (() => {
     // ==================== SVGブラケット描画 ====================
 
     function buildSVGString() {
-        return `<svg id="bracket" viewBox="0 0 1060 635" width="1060" height="635"
+        return `<svg id="bracket" viewBox="0 0 1080 635" width="1060" height="635"
      xmlns="http://www.w3.org/2000/svg">
+
 <defs>
   <linearGradient id="gChamp" x1="0%" y1="0%" x2="100%" y2="100%">
     <stop offset="0%" stop-color="#f6d365"/>
@@ -278,144 +279,164 @@ const TournamentApp = (() => {
   </linearGradient>
 </defs>
 
+<!-- LAYER 1: グレー線 -->
 <line id="lt0" x1="80"  y1="565" x2="80"  y2="280" stroke="#ccc" stroke-width="2"/>
-<line id="lt1" x1="215" y1="565" x2="215" y2="440" stroke="#ccc" stroke-width="2"/>
-<line id="lt2" x1="305" y1="565" x2="305" y2="440" stroke="#ccc" stroke-width="2"/>
-<line id="bA"  x1="215" y1="440" x2="305" y2="440" stroke="#ccc" stroke-width="2"/>
-<line id="wA"  x1="260" y1="440" x2="260" y2="280" stroke="#ccc" stroke-width="2"/>
-<line id="lt3" x1="440" y1="565" x2="440" y2="440" stroke="#ccc" stroke-width="2"/>
-<line id="lt4" x1="530" y1="565" x2="530" y2="440" stroke="#ccc" stroke-width="2"/>
-<line id="bB"  x1="440" y1="440" x2="530" y2="440" stroke="#ccc" stroke-width="2"/>
-<line id="wB"  x1="485" y1="440" x2="485" y2="280" stroke="#ccc" stroke-width="2"/>
-<line id="lt5" x1="665" y1="565" x2="665" y2="440" stroke="#ccc" stroke-width="2"/>
-<line id="lt6" x1="755" y1="565" x2="755" y2="440" stroke="#ccc" stroke-width="2"/>
-<line id="bC"  x1="665" y1="440" x2="755" y2="440" stroke="#ccc" stroke-width="2"/>
-<line id="wC"  x1="710" y1="440" x2="710" y2="280" stroke="#ccc" stroke-width="2"/>
-<line id="bD"  x1="80"  y1="280" x2="260" y2="280" stroke="#ccc" stroke-width="2"/>
-<line id="wD"  x1="170" y1="280" x2="170" y2="120" stroke="#ccc" stroke-width="2"/>
-<line id="bE"  x1="485" y1="280" x2="710" y2="280" stroke="#ccc" stroke-width="2"/>
-<line id="wE"  x1="597" y1="280" x2="597" y2="120" stroke="#ccc" stroke-width="2"/>
-<line id="bG"  x1="170" y1="120" x2="597" y2="120" stroke="#ccc" stroke-width="2"/>
-<line id="wG"  x1="383" y1="120" x2="383" y2="54"  stroke="#ccc" stroke-width="2"/>
-<line id="lld" x1="865" y1="565" x2="865" y2="280" stroke="#ccc" stroke-width="2"/>
-<line id="lle" x1="975" y1="565" x2="975" y2="280" stroke="#ccc" stroke-width="2"/>
-<line id="bF"  x1="865" y1="280" x2="975" y2="280" stroke="#ccc" stroke-width="2"/>
-<line id="wF"  x1="920" y1="280" x2="920" y2="228" stroke="#ccc" stroke-width="2"/>
+<line id="lt1" x1="192" y1="565" x2="192" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="lt2" x1="304" y1="565" x2="304" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="bA"  x1="192" y1="440" x2="304" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="wA"  x1="248" y1="440" x2="248" y2="280" stroke="#ccc" stroke-width="2"/>
+<line id="lt3" x1="416" y1="565" x2="416" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="lt4" x1="528" y1="565" x2="528" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="bB"  x1="416" y1="440" x2="528" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="wB"  x1="472" y1="440" x2="472" y2="280" stroke="#ccc" stroke-width="2"/>
+<line id="lt5" x1="640" y1="565" x2="640" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="lt6" x1="752" y1="565" x2="752" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="bC"  x1="640" y1="440" x2="752" y2="440" stroke="#ccc" stroke-width="2"/>
+<line id="wC"  x1="696" y1="440" x2="696" y2="280" stroke="#ccc" stroke-width="2"/>
+<line id="bD1" x1="80"  y1="280" x2="164" y2="280" stroke="#ccc" stroke-width="2"/>
+<line id="bD2" x1="164" y1="280" x2="248" y2="280" stroke="#ccc" stroke-width="2"/>
+<line id="wD"  x1="164" y1="280" x2="164" y2="120" stroke="#ccc" stroke-width="2"/>
+<line id="bE1" x1="472" y1="280" x2="584" y2="280" stroke="#ccc" stroke-width="2"/>
+<line id="bE2" x1="584" y1="280" x2="696" y2="280" stroke="#ccc" stroke-width="2"/>
+<line id="wE"  x1="584" y1="280" x2="584" y2="120" stroke="#ccc" stroke-width="2"/>
+<line id="bG1" x1="164" y1="120" x2="374" y2="120" stroke="#ccc" stroke-width="2"/>
+<line id="bG2" x1="374" y1="120" x2="584" y2="120" stroke="#ccc" stroke-width="2"/>
+<line id="wG"  x1="374" y1="120" x2="374" y2="54"  stroke="#ccc" stroke-width="2"/>
+<line id="lld" x1="820" y1="120" x2="820" y2="235" stroke="#ccc" stroke-width="2"/>
+<line id="lle" x1="1020" y1="120" x2="1020" y2="235" stroke="#ccc" stroke-width="2"/>
+<line id="bF1" x1="820" y1="120" x2="920" y2="120" stroke="#ccc" stroke-width="2"/>
+<line id="bF2" x1="920" y1="120" x2="1020" y2="120" stroke="#ccc" stroke-width="2"/>
+<line id="wF"  x1="920" y1="120" x2="920" y2="54" stroke="#ccc" stroke-width="2"/>
 
-<rect x="313" y="2" width="140" height="52" rx="9"
+<!-- LAYER 2: 静的要素 -->
+<rect x="304" y="2" width="140" height="52" rx="9"
       fill="url(#gChamp)" stroke="#e67e22" stroke-width="2.5"/>
-<text x="383" y="21" text-anchor="middle" font-size="15">👑</text>
-<text x="383" y="43" text-anchor="middle" font-size="17" font-weight="bold" fill="#5d2e00">優　勝</text>
+<text x="374" y="21" text-anchor="middle" font-size="15">&#x1F451;</text>
+<text x="374" y="43" text-anchor="middle" font-size="17" font-weight="bold" fill="#5d2e00">&#x512A;&#x3000;&#x52DD;</text>
 
-<rect x="822" y="8" width="216" height="36" rx="7"
-      fill="#fff9c4" stroke="#f9a825" stroke-width="2"/>
-<text x="930" y="32" text-anchor="middle" font-size="13" font-weight="bold" fill="#5d4037">🥉 3位決定戦</text>
+<rect x="845" y="2" width="150" height="52" rx="9"
+      fill="#e8f5e9" stroke="#66bb6a" stroke-width="2.5"/>
+<text x="920" y="21" text-anchor="middle" font-size="15">&#x1F949;</text>
+<text x="920" y="43" text-anchor="middle" font-size="17" font-weight="bold" fill="#2e7d32">3&#x3000;&#x4F4D;</text>
 
-<rect x="845" y="178" width="150" height="50" rx="7"
-      fill="#e8f5e9" stroke="#66bb6a" stroke-width="2"/>
-<text x="920" y="209" text-anchor="middle" font-size="15" font-weight="bold" fill="#2e7d32">🥉　3　位</text>
+<text x="248" y="458" text-anchor="middle" font-size="14" font-weight="bold" fill="#2e7d32">&#xFF21;</text>
+<text x="248" y="474" text-anchor="middle" font-size="11" fill="#555">10:00&#x3000;&#x9577;&#x5D4E;&#x8302;&#x96C4;&#x7403;&#x5834;</text>
+<text id="vs-A" x="248" y="488" text-anchor="middle" font-size="10" fill="#888">&#x2460;&#x6771;&#x90E8; vs &#x2461;&#x6771;&#x5357;</text>
 
-<rect x="831" y="520" width="68" height="90" rx="5"
-      fill="#fafafa" stroke="#bbb" stroke-width="1.5" stroke-dasharray="5,3"/>
-<text x="865" y="552" text-anchor="middle" font-size="13" font-weight="bold" fill="#999">D敗者</text>
-<text x="865" y="569" text-anchor="middle" font-size="10" fill="#bbb">準決勝D</text>
-<text x="865" y="583" text-anchor="middle" font-size="10" fill="#bbb">敗退チーム</text>
+<text x="472" y="458" text-anchor="middle" font-size="14" font-weight="bold" fill="#1565c0">&#xFF22;</text>
+<text x="472" y="474" text-anchor="middle" font-size="11" fill="#555">10:00&#x3000;&#x7B2C;2&#x7403;&#x5834;</text>
+<text id="vs-B" x="472" y="488" text-anchor="middle" font-size="10" fill="#888">&#x2462;&#x5317;&#x90E8; vs &#x2463;&#x897F;&#x90E8;</text>
 
-<rect x="941" y="520" width="68" height="90" rx="5"
-      fill="#fafafa" stroke="#bbb" stroke-width="1.5" stroke-dasharray="5,3"/>
-<text x="975" y="552" text-anchor="middle" font-size="13" font-weight="bold" fill="#999">E敗者</text>
-<text x="975" y="569" text-anchor="middle" font-size="10" fill="#bbb">準決勝E</text>
-<text x="975" y="583" text-anchor="middle" font-size="10" fill="#bbb">敗退チーム</text>
+<text x="696" y="458" text-anchor="middle" font-size="14" font-weight="bold" fill="#2e7d32">&#xFF23;</text>
+<text x="696" y="474" text-anchor="middle" font-size="11" fill="#555">11:20&#x3000;&#x9577;&#x5D4E;&#x8302;&#x96C4;&#x7403;&#x5834;</text>
+<text id="vs-C" x="696" y="488" text-anchor="middle" font-size="10" fill="#888">&#x2464;&#x4E2D;&#x90E8; vs &#x2465;&#x5357;&#x90E8;</text>
+
+<text x="164" y="298" text-anchor="middle" font-size="13" font-weight="bold" fill="#2e7d32">&#xFF24;&#x3000;&#x6E96;&#x6C7A;&#x52DD;</text>
+<text x="164" y="313" text-anchor="middle" font-size="11" fill="#555">13:00&#x3000;&#x9577;&#x5D4E;&#x8302;&#x96C4;&#x7403;&#x5834;</text>
+<text id="vs-D" x="164" y="328" text-anchor="middle" font-size="10" fill="#888">&#x5370;&#x65DB; vs &#xFF21;&#x52DD;&#x8005;</text>
+
+<text x="584" y="298" text-anchor="middle" font-size="13" font-weight="bold" fill="#1565c0">&#xFF25;&#x3000;&#x6E96;&#x6C7A;&#x52DD;</text>
+<text x="584" y="313" text-anchor="middle" font-size="11" fill="#555">13:00&#x3000;&#x7B2C;2&#x7403;&#x5834;</text>
+<text id="vs-E" x="584" y="328" text-anchor="middle" font-size="10" fill="#888">&#xFF22;&#x52DD;&#x8005; vs &#xFF23;&#x52DD;&#x8005;</text>
+
+<text x="374" y="138" text-anchor="middle" font-size="13" font-weight="bold" fill="#7d5a00">&#xFF27;&#x3000;&#x6C7A;&#x3000;&#x52DD;</text>
+<text x="374" y="153" text-anchor="middle" font-size="11" fill="#555">14:30&#x3000;&#x9577;&#x5D4E;&#x8302;&#x96C4;&#x7403;&#x5834;</text>
+<text id="vs-G" x="374" y="168" text-anchor="middle" font-size="10" fill="#888">&#xFF24;&#x52DD;&#x8005; vs &#xFF25;&#x52DD;&#x8005;</text>
+
+<text x="920" y="138" text-anchor="middle" font-size="13" font-weight="bold" fill="#1565c0">&#xFF26;&#x3000;3&#x4F4D;&#x6C7A;&#x5B9A;&#x6226;</text>
+<text x="920" y="153" text-anchor="middle" font-size="11" fill="#555">14:30&#x3000;&#x7B2C;2&#x7403;&#x5834;</text>
+<text id="vs-F" x="920" y="168" text-anchor="middle" font-size="10" fill="#888">&#xFF24;&#x6557;&#x8005; vs &#xFF25;&#x6557;&#x8005;</text>
+
+<text id="score-A" x="248" y="488" text-anchor="middle" font-size="12"></text>
+<text id="score-B" x="472" y="488" text-anchor="middle" font-size="12"></text>
+<text id="score-C" x="696" y="488" text-anchor="middle" font-size="12"></text>
+<text id="score-D" x="164" y="328" text-anchor="middle" font-size="12"></text>
+<text id="score-E" x="584" y="328" text-anchor="middle" font-size="12"></text>
+<text id="score-G" x="374" y="168" text-anchor="middle" font-size="12"></text>
+<text id="score-F" x="920" y="168" text-anchor="middle" font-size="12"></text>
+
+<!-- LAYER 3: 赤線オーバーレイ (stroke="none" → JSが活性化) -->
+<line id="r-lt0" x1="80"  y1="565" x2="80"  y2="280" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-lt1" x1="192" y1="565" x2="192" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-lt2" x1="304" y1="565" x2="304" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bA1" x1="192" y1="440" x2="248" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bA2" x1="248" y1="440" x2="304" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-wA"  x1="248" y1="440" x2="248" y2="280" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-lt3" x1="416" y1="565" x2="416" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-lt4" x1="528" y1="565" x2="528" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bB1" x1="416" y1="440" x2="472" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bB2" x1="472" y1="440" x2="528" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-wB"  x1="472" y1="440" x2="472" y2="280" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-lt5" x1="640" y1="565" x2="640" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-lt6" x1="752" y1="565" x2="752" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bC1" x1="640" y1="440" x2="696" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bC2" x1="696" y1="440" x2="752" y2="440" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-wC"  x1="696" y1="440" x2="696" y2="280" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bD1" x1="80"  y1="280" x2="164" y2="280" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bD2" x1="164" y1="280" x2="248" y2="280" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-wD"  x1="164" y1="280" x2="164" y2="120" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bE1" x1="472" y1="280" x2="584" y2="280" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bE2" x1="584" y1="280" x2="696" y2="280" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-wE"  x1="584" y1="280" x2="584" y2="120" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bG1" x1="164" y1="120" x2="374" y2="120" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bG2" x1="374" y1="120" x2="584" y2="120" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-wG"  x1="374" y1="120" x2="374" y2="54"  stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-lld" x1="820" y1="120" x2="820" y2="235" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-lle" x1="1020" y1="120" x2="1020" y2="235" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bF1" x1="820" y1="120" x2="920" y2="120" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-bF2" x1="920" y1="120" x2="1020" y2="120" stroke="none" stroke-width="5" stroke-linecap="round"/>
+<line id="r-wF"  x1="920" y1="120" x2="920" y2="54" stroke="none" stroke-width="5" stroke-linecap="round"/>
+
+<!-- LAYER 4: ボックス（赤線前面） -->
+<rect id="loser-D-rect" x="786" y="235" width="68" height="90" rx="5"
+      fill="white" stroke="#bbb" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text id="loser-D-name" x="820" y="267" text-anchor="middle" font-size="13" font-weight="bold" fill="#999">D&#x6557;&#x8005;</text>
+<text id="loser-D-sub" x="820" y="284" text-anchor="middle" font-size="10" fill="#bbb">&#x6E96;&#x6C7A;&#x52DD;D</text>
+<text x="820" y="298" text-anchor="middle" font-size="10" fill="#bbb">&#x6557;&#x9000;&#x30C1;&#x30FC;&#x30E0;</text>
+
+<rect id="loser-E-rect" x="986" y="235" width="68" height="90" rx="5"
+      fill="white" stroke="#bbb" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text id="loser-E-name" x="1020" y="267" text-anchor="middle" font-size="13" font-weight="bold" fill="#999">E&#x6557;&#x8005;</text>
+<text id="loser-E-sub" x="1020" y="284" text-anchor="middle" font-size="10" fill="#bbb">&#x6E96;&#x6C7A;&#x52DD;E</text>
+<text x="1020" y="298" text-anchor="middle" font-size="10" fill="#bbb">&#x6557;&#x9000;&#x30C1;&#x30FC;&#x30E0;</text>
 
 <rect x="46" y="520" width="68" height="90" rx="5"
       fill="white" stroke="#e53935" stroke-width="2.5"/>
-<text id="tn-seed" x="80" y="556" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e">印旛</text>
-<text x="80" y="574" text-anchor="middle" font-size="10" fill="#e53935">シード</text>
+<text id="tn-seed" x="80" y="556" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
+<text x="80" y="574" text-anchor="middle" font-size="10" fill="#e53935">&#x30B7;&#x30FC;&#x30C9;</text>
 
-<rect x="181" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
-<text x="215" y="544" text-anchor="middle" font-size="11" fill="#aaa">①</text>
-<text id="tn-t1a" x="215" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
-<text x="215" y="582" text-anchor="middle" font-size="10" fill="#aaa">1塁側</text>
+<rect x="158" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
+<text x="192" y="544" text-anchor="middle" font-size="11" fill="#aaa">&#x2460;</text>
+<text id="tn-t1a" x="192" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
+<text x="192" y="582" text-anchor="middle" font-size="10" fill="#aaa">1&#x5854;&#x5074;</text>
 
-<rect x="271" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
-<text x="305" y="544" text-anchor="middle" font-size="11" fill="#aaa">②</text>
-<text id="tn-t2a" x="305" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
-<text x="305" y="582" text-anchor="middle" font-size="10" fill="#aaa">3塁側</text>
+<rect x="270" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
+<text x="304" y="544" text-anchor="middle" font-size="11" fill="#aaa">&#x2461;</text>
+<text id="tn-t2a" x="304" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
+<text x="304" y="582" text-anchor="middle" font-size="10" fill="#aaa">3&#x5854;&#x5074;</text>
 
-<rect x="406" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
-<text x="440" y="544" text-anchor="middle" font-size="11" fill="#aaa">③</text>
-<text id="tn-t1b" x="440" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
-<text x="440" y="582" text-anchor="middle" font-size="10" fill="#aaa">1塁側</text>
+<rect x="382" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
+<text x="416" y="544" text-anchor="middle" font-size="11" fill="#aaa">&#x2462;</text>
+<text id="tn-t1b" x="416" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
+<text x="416" y="582" text-anchor="middle" font-size="10" fill="#aaa">1&#x5854;&#x5074;</text>
 
-<rect x="496" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
-<text x="530" y="544" text-anchor="middle" font-size="11" fill="#aaa">④</text>
-<text id="tn-t2b" x="530" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
-<text x="530" y="582" text-anchor="middle" font-size="10" fill="#aaa">3塁側</text>
+<rect x="494" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
+<text x="528" y="544" text-anchor="middle" font-size="11" fill="#aaa">&#x2463;</text>
+<text id="tn-t2b" x="528" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
+<text x="528" y="582" text-anchor="middle" font-size="10" fill="#aaa">3&#x5854;&#x5074;</text>
 
-<rect x="631" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
-<text x="665" y="544" text-anchor="middle" font-size="11" fill="#aaa">⑤</text>
-<text id="tn-t1c" x="665" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
-<text x="665" y="582" text-anchor="middle" font-size="10" fill="#aaa">1塁側</text>
+<rect x="606" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
+<text x="640" y="544" text-anchor="middle" font-size="11" fill="#aaa">&#x2464;</text>
+<text id="tn-t1c" x="640" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
+<text x="640" y="582" text-anchor="middle" font-size="10" fill="#aaa">1&#x5854;&#x5074;</text>
 
-<rect x="721" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
-<text x="755" y="544" text-anchor="middle" font-size="11" fill="#aaa">⑥</text>
-<text id="tn-t2c" x="755" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
-<text x="755" y="582" text-anchor="middle" font-size="10" fill="#aaa">3塁側</text>
+<rect x="718" y="520" width="68" height="90" rx="5" fill="white" stroke="#777" stroke-width="1.5"/>
+<text x="752" y="544" text-anchor="middle" font-size="11" fill="#aaa">&#x2465;</text>
+<text id="tn-t2c" x="752" y="565" text-anchor="middle" font-size="18" font-weight="bold" fill="#1a1a2e"></text>
+<text x="752" y="582" text-anchor="middle" font-size="10" fill="#aaa">3&#x5854;&#x5074;</text>
 
-<text x="260" y="458" text-anchor="middle" font-size="14" font-weight="bold" fill="#2e7d32">Ａ</text>
-<text x="260" y="474" text-anchor="middle" font-size="11" fill="#555">10:00　長嶋茂雄球場</text>
-<text x="260" y="488" text-anchor="middle" font-size="10" fill="#888">①東部 vs ②東南</text>
-
-<text x="485" y="458" text-anchor="middle" font-size="14" font-weight="bold" fill="#1565c0">Ｂ</text>
-<text x="485" y="474" text-anchor="middle" font-size="11" fill="#555">10:00　第2球場</text>
-<text x="485" y="488" text-anchor="middle" font-size="10" fill="#888">③北部 vs ④西部</text>
-
-<text x="710" y="458" text-anchor="middle" font-size="14" font-weight="bold" fill="#2e7d32">Ｃ</text>
-<text x="710" y="474" text-anchor="middle" font-size="11" fill="#555">11:20　長嶋茂雄球場</text>
-<text x="710" y="488" text-anchor="middle" font-size="10" fill="#888">⑤中部 vs ⑥南部</text>
-
-<text x="170" y="298" text-anchor="middle" font-size="13" font-weight="bold" fill="#2e7d32">Ｄ　準決勝</text>
-<text x="170" y="313" text-anchor="middle" font-size="11" fill="#555">13:00　長嶋茂雄球場</text>
-<text x="170" y="328" text-anchor="middle" font-size="10" fill="#888">印旛 vs Ａ勝者</text>
-
-<text x="597" y="298" text-anchor="middle" font-size="13" font-weight="bold" fill="#1565c0">Ｅ　準決勝</text>
-<text x="597" y="313" text-anchor="middle" font-size="11" fill="#555">13:00　第2球場</text>
-<text x="597" y="328" text-anchor="middle" font-size="10" fill="#888">Ｂ勝者 vs Ｃ勝者</text>
-
-<text x="383" y="138" text-anchor="middle" font-size="13" font-weight="bold" fill="#7d5a00">Ｇ　決　勝</text>
-<text x="383" y="153" text-anchor="middle" font-size="11" fill="#555">14:30　長嶋茂雄球場</text>
-<text x="383" y="168" text-anchor="middle" font-size="10" fill="#888">Ｄ勝者 vs Ｅ勝者</text>
-
-<text x="920" y="298" text-anchor="middle" font-size="13" font-weight="bold" fill="#1565c0">Ｆ　3位決定戦</text>
-<text x="920" y="313" text-anchor="middle" font-size="11" fill="#555">14:30　第2球場</text>
-<text x="920" y="328" text-anchor="middle" font-size="10" fill="#888">Ｄ敗者 vs Ｅ敗者</text>
-
-<line id="r-lt0" x1="80"  y1="565" x2="80"  y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-lt1" x1="215" y1="565" x2="215" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-lt2" x1="305" y1="565" x2="305" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-bA"  x1="215" y1="440" x2="305" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-wA"  x1="260" y1="440" x2="260" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-lt3" x1="440" y1="565" x2="440" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-lt4" x1="530" y1="565" x2="530" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-bB"  x1="440" y1="440" x2="530" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-wB"  x1="485" y1="440" x2="485" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-lt5" x1="665" y1="565" x2="665" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-lt6" x1="755" y1="565" x2="755" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-bC"  x1="665" y1="440" x2="755" y2="440" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-wC"  x1="710" y1="440" x2="710" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-bD"  x1="80"  y1="280" x2="260" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-wD"  x1="170" y1="280" x2="170" y2="120" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-bE"  x1="485" y1="280" x2="710" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-wE"  x1="597" y1="280" x2="597" y2="120" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-bG"  x1="170" y1="120" x2="597" y2="120" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-wG"  x1="383" y1="120" x2="383" y2="54"  stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-lld" x1="865" y1="565" x2="865" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-lle" x1="975" y1="565" x2="975" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-bF"  x1="865" y1="280" x2="975" y2="280" stroke="none" stroke-width="4" stroke-linecap="round"/>
-<line id="r-wF"  x1="920" y1="280" x2="920" y2="228" stroke="none" stroke-width="4" stroke-linecap="round"/>
 </svg>`;
     }
-
     function setText(id, text) {
         const el = document.getElementById(id);
         if (el) el.textContent = text;
@@ -442,53 +463,104 @@ const TournamentApp = (() => {
     }
 
     function activateRedLines() {
+        const RED = '#e53935';
+        document.querySelectorAll('[id^="r-"]').forEach(el => el.setAttribute('stroke', 'none'));
         function red(id) {
             const el = document.getElementById('r-' + id);
-            if (el) el.setAttribute('stroke', '#FF0000');
+            if (el) el.setAttribute('stroke', RED);
         }
-        // Match A
+
         const matchA = getMatchData('A');
-        if (matchA && getWinner(matchA)) {
-            red(getWinner(matchA) === 1 ? 'lt1' : 'lt2');
-            red('bA'); red('wA');
+        if (matchA) {
+            const w = getWinner(matchA);
+            if      (w === 1) { red('lt1'); red('bA1'); red('wA'); }
+            else if (w === 2) { red('lt2'); red('bA2'); red('wA'); }
         }
-        // Match B
+
         const matchB = getMatchData('B');
-        if (matchB && getWinner(matchB)) {
-            red(getWinner(matchB) === 1 ? 'lt3' : 'lt4');
-            red('bB'); red('wB');
+        if (matchB) {
+            const w = getWinner(matchB);
+            if      (w === 1) { red('lt3'); red('bB1'); red('wB'); }
+            else if (w === 2) { red('lt4'); red('bB2'); red('wB'); }
         }
-        // Match C
+
         const matchC = getMatchData('C');
-        if (matchC && getWinner(matchC)) {
-            red(getWinner(matchC) === 1 ? 'lt5' : 'lt6');
-            red('bC'); red('wC');
+        if (matchC) {
+            const w = getWinner(matchC);
+            if      (w === 1) { red('lt5'); red('bC1'); red('wC'); }
+            else if (w === 2) { red('lt6'); red('bC2'); red('wC'); }
         }
-        // Match D: team1=印旛(シード), team2=A勝者
+
         const matchD = getMatchData('D');
-        if (matchD && getWinner(matchD)) {
-            const seedWins = getWinner(matchD) === 1 && !CONFIG.isPlaceholder(matchD.team1.name);
-            red(seedWins ? 'lt0' : 'wA');
-            red('bD'); red('wD');
+        if (matchD) {
+            const w = getWinner(matchD);
+            if      (w === 1) { red('lt0'); red('bD1'); red('wD'); }
+            else if (w === 2) {             red('bD2'); red('wD'); }
         }
-        // Match E (B勝者 vs C勝者)
+
         const matchE = getMatchData('E');
-        if (matchE && getWinner(matchE)) { red('bE'); red('wE'); }
-        // Match G (決勝)
+        if (matchE) {
+            const w = getWinner(matchE);
+            if      (w === 1) { red('bE1'); red('wE'); }
+            else if (w === 2) { red('bE2'); red('wE'); }
+        }
+
         const matchG = getMatchData('G');
-        if (matchG && getWinner(matchG)) { red('bG'); red('wG'); }
-        // Match F (3位決定戦: team1=D敗者, team2=E敗者)
+        if (matchG) {
+            const w = getWinner(matchG);
+            if      (w === 1) { red('bG1'); red('wG'); }
+            else if (w === 2) { red('bG2'); red('wG'); }
+        }
+
         const matchF = getMatchData('F');
-        if (matchF && getWinner(matchF)) {
-            red(getWinner(matchF) === 1 ? 'lld' : 'lle');
-            red('bF'); red('wF');
+        if (matchF) {
+            const w = getWinner(matchF);
+            if      (w === 1) { red('lld'); red('bF1'); red('wF'); }
+            else if (w === 2) { red('lle'); red('bF2'); red('wF'); }
         }
     }
 
+    function setScores() {
+        const RED = '#e53935';
+        function setScore(matchId, md) {
+            const el = document.getElementById('score-' + matchId);
+            if (!el || !md) return;
+            if (md.status !== '\u7d42\u4e86' && md.status !== '\u8a66\u5408\u4e2d') return;
+            const s1 = md.team1.score, s2 = md.team2.score;
+            if (s1 === null || s1 === undefined || s2 === null || s2 === undefined) return;
+            el.textContent = md.team1.name + ' ' + s1 + ' - ' + s2 + ' ' + md.team2.name;
+            el.setAttribute('fill', RED);
+            el.setAttribute('font-weight', 'bold');
+            el.setAttribute('font-size', '13');
+            const vs = document.getElementById('vs-' + matchId);
+            if (vs) vs.setAttribute('visibility', 'hidden');
+        }
+        ['A','B','C','D','E','G','F'].forEach(id => setScore(id, getMatchData(id)));
+    }
+
+    function updateLoserBoxes() {
+        function update(matchId) {
+            const md = getMatchData(matchId);
+            if (!md) return;
+            const w = getWinner(md);
+            if (w === null) return;
+            const loser = w === 1 ? md.team2.name : md.team1.name;
+            const nameEl = document.getElementById('loser-' + matchId + '-name');
+            const subEl  = document.getElementById('loser-' + matchId + '-sub');
+            const rect   = document.getElementById('loser-' + matchId + '-rect');
+            if (nameEl) { nameEl.textContent = loser; nameEl.setAttribute('fill', '#1a1a2e'); nameEl.setAttribute('font-size', '16'); }
+            if (subEl)  subEl.textContent = '\u6557\u9000';
+            if (rect)   { rect.setAttribute('stroke-dasharray', 'none'); rect.setAttribute('stroke', '#777'); }
+        }
+        update('D');
+        update('E');
+    }
     function renderTournament() {
         const container = document.getElementById('tournamentArea');
         container.innerHTML = buildSVGString();
         populateTeamNames();
+        setScores();
+        updateLoserBoxes();
         activateRedLines();
         updateChampion();
         initZoomControl();
