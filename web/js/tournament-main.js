@@ -522,13 +522,17 @@ const TournamentApp = (() => {
 
     function setScores() {
         const RED = '#e53935';
+        const resolver = buildPlaceholderResolver();
+        function resolve(name) { return resolver[name] || name; }
         function setScore(matchId, md) {
             const el = document.getElementById('score-' + matchId);
             if (!el || !md) return;
             if (md.status !== '\u7d42\u4e86' && md.status !== '\u8a66\u5408\u4e2d') return;
             const s1 = md.team1.score, s2 = md.team2.score;
             if (s1 === null || s1 === undefined || s2 === null || s2 === undefined) return;
-            el.textContent = md.team1.name + ' ' + s1 + ' - ' + s2 + ' ' + md.team2.name;
+            const t1 = resolve(md.team1.name);
+            const t2 = resolve(md.team2.name);
+            el.textContent = t1 + ' ' + s1 + ' - ' + s2 + ' ' + t2;
             el.setAttribute('fill', RED);
             el.setAttribute('font-weight', 'bold');
             el.setAttribute('font-size', '13');
@@ -539,12 +543,14 @@ const TournamentApp = (() => {
     }
 
     function updateLoserBoxes() {
+        const resolver = buildPlaceholderResolver();
+        function resolve(name) { return resolver[name] || name; }
         function update(matchId) {
             const md = getMatchData(matchId);
             if (!md) return;
             const w = getWinner(md);
             if (w === null) return;
-            const loser = w === 1 ? md.team2.name : md.team1.name;
+            const loser = resolve(w === 1 ? md.team2.name : md.team1.name);
             const nameEl = document.getElementById('loser-' + matchId + '-name');
             const subEl  = document.getElementById('loser-' + matchId + '-sub');
             const rect   = document.getElementById('loser-' + matchId + '-rect');
@@ -576,7 +582,9 @@ const TournamentApp = (() => {
         if (finalMatch && finalMatch.status === '終了') {
             const winner = getWinner(finalMatch);
             if (winner) {
-                const championTeam = winner === 1 ? finalMatch.team1.name : finalMatch.team2.name;
+                const resolver = buildPlaceholderResolver();
+                const raw = winner === 1 ? finalMatch.team1.name : finalMatch.team2.name;
+                const championTeam = resolver[raw] || raw;
                 championName.textContent = championTeam;
                 championSection.style.display = 'block';
             }
@@ -588,41 +596,32 @@ const TournamentApp = (() => {
     // ==================== ズーム機能 ====================
 
     function initZoomControl() {
+        const BASE_W = 1060, BASE_H = 635;
         const zoomButtons = document.querySelectorAll('.zoom-btn');
         const tournamentWrapper = document.getElementById('tournamentWrapper');
         const tournamentArea = document.getElementById('tournamentArea');
 
-        // ページ読み込み時に60%を適用
-        const initialZoom = 0.6;
-        tournamentArea.style.transform = `scale(${initialZoom})`;
-        tournamentArea.style.transformOrigin = 'top left';
-        const initialHeight = 635 * initialZoom;
-        tournamentWrapper.style.height = `${initialHeight}px`;
-
-        // 60%ボタンをアクティブに
-        const zoom60Btn = document.querySelector('[data-zoom="0.6"]');
-        if (zoom60Btn) {
-            zoom60Btn.classList.add('active');
+        function applyZoom(zoom) {
+            currentZoom = zoom;
+            const svgEl = tournamentArea.querySelector('svg');
+            if (svgEl) {
+                svgEl.setAttribute('width',  Math.round(BASE_W * zoom));
+                svgEl.setAttribute('height', Math.round(BASE_H * zoom));
+            }
+            tournamentArea.style.transform = '';
+            tournamentArea.style.width  = Math.round(BASE_W * zoom) + 'px';
+            tournamentArea.style.height = Math.round(BASE_H * zoom) + 'px';
+            tournamentWrapper.style.height = Math.round(BASE_H * zoom) + 'px';
+            zoomButtons.forEach(b => b.classList.remove('active'));
+            const activeBtn = document.querySelector(`[data-zoom="${zoom}"]`);
+            if (activeBtn) activeBtn.classList.add('active');
         }
 
         zoomButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const zoom = parseFloat(btn.dataset.zoom);
-                currentZoom = zoom;
-
-                tournamentArea.style.transform = `scale(${zoom})`;
-                tournamentArea.style.transformOrigin = 'top left';
-
-                const newHeight = 635 * zoom;
-                tournamentWrapper.style.height = `${newHeight}px`;
-
-                zoomButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-
-                tournamentWrapper.scrollLeft = 0;
-                window.scrollTo(0, tournamentWrapper.offsetTop - 100);
-            });
+            btn.addEventListener('click', () => applyZoom(parseFloat(btn.dataset.zoom)));
         });
+
+        applyZoom(0.6);
     }
 
     // ==================== エラー表示 ====================
