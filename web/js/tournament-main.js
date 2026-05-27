@@ -392,13 +392,13 @@ const TournamentApp = (() => {
       fill="white" stroke="#bbb" stroke-width="1.5" stroke-dasharray="5,3"/>
 <text id="loser-D-name" x="820" y="267" text-anchor="middle" font-size="13" font-weight="bold" fill="#999">D&#x6557;&#x8005;</text>
 <text id="loser-D-sub" x="820" y="284" text-anchor="middle" font-size="10" fill="#bbb">&#x6E96;&#x6C7A;&#x52DD;D</text>
-<text x="820" y="298" text-anchor="middle" font-size="10" fill="#bbb">&#x6557;&#x9000;&#x30C1;&#x30FC;&#x30E0;</text>
+<text id="loser-D-hint" x="820" y="298" text-anchor="middle" font-size="10" fill="#bbb">&#x6557;&#x9000;&#x30C1;&#x30FC;&#x30E0;</text>
 
 <rect id="loser-E-rect" x="986" y="235" width="68" height="90" rx="5"
       fill="white" stroke="#bbb" stroke-width="1.5" stroke-dasharray="5,3"/>
 <text id="loser-E-name" x="1020" y="267" text-anchor="middle" font-size="13" font-weight="bold" fill="#999">E&#x6557;&#x8005;</text>
 <text id="loser-E-sub" x="1020" y="284" text-anchor="middle" font-size="10" fill="#bbb">&#x6E96;&#x6C7A;&#x52DD;E</text>
-<text x="1020" y="298" text-anchor="middle" font-size="10" fill="#bbb">&#x6557;&#x9000;&#x30C1;&#x30FC;&#x30E0;</text>
+<text id="loser-E-hint" x="1020" y="298" text-anchor="middle" font-size="10" fill="#bbb">&#x6557;&#x9000;&#x30C1;&#x30FC;&#x30E0;</text>
 
 <rect x="46" y="520" width="68" height="90" rx="5"
       fill="white" stroke="#e53935" stroke-width="2.5"/>
@@ -555,7 +555,9 @@ const TournamentApp = (() => {
             const subEl  = document.getElementById('loser-' + matchId + '-sub');
             const rect   = document.getElementById('loser-' + matchId + '-rect');
             if (nameEl) { nameEl.textContent = loser; nameEl.setAttribute('fill', '#1a1a2e'); nameEl.setAttribute('font-size', '16'); }
-            if (subEl)  subEl.textContent = '\u6557\u9000';
+            if (subEl)  subEl.textContent = '';
+            const hintEl = document.getElementById('loser-' + matchId + '-hint');
+            if (hintEl) hintEl.textContent = '';
             if (rect)   { rect.setAttribute('stroke-dasharray', 'none'); rect.setAttribute('stroke', '#777'); }
         }
         update('D');
