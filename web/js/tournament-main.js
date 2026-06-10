@@ -339,7 +339,7 @@ const TournamentApp = (() => {
 <text x="584" y="313" text-anchor="middle" font-size="11" fill="#555">13:00&#x3000;&#x7B2C;2&#x7403;&#x5834;</text>
 <text id="vs-E" x="584" y="328" text-anchor="middle" font-size="10" fill="#888">&#xFF22;&#x52DD;&#x8005; vs &#xFF23;&#x52DD;&#x8005;</text>
 
-<text x="374" y="138" text-anchor="middle" font-size="13" font-weight="bold" fill="#7d5a00">&#xFF27;&#x3000;&#x6C7A;&#x3000;&#x52DD;</text>
+<text x="374" y="138" text-anchor="middle" font-size="13" font-weight="bold" fill="#7d5a00">&#xFF26;&#x3000;&#x6C7A;&#x3000;&#x52DD;</text>
 <text x="374" y="153" text-anchor="middle" font-size="11" fill="#555">14:30&#x3000;&#x9577;&#x5D4E;&#x8302;&#x96C4;&#x7403;&#x5834;</text>
 <text id="vs-G" x="374" y="168" text-anchor="middle" font-size="10" fill="#888">&#xFF24;&#x52DD;&#x8005; vs &#xFF25;&#x52DD;&#x8005;</text>
 
