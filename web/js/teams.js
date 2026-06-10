@@ -93,19 +93,15 @@ const TeamsApp = (() => {
             `;
 
             team.players.forEach(player => {
-                const photoHtml = player.photo
-                    ? `<img src="${escapeHtml(player.photo)}" alt="${escapeHtml(player.name)}" class="player-photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                       <div class="player-photo no-photo" style="display:none;">👤</div>`
-                    : `<div class="player-photo no-photo">👤</div>`;
+                const photoHtml = '';
 
                 html += `
                     <div class="player">
                         ${photoHtml}
                         <div class="player-info">
-                            <div class="player-number">#${escapeHtml(player.number)}</div>
+                            <div class="player-number">#${escapeHtml(player.number)}${player.note === '●' ? '<span class="player-senior-badge"></span>' : ''}</div>
                             <div class="player-name">${escapeHtml(player.name)}</div>
                             <div class="player-position">${escapeHtml(player.position)}</div>
-                            ${player.note ? `<div class="player-note">${escapeHtml(player.note)}</div>` : ''}
                         </div>
                     </div>
                 `;
