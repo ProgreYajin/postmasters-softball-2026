@@ -36,7 +36,7 @@ const CONFIG = {
     MATCH_COORDINATES: {
         'A': { x: 275,  y: 700, round: 1, label: 'A', time: '10:00', venue: '長嶋茂雄球場' },
         'B': { x: 575,  y: 700, round: 1, label: 'B', time: '10:00', venue: '第2球場' },
-        'C': { x: 875,  y: 700, round: 1, label: 'C', time: '11:20', venue: '長嶋茂雄球場' },
+        'C': { x: 875,  y: 700, round: 1, label: 'C', time: '11:30', venue: '長嶋茂雄球場' },
         'D': { x: 200,  y: 500, round: 2, label: 'D', time: '13:00', venue: '長嶋茂雄球場', special: 'semi' },
         'E': { x: 725,  y: 500, round: 2, label: 'E', time: '13:00', venue: '第2球場',      special: 'semi' },
         'F': { x: 1175, y: 300, round: 3, label: 'F', time: '14:30', venue: '第2球場',       special: 'third' },
