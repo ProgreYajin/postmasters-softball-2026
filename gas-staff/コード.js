@@ -464,6 +464,11 @@ function doGet(e) {
     if (params.type === 'teams') return getTeamsData(ss);
     if (params.type === 'schedule') return getScheduleData(ss);
     if (params.type === 'tournament') return getTournamentData(ss);
+    if (params.type === 'importRoster') {
+      const token = PropertiesService.getScriptProperties().getProperty('BROADCAST_TOKEN');
+      if (params.auth !== token) return ContentService.createTextOutput('Unauthorized');
+      return importRosterData();
+    }
     return getScoreboardData(ss);
 
   } catch (error) {
@@ -1082,6 +1087,7 @@ function replyMessage(replyToken, message) {
     muteHttpExceptions: true
   });
 }
+
 function importRosterData() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName('チーム名簿');
@@ -1089,10 +1095,9 @@ function importRosterData() {
     return ContentService.createTextOutput(JSON.stringify({status:'error',msg:'シートが見つかりません'}))
       .setMimeType(ContentService.MimeType.JSON);
   }
-
   sheet.clearContents();
-
   const rows = [
+    ["チーム名", "背番号", "局名", "選手名", "写真URL", "備考"],
     ["千葉印旛地区会", 1, "本埜", "榊原　賢一", "", "●"],
     ["千葉印旛地区会", 2, "八街文違", "小久保　博行", "", "●"],
     ["千葉印旛地区会", 3, "成田吾妻", "菅澤　孝規", "", "●"],
@@ -1371,10 +1376,8 @@ function importRosterData() {
     ["千葉南部地区会", 31, "富津岬", "笹生秀樹", "", "●"],
     ["千葉南部地区会", 32, "青堀", "溝口貴志", "", ""]
   ];
-
   sheet.getRange(1, 1, rows.length, 6).setValues(rows);
-
   return ContentService.createTextOutput(
-    JSON.stringify({status: 'ok', count: rows.length})
+    JSON.stringify({status: 'ok', count: rows.length - 1})
   ).setMimeType(ContentService.MimeType.JSON);
 }
