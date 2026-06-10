@@ -464,11 +464,6 @@ function doGet(e) {
     if (params.type === 'teams') return getTeamsData(ss);
     if (params.type === 'schedule') return getScheduleData(ss);
     if (params.type === 'tournament') return getTournamentData(ss);
-    if (params.type === 'importRoster') {
-      const token = PropertiesService.getScriptProperties().getProperty('BROADCAST_TOKEN');
-      if (params.auth !== token) return ContentService.createTextOutput('Unauthorized');
-      return importRosterData();
-    }
     return getScoreboardData(ss);
 
   } catch (error) {
