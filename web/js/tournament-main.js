@@ -154,10 +154,21 @@ const TournamentApp = (() => {
             );
 
             if (games.length >= 2) {
-                team1Name = getSafeValue(games[0], 'team', 'homeTeam', 'topTeam');
-                team2Name = getSafeValue(games[1], 'team', 'awayTeam', 'bottomTeam');
-                team1Score = getSafeValue(games[0], 'total', 'homeTotal', 'topTotal') || 0;
-                team2Score = getSafeValue(games[1], 'total', 'awayTotal', 'bottomTotal') || 0;
+                let t1 = getSafeValue(games[0], 'team', 'homeTeam', 'topTeam');
+                let t2 = getSafeValue(games[1], 'team', 'awayTeam', 'bottomTeam');
+                let s1 = getSafeValue(games[0], 'total', 'homeTotal', 'topTotal') || 0;
+                let s2 = getSafeValue(games[1], 'total', 'awayTotal', 'bottomTotal') || 0;
+                // トーナメント座標のX値でteam1/team2の左右順を決定（先攻/後攻と無関係）
+                const coord1 = CONFIG.TEAM_COORDINATES[t1];
+                const coord2 = CONFIG.TEAM_COORDINATES[t2];
+                if (coord1 && coord2 && coord1.x > coord2.x) {
+                    [t1, t2] = [t2, t1];
+                    [s1, s2] = [s2, s1];
+                }
+                team1Name = t1;
+                team2Name = t2;
+                team1Score = s1;
+                team2Score = s2;
                 status = getSafeValue(games[0], 'status', 'Status', 'STATUS') || '待機';
                 court = getSafeValue(games[0], 'court', 'Court', 'COURT') || '';
             }
