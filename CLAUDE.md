@@ -152,12 +152,7 @@ Body: binary image
 
 ## 開発時の注意
 
-- GASファイルはUTF-8で日本語ファイル名を使用
-- LINE Webhook署名検証は必須（HMAC-SHA256）
 - R2公開URL: `https://pub-d1b8738273da4b779dbc93fc861dc066.r2.dev`
-- Web側はフレームワーク不使用のVanilla JS、ビルドステップなし
-- トーナメント表はSVG座標のハードコードあり（config.jsのTEAM_COORDINATES, MATCH_COORDINATES）
-- Web全ページで `common.js`（escapeHtml, getSafeValue等）をグローバル依存として使用。新ページ追加時は `config.js` → `common.js` → アプリJS の順で読み込むこと
-- GASのシート列番号は `COLS` 定数（0-based）で管理。`getRange()` は1-basedなので `+1` が必要
-- イニング列アクセス: 配列(0-based)は `INNING_START + inning - 1`、getRange(1-based)は `INNING_START + inning`。混同注意
 - GitHub Secretsに値を設定する際はGitHub API + pynacl暗号化を使う（`/tmp/set_secret.py`参照）。iPhoneからのコピペは改行混入で失敗しやすい
+- GAS固有の注意: `.claude/rules/gas-rules.md` 参照
+- Web固有の注意: `.claude/rules/web-rules.md` 参照
