@@ -127,14 +127,7 @@ Body: binary image
 
 ## デプロイ
 
-### GAS（gas-staff/, gas-audience/）
-- GitHub Actionsで自動デプロイ（`clasp push -f`）
-- トリガー: `gas-staff/**` or `gas-audience/**` or `.github/workflows/deploy-gas.yml` パス変更時
-- ローカルからの手動デプロイ: `~/.local/node_modules/.bin/clasp push -f`（認証情報: `~/.clasprc.json`）
-
-### Cloudflare Workers（chiba-softball-r2-gallery/）
-- GitHub Actionsで自動デプロイ（`wrangler deploy`）
-- トリガー: mainブランチpush or 手動dispatch
+詳細手順: `.claude/skills/deploy/SKILL.md` 参照。
 
 ## Google Sheetsのシート構成
 - 試合予定 — コート、試合番号、チーム名、時間、状態
